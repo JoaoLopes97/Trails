@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_explore">
+
+    <fragment
+        android:id="@+id/navigation_explore"
+        android:name="com.example.trails.ui.explore.ExploreFragment"
+        android:label="@string/title_explore"
+        tools:layout="@layout/explore_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_my_trails"
+        android:name="com.example.trails.ui.myTrails.MyTrailsFragment"
+        android:label="@string/title_my_trails"
+        tools:layout="@layout/my_trails_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_start"
+        android:name="com.example.trails.ui.start.StartFragment"
+        android:label="@string/title_start"
+        tools:layout="@layout/start_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.trails.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/profile_fragment" />
+    <fragment
+
+        android:id="@+id/navigation_settings"
+        android:name="com.example.trails.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/settings_fragment" />
+</navigation>
