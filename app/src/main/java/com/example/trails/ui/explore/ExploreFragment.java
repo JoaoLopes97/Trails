@@ -16,15 +16,15 @@ import com.example.trails.R;
 
 public class ExploreFragment extends Fragment {
 
-    private ExploreViewModel ExploreViewModel;
+    private ExploreViewModel exploreViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ExploreViewModel =
+        exploreViewModel =
                 ViewModelProviders.of(this).get(ExploreViewModel.class);
         View root = inflater.inflate(R.layout.explore_fragment, container, false);
         final TextView textView = root.findViewById(R.id.text_explore);
-        ExploreViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        exploreViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

@@ -16,15 +16,15 @@ import com.example.trails.R;
 
 public class ProfileFragment extends Fragment {
 
-    private ProfileViewModel ProfileViewModel;
+    private ProfileViewModel profileViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ProfileViewModel =
+        profileViewModel =
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View root = inflater.inflate(R.layout.profile_fragment, container, false);
         final TextView textView = root.findViewById(R.id.text_profile);
-        ProfileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
