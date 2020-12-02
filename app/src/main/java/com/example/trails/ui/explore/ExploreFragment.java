@@ -27,7 +27,7 @@ public class ExploreFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.explore_fragment, container, false);
 
-        setFragment(new ListFragment());
+        setFragment(R.id.explore_frag,new ListFragment());
         viewMode = root.findViewById(R.id.view_mode);
         viewMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,19 +60,26 @@ public class ExploreFragment extends Fragment {
             viewMode_Map = false;
 
             listFragment = new ListFragment();
-            setFragment(listFragment);
+            setFragment(R.id.explore_frag,listFragment);
         } else {
             viewMode.setImageResource(R.drawable.ic_baseline_list_24);
             viewMode_Map = true;
 
             mapFragment = new MapFragment();
-            setFragment(mapFragment);
+            setFragment(R.id.explore_frag,mapFragment);
         }
     }
 
-    private void setFragment(Fragment fragment){
+    /*private void setFragment(Fragment fragment){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.explore_frag, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }*/
+
+    private void setFragment(int layout,Fragment fragment){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(layout, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -1,18 +1,25 @@
 package com.example.trails.ui.explore;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
+import com.example.trails.ui.Details.DetailsTrailFragment;
 
 import java.util.ArrayList;
 
@@ -26,11 +33,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.trails = trails;
     }
 
+    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setFragment(R.id.nav_host_fragment, new DetailsTrailFragment());
+        }
+    };
+
+    private void setFragment(int layout, Fragment fragment){
+        FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+        transaction.replace(layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     @NonNull
     @Override
     public ViewHolderNew onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
-
+        view.setOnClickListener(mOnClickListener);
         return  new ViewHolderNew(view);
     }
 
