@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/White</item>
         <item name="colorPrimaryDark">@color/White</item>
@@ -10,6 +10,9 @@
 
     </style>
 
+    <style name="AppTheme.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
     <style name="RatingBar" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/LightGrey</item>
         <item name="colorControlActivated">@color/Gold</item>

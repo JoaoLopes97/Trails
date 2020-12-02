@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/appbar_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:elevation="0dp">
+    android:layout_height="match_parent"
+    tools:context=".ui.explore.ExploreFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        tools:context=".ui.explore.ExploreFragment">
+        android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            app:cardElevation="15dp">
-
+            android:layout_marginBottom="5dp"
+            app:cardElevation="10dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:elevation="15dp"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:elevation="100dp">
+                    android:layout_height="wrap_content">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/view_mode"
@@ -56,8 +53,6 @@
                         android:id="@+id/search"
                         android:layout_width="0dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
                         android:backgroundTint="@android:color/darker_gray"
                         android:drawableLeft="@drawable/ic_baseline_search_24"
                         android:inputType="text"
@@ -83,15 +78,13 @@
                         app:layout_constraintTop_toTopOf="@+id/search"
                         app:layout_constraintVertical_bias="1.0" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/my_recycler_view"
+        <FrameLayout
+            android:id="@+id/explore_frag"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            />
     </LinearLayout>
-</com.google.android.material.appbar.AppBarLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
