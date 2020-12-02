@@ -51,7 +51,7 @@ public class ExploreFragment extends Fragment {
             }
         });
 
-        title = root.findViewById(R.id.app_name);
+        //title = root.findViewById(R.id.app_name);
         return root;
     }
 
