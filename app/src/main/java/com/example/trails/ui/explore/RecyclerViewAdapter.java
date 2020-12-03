@@ -1,20 +1,16 @@
 package com.example.trails.ui.explore;
 
-import android.app.Activity;
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,16 +32,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setFragment(R.id.nav_host_fragment, new DetailsTrailFragment());
+            setFragment(R.id.details_frag, new DetailsTrailFragment());
         }
     };
-
-    private void setFragment(int layout, Fragment fragment){
-        FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
     @NonNull
     @Override
@@ -64,6 +53,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
         return trails.size();
+    }
+
+    private void setFragment(int layout, Fragment fragment){
+        FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+        transaction.replace(layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     class ViewHolderNew extends RecyclerView.ViewHolder {

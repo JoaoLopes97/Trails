@@ -60,24 +60,29 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">>
 
                 <ImageButton
                     android:id="@+id/DownloadButton"
-                    android:layout_width="206dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:outlineAmbientShadowColor="@color/Green"
                     android:outlineSpotShadowColor="@color/Green"
-                    app:srcCompat="@android:drawable/stat_sys_download" />
+                    app:srcCompat="@android:drawable/stat_sys_download"
+                    android:backgroundTint="@color/colorMenuSelected"
+                    />
 
                 <ImageButton
                     android:id="@+id/StartButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
                     android:outlineAmbientShadowColor="@color/Green"
                     android:outlineSpotShadowColor="@color/Green"
-                    app:srcCompat="@android:drawable/ic_media_play" />
+                    app:srcCompat="@android:drawable/ic_media_play"
+                    android:backgroundTint="@color/colorMenuSelected"/>
 
             </LinearLayout>
 
@@ -90,6 +95,13 @@
                 tools:layout="@layout/image_slider_fragment"
                 android:layout_margin="10dp"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comentários"
+                android:layout_margin="10dp"
+                android:textSize="20dp"
+                android:textStyle="bold"/>
             <fragment
                 android:id="@+id/comment_frag1"
                 android:name="com.example.trails.ui.Details.CommentFragment"

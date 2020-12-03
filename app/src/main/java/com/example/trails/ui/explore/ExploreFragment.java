@@ -1,6 +1,7 @@
 package com.example.trails.ui.explore;
 
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public class ExploreFragment extends Fragment {
     private ListFragment listFragment;
     private MapFragment mapFragment;
     private FilterFragment filterFragment;
+    private View filterLayout;
     public static ArrayList<TrailCard> trailCards = new ArrayList<>();
 
     private boolean viewMode_Map = false; // true if viewMode is Map, false if viewMode is List.
@@ -38,7 +40,9 @@ public class ExploreFragment extends Fragment {
             }
         });
 
-        FloatingActionButton filterBtn = root.findViewById(R.id.filter);
+        final FloatingActionButton filterBtn = root.findViewById(R.id.filter);
+
+        filterLayout = root.findViewById(R.id.filter_frag);
 
         filterFragment = new FilterFragment();
 
@@ -47,9 +51,11 @@ public class ExploreFragment extends Fragment {
             public void onClick(View v) {
                 if(!showingFilter) {
                     setFragment(R.id.filter_frag, filterFragment);
+                    filterLayout.setClickable(true);
                     showingFilter = true;
                 } else{
                     hideFilter();
+                    filterLayout.setClickable(false);
                     showingFilter = false;
                 }
             }
@@ -95,6 +101,7 @@ public class ExploreFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
     public void hideFilter(){
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
