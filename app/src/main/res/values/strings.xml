@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Trails</string>
+    <string name="app_name">trails</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -19,4 +19,6 @@
     <string name="btn_Save">Guardar</string>
     <string name="trails_image">Trail Images</string>
     <string name="trails_comment">Trail Comment</string>
+    <string name="ver_perfil">Ver Perfil</string>
+    <string name="username">Username</string>
 </resources>
