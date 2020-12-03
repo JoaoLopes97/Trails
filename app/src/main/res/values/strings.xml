@@ -15,7 +15,8 @@
     <string name="title_start">Começar</string>
     <string name="title_profile">Perfil</string>
     <string name="title_settings">Definições</string>
-
+    <string name="btn_clear">Apagar</string>
+    <string name="btn_Save">Guardar</string>
     <string name="trails_image">Trail Images</string>
     <string name="trails_comment">Trail Comment</string>
 </resources>
