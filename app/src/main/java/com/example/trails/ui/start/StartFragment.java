@@ -15,8 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
+import com.example.trails.ui.explore.RecyclerViewAdapter;
+import com.example.trails.ui.explore.TrailCard;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,9 +32,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
+import static com.example.trails.ui.explore.ExploreFragment.trailCards;
+
 public class StartFragment extends Fragment implements OnMapReadyCallback {
 
     private StartViewModel mViewModel;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<TrailCard> recyclerList = new ArrayList<>();
 
     //MapView
     private MapView mapView;
@@ -52,6 +65,15 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
         save = root.findViewById(R.id.save);
         clear = root.findViewById(R.id.clear);
+
+        mRecyclerView = root.findViewById(R.id.my_recycler_view);
+
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RecyclerViewAdapter(getActivity(), recyclerList);
+        mRecyclerView.setAdapter(mAdapter);
+        CreateTrailsCards();
 
         checkUserLocationPermission();
 
@@ -143,5 +165,16 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         {
             return true;
         }
+    }
+
+
+    private void CreateTrailsCards() {
+        TrailCard trail = new TrailCard("Trilho da Arrabida", "Arrabida,Setubal,Portugal", (float) 4.5, 57, R.mipmap.portinho_arrabida_1);
+        recyclerList.add(trail);
+        trail = new TrailCard("Trilho da Arrabida 4", "Arrabida,Setubal,Portugal", (float) 1, 3, R.mipmap.portinho_arrabida_2);
+        recyclerList.add(trail);
+        trail = new TrailCard("Trilho da Arrabida 5", "Arrabida,Setubal,Portugal", (float) 5, 10, R.mipmap.portinho_arrabida_1);
+        recyclerList.add(trail);
+        mAdapter.notifyDataSetChanged();
     }
 }

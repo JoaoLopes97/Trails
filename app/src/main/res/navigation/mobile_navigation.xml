@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_my_trails"
-        android:name="com.example.trails.ui.myTrails.MyTrailsFragment"
+        android:name="com.example.trails.ui.explore.ExploreFragment"
         android:label="@string/title_my_trails"
-        tools:layout="@layout/my_trails_fragment" />
+        tools:layout="@layout/explore_fragment" />
 
     <fragment
         android:id="@+id/nav_start"
