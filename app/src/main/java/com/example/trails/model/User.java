@@ -2,6 +2,7 @@ package com.example.trails.model;
 
 import android.location.Location;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,10 +16,10 @@ public class User {
 
     private String email;
 
-    private List<Routes> favoriteRoutes;
-    private List<Routes> downloadRoutes;
+    private List<Integer> favoriteRoutes;
+    private List<Integer> downloadRoutes;
 
-    public User(String name, Date dateOfBirth, Location location, String email, List<Routes> favoriteRoutes, List<Routes> downloadRoutes) {
+    public User(String name, Date dateOfBirth, Location location, String email, List<Integer> favoriteRoutes, List<Integer> downloadRoutes) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.location = location;
@@ -64,19 +65,27 @@ public class User {
         this.email = email;
     }
 
-    public List<Routes> getFavoriteRoutes() {
+    public List<Integer> getFavoriteRoutes() {
         return favoriteRoutes;
     }
 
-    public void setFavoriteRoutes(List<Routes> favoriteRoutes) {
+    public void setFavoriteRoutes(List<Integer> favoriteRoutes) {
         this.favoriteRoutes = favoriteRoutes;
     }
 
-    public List<Routes> getDownloadRoutes() {
+    public void addFavoriteTrail(int trailId){
+        this.favoriteRoutes.add(trailId);
+    }
+
+    public void removeFavoriteTrail(int trailId){
+        this.favoriteRoutes.remove(trailId);
+    }
+
+    public List<Integer> getDownloadRoutes() {
         return downloadRoutes;
     }
 
-    public void setDownloadRoutes(List<Routes> downloadRoutes) {
+    public void setDownloadRoutes(List<Integer> downloadRoutes) {
         this.downloadRoutes = downloadRoutes;
     }
 }

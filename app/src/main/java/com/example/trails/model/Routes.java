@@ -5,12 +5,12 @@ import java.util.List;
 public class Routes {
 
     private List<Coordinates> listCoordinates;
-    private List<Comments> listComments;
+    private List<Comment> listComments;
 
     private Characteristics characteristics;
     private float routeRating;
 
-    public Routes(List<Coordinates> listCoordinates, List<Comments> listComments, Characteristics characteristics, float routeRating) {
+    public Routes(List<Coordinates> listCoordinates, List<Comment> listComments, Characteristics characteristics, float routeRating) {
         this.listCoordinates = listCoordinates;
         this.listComments = listComments;
         this.characteristics = characteristics;
@@ -25,11 +25,11 @@ public class Routes {
         this.listCoordinates = listCoordinates;
     }
 
-    public List<Comments> getListComments() {
+    public List<Comment> getListComments() {
         return listComments;
     }
 
-    public void setListComments(List<Comments> listComments) {
+    public void setListComments(List<Comment> listComments) {
         this.listComments = listComments;
     }
 

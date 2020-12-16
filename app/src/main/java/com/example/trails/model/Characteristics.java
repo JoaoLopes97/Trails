@@ -9,16 +9,20 @@ public class Characteristics {
     private TerrainType terrainType;
 
     private float distance;
+    private float timeSpent;
+
+    //private location
 
     // mais caracteristicas
     // validações de null devem ser feitas na interface??
 
-    public Characteristics(String name, String description, float difficulty, TerrainType terrainType, float distance) {
+    public Characteristics(String name, String description, float difficulty, TerrainType terrainType, float distance,float timeSpent) {
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
         this.terrainType = terrainType;
         this.distance = distance;
+        this.timeSpent = timeSpent;
     }
 
     public String getName() {
@@ -61,4 +65,11 @@ public class Characteristics {
         this.distance = distance;
     }
 
+    public float getTimeSpent() {
+        return timeSpent;
+    }
+
+    public void setTimeSpent(float timeSpent) {
+        this.timeSpent = timeSpent;
+    }
 }

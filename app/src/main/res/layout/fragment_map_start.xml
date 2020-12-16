@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.start.StartFragment">
+    tools:context=".ui.start.StartFragment"
+    android:id="@+id/startFragment">
 
 
     <com.google.android.gms.maps.MapView
@@ -78,7 +79,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
-        android:id="@+id/save"
+        android:id="@+id/saveTrail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
@@ -91,7 +92,7 @@
         android:visibility="invisible"/>
 
     <Button
-        android:id="@+id/clear"
+        android:id="@+id/clearTrail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"

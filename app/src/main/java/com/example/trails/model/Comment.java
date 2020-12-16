@@ -1,12 +1,12 @@
 package com.example.trails.model;
 
-public class Comments {
+public class Comment {
 
     private User user;
     private String comment;
     private float rating;
 
-    public Comments(User user, String comment, float rating) {
+    public Comment(User user, String comment, float rating) {
         this.user = user;
         this.comment = comment;
         this.rating = rating;

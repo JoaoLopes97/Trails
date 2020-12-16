@@ -1,0 +1,85 @@
+package com.example.trails.model;
+
+import android.media.Image;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class Trail {
+
+    private Characteristics characteristics;
+    private ArrayList<LatLng> coordinates;
+    private int userId;
+    private HashMap<Image, LatLng> images; // rever
+    private float trailRating;
+    private List<Comment> listComments;
+
+    public Trail(Characteristics characteristics, ArrayList<LatLng> coordinates, int userId, HashMap<Image, LatLng> images) {
+        this.characteristics = characteristics;
+        this.coordinates = coordinates;
+        this.userId = userId;
+        this.images = images;
+    }
+
+    public Characteristics getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(Characteristics characteristics) {
+        this.characteristics = characteristics;
+    }
+
+    public ArrayList<LatLng> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(ArrayList<LatLng> coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public HashMap<Image, LatLng> getImages() {
+        return images;
+    }
+
+    public void setImages(HashMap<Image, LatLng> images) {
+        this.images = images;
+    }
+
+    public float getTrailRating() {
+        return trailRating;
+    }
+
+    public List<Comment> getListComments() {
+        return listComments;
+    }
+
+    public void addComment(Comment comment){
+        if(comment != null){
+            listComments.add(comment);
+            updateRating();
+        }
+    }
+
+    public void updateRating() {
+        int numComments = 0;
+        float rating = 0;
+        for (Comment c : listComments) {
+            numComments++;
+            rating += c.getRating();
+        }
+        trailRating = rating / numComments;
+    }
+
+}
+
