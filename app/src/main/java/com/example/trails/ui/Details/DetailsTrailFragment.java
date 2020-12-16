@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
 import com.example.trails.ui.explore.MapFragment;
 
 public class DetailsTrailFragment extends Fragment {
@@ -26,6 +27,8 @@ public class DetailsTrailFragment extends Fragment {
 
     private ImageFlipperFragment imageFlipper;
 
+    private DB db;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.details_fragment, container, false);
@@ -36,6 +39,20 @@ public class DetailsTrailFragment extends Fragment {
         setButtons(root);
         setFragment(R.id.explore_details_frag, map);
         //setFragment(new CommentFragment());
+
+        db = new DB();
+
+        startWalk.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                db.retivedata();
+            }
+        });
+
+        downloadWalk.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                db.insertData();
+            }
+        });
 
         return root;
     }
