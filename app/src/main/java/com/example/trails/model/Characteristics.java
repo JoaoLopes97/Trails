@@ -25,6 +25,9 @@ public class Characteristics {
         this.timeSpent = timeSpent;
     }
 
+    public Characteristics(){
+
+    }
     public String getName() {
         return name;
     }

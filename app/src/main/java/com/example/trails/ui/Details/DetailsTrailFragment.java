@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.ui.explore.MapFragment;
+import com.example.trails.ui.start.StartFragment;
 
 public class DetailsTrailFragment extends Fragment {
 
@@ -34,23 +35,25 @@ public class DetailsTrailFragment extends Fragment {
         View root = inflater.inflate(R.layout.details_fragment, container, false);
 
         MapFragment map = new MapFragment();
-        //map.setLocation(38.49f, -9.00f, "Serra da Arrábida");
 
         setButtons(root);
         setFragment(R.id.explore_details_frag, map);
-        //setFragment(new CommentFragment());
 
         db = new DB();
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                db.retivedata();
+                Bundle bundle = new Bundle();
+                bundle.putString("id", "nZPmn3x9wj9VjBH9d4Og");
+                StartFragment fragObj = new StartFragment();
+                fragObj.setArguments(bundle);
+                setFragment(R.id.nav_host_fragment,fragObj);
             }
         });
 
         downloadWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                db.insertData();
+               // db.insertData();
             }
         });
 

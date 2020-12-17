@@ -42,7 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
         view.setOnClickListener(mOnClickListener);
 
-        return  new ViewHolderNew(view);
+        return new ViewHolderNew(view);
     }
 
     @Override

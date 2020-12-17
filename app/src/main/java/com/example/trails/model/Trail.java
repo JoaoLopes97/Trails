@@ -11,19 +11,22 @@ import java.util.List;
 public class Trail {
 
     private Characteristics characteristics;
-    private ArrayList<LatLng> coordinates;
+    private ArrayList<Coordinates> coordinates;
     private int userId;
-    private HashMap<Image, LatLng> images; // rever
+    private HashMap<Image, Coordinates> images; // rever
     private float trailRating;
     private List<Comment> listComments;
 
-    public Trail(Characteristics characteristics, ArrayList<LatLng> coordinates, int userId, HashMap<Image, LatLng> images) {
+    public Trail(Characteristics characteristics, ArrayList<Coordinates> coordinates, int userId, HashMap<Image, Coordinates> images) {
         this.characteristics = characteristics;
         this.coordinates = coordinates;
         this.userId = userId;
         this.images = images;
     }
 
+    public Trail(){
+
+    }
     public Characteristics getCharacteristics() {
         return characteristics;
     }
@@ -32,11 +35,11 @@ public class Trail {
         this.characteristics = characteristics;
     }
 
-    public ArrayList<LatLng> getCoordinates() {
+    public ArrayList<Coordinates> getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(ArrayList<LatLng> coordinates) {
+    public void setCoordinates(ArrayList<Coordinates> coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -48,11 +51,11 @@ public class Trail {
         this.userId = userId;
     }
 
-    public HashMap<Image, LatLng> getImages() {
+    public HashMap<Image, Coordinates> getImages() {
         return images;
     }
 
-    public void setImages(HashMap<Image, LatLng> images) {
+    public void setImages(HashMap<Image, Coordinates> images) {
         this.images = images;
     }
 

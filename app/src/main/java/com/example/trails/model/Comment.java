@@ -11,6 +11,7 @@ public class Comment {
         this.comment = comment;
         this.rating = rating;
     }
+    public Comment(){}
 
     public User getUser() {
         return user;

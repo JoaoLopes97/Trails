@@ -1,6 +1,7 @@
 package com.example.trails.ui.start;
 
 import android.Manifest;
+import android.content.SyncStats;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -178,8 +179,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 Characteristics c = new Characteristics("name","desc",3.0f, TerrainType.ALTO,distance / 1000,SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
-                Trail trail = new Trail(c,latLngs,1,null);
-                db.insertData("trails",trail);
+                //Trail trail = new Trail(c,latLngs,1,null);
+                //db.insertData("trails",trail);
             }
         });
 
@@ -195,12 +196,12 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
+        //if not null
         String str = getArguments().getString("id");
-
+        Trail t;
         if(str != null){
-            Trail t = db.retrieveData(str);
-            drawTrail(t.getCoordinates());
+            t = db.retrieveData(str);
+            drawTrail(t);
         }
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -256,12 +257,12 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         mAdapter.notifyDataSetChanged();
     }
 
-    private void drawTrail(ArrayList<LatLng> downloadedTrail){
-
-        map.moveCamera(CameraUpdateFactory.newLatLng(downloadedTrail.get(0)));
+    private void drawTrail(Trail trail){
+        System.out.println(trail);
+       /* map.moveCamera(CameraUpdateFactory.newLatLng(downloadedTrail.get(0)));
         for (int i = 0; i < downloadedTrail.size(); i++) {
             polylineOptions = new PolylineOptions().addAll(downloadedTrail).width(width);
             polyline = map.addPolyline(polylineOptions);
-        }
+        }*/
     }
 }
