@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">trails</string>
+    <string name="app_name">Trails</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -7,7 +7,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_first_fragment">MY TRAILS FRAGMENT</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_explore">Explorar</string>
@@ -21,4 +21,11 @@
     <string name="trails_comment">Trail Comment</string>
     <string name="ver_perfil">Ver Perfil</string>
     <string name="username">Username</string>
+    <string name="title_download">Descarregados</string>
+    <string name="title_trails">Meus Percursos</string>
+    <string name="title_history">Histórico</string>
+    <string name="title_favorites">Favoritos</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
