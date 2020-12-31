@@ -1,8 +1,11 @@
 package com.example.trails.model;
 
+import android.graphics.Bitmap;
 import android.media.Image;
+import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,23 +13,37 @@ import java.util.List;
 
 public class Trail {
 
+    private String Id;
     private Characteristics characteristics;
     private ArrayList<Coordinates> coordinates;
-    private int userId;
-    private HashMap<Image, Coordinates> images; // rever
+    private String userId;
+    private HashMap<Image, Coordinates> imagesWithCoords;
+    private List<String> images;
     private float trailRating;
-    private List<Comment> listComments;
+    //private List<Comment> listComments;
 
-    public Trail(Characteristics characteristics, ArrayList<Coordinates> coordinates, int userId, HashMap<Image, Coordinates> images) {
+    public Trail(Characteristics characteristics, ArrayList<Coordinates> coordinates, String userId) {
         this.characteristics = characteristics;
         this.coordinates = coordinates;
         this.userId = userId;
-        this.images = images;
+        this.images = new ArrayList<>();
+        this.imagesWithCoords = new HashMap<>();
+        //listComments = new ArrayList<>();
     }
 
     public Trail(){
 
     }
+
+    @Exclude
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
     public Characteristics getCharacteristics() {
         return characteristics;
     }
@@ -43,19 +60,27 @@ public class Trail {
         this.coordinates = coordinates;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public HashMap<Image, Coordinates> getImages() {
+    public HashMap<Image, Coordinates> getImagesWithCoords() {
+        return imagesWithCoords;
+    }
+
+    public void setImagesWithCoords(HashMap<Image, Coordinates> imagesWithCoords) {
+        this.imagesWithCoords = imagesWithCoords;
+    }
+
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(HashMap<Image, Coordinates> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
@@ -63,7 +88,7 @@ public class Trail {
         return trailRating;
     }
 
-    public List<Comment> getListComments() {
+   /* public List<Comment> getListComments() {
         return listComments;
     }
 
@@ -82,7 +107,7 @@ public class Trail {
             rating += c.getRating();
         }
         trailRating = rating / numComments;
-    }
+    }*/
 
 }
 

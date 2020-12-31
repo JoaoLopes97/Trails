@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,24 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.Characteristics;
+import com.example.trails.model.Comment;
+import com.example.trails.model.Coordinates;
 import com.example.trails.model.TerrainType;
 import com.example.trails.model.Trail;
+import com.example.trails.model.TrailDifficulty;
+import com.example.trails.model.User;
+import com.example.trails.ui.Details.DetailsTrailFragment;
 import com.example.trails.ui.explore.RecyclerViewAdapter;
 import com.example.trails.ui.explore.TrailCard;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,10 +50,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
@@ -81,7 +98,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private int width = 5;
 
     private LocationRequest locationRequest;
-    private DB db;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -117,7 +135,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.start_fragment, container, false);
-
         startTrail = root.findViewById(R.id.startTrail);
         save = root.findViewById(R.id.saveTrail);
         clear = root.findViewById(R.id.clearTrail);
@@ -134,8 +151,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
         checkUserLocationPermission();
 
-
-        db = new DB();
 
         // Controla o intervalo de tempo entre cada pedido e a ACCURACY
         locationRequest = LocationRequest.create();
@@ -165,6 +180,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback);
                     running = false;
                 } else {
+                    if(distance == 0) kms.setText("0,0");
                     checkUserLocationPermission();
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                     chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
@@ -175,12 +191,18 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-             save.setOnClickListener(new View.OnClickListener() {
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Characteristics c = new Characteristics("name","desc",3.0f, TerrainType.ALTO,distance / 1000,SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
-                //Trail trail = new Trail(c,latLngs,1,null);
-                //db.insertData("trails",trail);
+                Characteristics c = new Characteristics("name", "desc", TrailDifficulty.Dificil, TerrainType.Alto, distance / 1000, SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
+                ArrayList<Coordinates> cd = new ArrayList<>();
+                for (LatLng lg : latLngs) {
+                    cd.add(new Coordinates(lg.latitude, lg.longitude));
+                }
+                Trail trail = new Trail(c, cd, "1");
+
+                InsertTrailFragment itt = new InsertTrailFragment(trail);
+                setFragment(R.id.insert_trail_frag,itt);
             }
         });
 
@@ -196,12 +218,11 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        //if not null
-        String str = getArguments().getString("id");
-        Trail t;
-        if(str != null){
-            t = db.retrieveData(str);
-            drawTrail(t);
+        if (getArguments() != null) {
+            String str = getArguments().getString("id");
+            if (str != null) {
+                loadTrail(str);
+            }
         }
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -257,12 +278,43 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         mAdapter.notifyDataSetChanged();
     }
 
-    private void drawTrail(Trail trail){
+    private void drawTrail(Trail trail) {
         System.out.println(trail);
-       /* map.moveCamera(CameraUpdateFactory.newLatLng(downloadedTrail.get(0)));
-        for (int i = 0; i < downloadedTrail.size(); i++) {
-            polylineOptions = new PolylineOptions().addAll(downloadedTrail).width(width);
+        Characteristics ch = trail.getCharacteristics();
+        kms.setText(String.format("%.2f", ch.getDistance()));
+
+        ArrayList<LatLng> latLngs = new ArrayList<>();
+        for (Coordinates lg : trail.getCoordinates()) {
+            latLngs.add(new LatLng(lg.getLatitude(), lg.getLongitude()));
+        }
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0),15));
+        map.addMarker(new MarkerOptions()
+                .position(latLngs.get(0)));
+        for (int i = 0; i < latLngs.size(); i++) {
+            polylineOptions = new PolylineOptions().addAll(latLngs).width(width).color(getResources().getColor(R.color.Green));
             polyline = map.addPolyline(polylineOptions);
-        }*/
+        }
+    }
+
+    private void setFragment(int layout, Fragment fragment) {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void loadTrail(String documentId) {
+        DocumentReference dc = db.collection("trails").document(documentId);
+
+        dc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Trail t = documentSnapshot.toObject(Trail.class);
+                    t.setId(documentSnapshot.getId());
+                    drawTrail(t);
+                }
+            }
+        });
     }
 }

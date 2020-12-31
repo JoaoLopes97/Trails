@@ -5,7 +5,7 @@ public class Characteristics {
     private String name;
     private String description;
 
-    private float difficulty;
+    private TrailDifficulty difficulty;
     private TerrainType terrainType;
 
     private float distance;
@@ -16,7 +16,7 @@ public class Characteristics {
     // mais caracteristicas
     // validações de null devem ser feitas na interface??
 
-    public Characteristics(String name, String description, float difficulty, TerrainType terrainType, float distance,float timeSpent) {
+    public Characteristics(String name, String description, TrailDifficulty difficulty, TerrainType terrainType, float distance, float timeSpent) {
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
@@ -44,11 +44,11 @@ public class Characteristics {
         this.description = description;
     }
 
-    public float getDifficulty() {
+    public TrailDifficulty getDifficulty() {
         return difficulty;
     }
 
-    public void setDifficulty(float difficulty) {
+    public void setDifficulty(TrailDifficulty difficulty) {
         this.difficulty = difficulty;
     }
 
