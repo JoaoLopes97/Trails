@@ -1,9 +1,7 @@
 package com.example.trails.ui.start;
 
 import android.Manifest;
-import android.content.ClipData;
 import android.content.Intent;
-import android.content.SyncStats;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,15 +11,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,20 +29,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
-import com.example.trails.controller.DB;
 import com.example.trails.model.Characteristics;
-import com.example.trails.model.Comment;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.TerrainType;
 import com.example.trails.model.Trail;
 import com.example.trails.model.TrailDifficulty;
-import com.example.trails.model.User;
-import com.example.trails.ui.Details.DetailsTrailFragment;
 import com.example.trails.ui.explore.RecyclerViewAdapter;
 import com.example.trails.ui.explore.TrailCard;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -61,10 +50,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -72,14 +58,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {

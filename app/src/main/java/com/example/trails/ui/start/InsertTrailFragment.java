@@ -32,7 +32,7 @@ import com.example.trails.model.ImageData;
 import com.example.trails.model.TerrainType;
 import com.example.trails.model.Trail;
 import com.example.trails.model.TrailDifficulty;
-import com.example.trails.ui.Details.DetailsTrailFragment;
+import com.example.trails.ui.details.DetailsTrailFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,8 +41,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 

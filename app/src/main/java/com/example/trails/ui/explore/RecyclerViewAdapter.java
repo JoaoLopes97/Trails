@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
-import com.example.trails.ui.Details.DetailsTrailFragment;
+import com.example.trails.ui.details.DetailsTrailFragment;
 
 import java.util.ArrayList;
 
