@@ -197,20 +197,25 @@
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/images_layout"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:orientation="horizontal">
+                    android:layout_height="150dp">
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:backgroundTint="@color/colorMenuSelected"
-                        android:text="+"
-                        android:id="@+id/images_btn"/>
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/images_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/images_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:backgroundTint="@color/colorMenuSelected"
+                            android:text="+" />
+                    </LinearLayout>
+                </ScrollView>
 
                 <Button
                     android:id="@+id/save_trail"
