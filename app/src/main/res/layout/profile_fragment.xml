@@ -186,7 +186,16 @@
                 android:layout_weight="0"
                 android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
 
+            <ImageButton
+                android:id="@+id/sign_out_menu"
+                android:title="@string/sign_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_login_24" />
+
         </LinearLayout>
+
+
 
         <View
             android:layout_width="match_parent"
