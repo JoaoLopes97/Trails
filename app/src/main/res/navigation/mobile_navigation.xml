@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_my_trails"
-        android:name="com.example.trails.ui.myTrails.MyTrailsFragment"
+        android:name="com.example.trails.ui.explore.ExploreFragment"
         android:label="@string/title_my_trails"
-        tools:layout="@layout/my_trails_fragment" />
+        tools:layout="@layout/explore_fragment" />
 
     <fragment
         android:id="@+id/nav_start"
@@ -28,10 +28,4 @@
         android:name="com.example.trails.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/profile_fragment" />
-    <fragment
-
-        android:id="@+id/nav_settings"
-        android:name="com.example.trails.ui.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/settings_fragment" />
 </navigation>
