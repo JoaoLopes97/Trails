@@ -1,4 +1,4 @@
-package com.example.trails.ui.Details;
+package com.example.trails.ui.details;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

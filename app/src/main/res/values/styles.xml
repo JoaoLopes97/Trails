@@ -18,4 +18,17 @@
         <item name="colorControlActivated">@color/Gold</item>
     </style>
 
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/colorMenuSelected</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">-10dp</item>
+        <item name="tabPaddingEnd">-10dp</item>
+        <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
+        <item name="tabSelectedTextColor">@color/colorMenuSelected</item>
+    </style>
+    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">10dp</item>
+        <item name="android:textColor">@color/Black</item>
+    </style>
+
 </resources>

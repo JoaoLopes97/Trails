@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
-import com.example.trails.ui.Details.DetailsTrailFragment;
+import com.example.trails.ui.details.DetailsTrailFragment;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
         view.setOnClickListener(mOnClickListener);
 
-        return  new ViewHolderNew(view);
+        return new ViewHolderNew(view);
     }
 
     @Override

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.start.StartFragment">
+    tools:context=".ui.start.StartFragment"
+    android:id="@+id/startFragment">
 
 
     <com.google.android.gms.maps.MapView
@@ -57,10 +58,10 @@
             android:id="@+id/clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
             android:format="00:00:00"
-            android:textSize="40dp"
-            android:layout_marginLeft="20dp"/>
+            android:gravity="center_horizontal"
+            android:textSize="40dp" />
     </LinearLayout>
 
 
@@ -77,8 +78,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/take_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_camera_alt_24"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trailCount"
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="invisible"/>
+
     <Button
-        android:id="@+id/save"
+        android:id="@+id/saveTrail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
@@ -91,7 +108,7 @@
         android:visibility="invisible"/>
 
     <Button
-        android:id="@+id/clear"
+        android:id="@+id/clearTrail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
