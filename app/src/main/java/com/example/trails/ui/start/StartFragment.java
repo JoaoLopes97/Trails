@@ -63,6 +63,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.trails.MainActivity.setFragment;
+
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
 
@@ -211,7 +213,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
                 trail.setImagesWithCoords(imagesWithCoords);
                 InsertTrailFragment itt = new InsertTrailFragment(trail);
-                setFragment(R.id.insert_trail_frag, itt);
+                setFragment(R.id.insert_trail_frag, itt,getActivity());
             }
         });
 
@@ -360,13 +362,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             polylineOptions = new PolylineOptions().addAll(latLngs).width(width).color(getResources().getColor(R.color.Green));
             polyline = map.addPolyline(polylineOptions);
         }
-    }
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     private void loadTrail(String documentId) {

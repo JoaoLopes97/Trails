@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.Characteristics;
@@ -65,7 +66,7 @@ public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.V
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setFragment(R.id.details_frag, new DetailsTrailFragment(trail));
+                    MainActivity.setFragment(R.id.details_frag, new DetailsTrailFragment(trail), (AppCompatActivity) context);
                 }
             });
 
@@ -82,21 +83,12 @@ public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.V
             txtLocationCard.setText(ch.getLocation().getAddress());
             txtRatingCard.setRating(trail.getTrailRating());
             //txtReviewsCard.setText(trail.getReviews() + " Reviews");
-            DB.loadWithGlide(context,trail.getImages().get(0),trailPhotoCard); // TODO caso n haja ir buscar foto com coords
+            DB.loadWithGlide(context, trail.getImages().get(0), trailPhotoCard); // TODO caso n haja ir buscar foto com coords
         }
 
         void setTrail(Trail trail) {
             this.trail = trail;
         }
-
-
     }
 
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 }

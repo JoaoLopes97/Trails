@@ -57,6 +57,7 @@ import java.util.UUID;
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 import static com.example.trails.MainActivity.db;
+import static com.example.trails.MainActivity.setFragment;
 import static com.example.trails.MainActivity.storage;
 
 public class InsertTrailFragment extends Fragment {
@@ -134,7 +135,7 @@ public class InsertTrailFragment extends Fragment {
                 saveTrail();
 
                 DetailsTrailFragment dt = new DetailsTrailFragment(trail);
-                setFragment(R.id.insert_trail_frag, dt);
+                setFragment(R.id.insert_trail_frag, dt,getActivity());
             }
         });
 
@@ -236,12 +237,5 @@ public class InsertTrailFragment extends Fragment {
                 });
             }
         });
-    }
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }

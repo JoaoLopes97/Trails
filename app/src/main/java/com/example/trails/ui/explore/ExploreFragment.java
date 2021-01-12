@@ -20,6 +20,7 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 
 import static com.example.trails.MainActivity.db;
+import static com.example.trails.MainActivity.setFragment;
 
 public class ExploreFragment extends Fragment {
 
@@ -37,7 +38,7 @@ public class ExploreFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.explore_fragment, container, false);
 
-        setFragment(R.id.explore_frag, new ListFragment());
+        setFragment(R.id.explore_frag, new ListFragment(),getActivity());
         viewMode = root.findViewById(R.id.view_mode);
         viewMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +57,7 @@ public class ExploreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!showingFilter) {
-                    setFragment(R.id.filter_frag, filterFragment);
+                    setFragment(R.id.filter_frag, filterFragment,getActivity());
                     filterLayout.setClickable(true);
                     showingFilter = true;
                 } else {
@@ -77,21 +78,14 @@ public class ExploreFragment extends Fragment {
             viewMode_Map = false;
 
             listFragment = new ListFragment();
-            setFragment(R.id.explore_frag, listFragment);
+            setFragment(R.id.explore_frag, listFragment,getActivity());
         } else {
             viewMode.setImageResource(R.drawable.ic_baseline_list_24);
             viewMode_Map = true;
 
             mapFragment = new MapFragment();
-            setFragment(R.id.explore_frag, mapFragment);
+            setFragment(R.id.explore_frag, mapFragment,getActivity());
         }
-    }
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     public void hideFilter() {

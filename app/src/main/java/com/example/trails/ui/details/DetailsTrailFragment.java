@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import static com.example.trails.MainActivity.db;
 import static android.content.ContentValues.TAG;
+import static com.example.trails.MainActivity.setFragment;
 
 public class DetailsTrailFragment extends Fragment {
 
@@ -41,10 +42,6 @@ public class DetailsTrailFragment extends Fragment {
     private ImageFlipperFragment imageFlipper;
 
     private LocalDB localDb;
-
-    public DetailsTrailFragment(String trailId) {
-        retrieveData(trailId);
-    }
 
     public DetailsTrailFragment(Trail trail) {
         this.trail = trail;
@@ -67,11 +64,14 @@ public class DetailsTrailFragment extends Fragment {
         time_spent = root.findViewById(R.id.time_spent);
         downloadWalk = root.findViewById(R.id.DownloadButton);
         startWalk = root.findViewById(R.id.StartButton);
-        setFragment(R.id.explore_details_frag, map);
+
+        setFragment(R.id.explore_details_frag, map, getActivity());
 
         fillFragment();
 
         localDb = new LocalDB(getContext());
+
+        setFragment(R.id.images_frag, new ImageFlipperFragment(trail.getImages(),trail.getImagesCoords()), getActivity());
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -79,7 +79,7 @@ public class DetailsTrailFragment extends Fragment {
                 bundle.putString("id", trail.getId()); // colocar id do document
                 StartFragment fragObj = new StartFragment();
                 fragObj.setArguments(bundle);
-                setFragment(R.id.nav_host_fragment, fragObj);
+                setFragment(R.id.nav_host_fragment, fragObj, getActivity());
             }
         });
 
@@ -101,29 +101,5 @@ public class DetailsTrailFragment extends Fragment {
         time_spent.setText(trailCh.getTimeSpent() + "seconds");
 
 
-    }
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    public void retrieveData(String trailId) {
-        DocumentReference dc = MainActivity.db.collection("trails").document(trailId);
-
-        dc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    trail = document.toObject(Trail.class);
-                    fillFragment();
-                } else {
-                    Log.w(TAG, "Error getting documents.", task.getException());
-                }
-            }
-        });
     }
 }
