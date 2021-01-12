@@ -7,7 +7,7 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".LoginActivity">
+    tools:context=".login.LoginActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,4 +43,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_login" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button_facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp" />
+
+
 </LinearLayout>

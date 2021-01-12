@@ -18,11 +18,16 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.trails.R;
 import com.example.trails.login.LoginActivity;
 import com.example.trails.login.RegistrationActivity;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileFragment extends Fragment {
 
     private ProfileViewModel profileViewModel;
+
+    private FirebaseAuth mAuth;
 
     private ImageButton logout;
 
@@ -37,9 +42,23 @@ public class ProfileFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
+               FirebaseAuth.getInstance().signOut();
+               LoginManager.getInstance().logOut();
+               //FirebaseUser user = mAuth.getCurrentUser();
+
+
+                /*AccessToken.setCurrentAccessToken(null);
+                if (LoginManager.getInstance() != null) {
+                    LoginManager.getInstance().logOut();
+                }*/
+
+
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
+
+
+
+
             }
         });
 

@@ -29,6 +29,10 @@
     <string name="btn_login">Login</string>
     <string name="btn_register">Register</string>
 
+    <string name="facebook_app_id">3691948064231784</string>
+    <string name="fb_login_protocol_scheme">fb3691948064231784</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
