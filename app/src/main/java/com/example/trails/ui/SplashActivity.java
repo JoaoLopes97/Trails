@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.trails.MainActivity;
 import com.example.trails.R;
+import com.example.trails.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -58,7 +59,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
             }
         }, 4000);

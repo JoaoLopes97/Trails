@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.trails.login.RegistrationActivity;
 import com.example.trails.ui.profile.ProfileFragment;
 
 import com.example.trails.login.SignIn;
@@ -33,27 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-
-    private FirebaseUser mFirebaseUser;
-    private String mUserName,mPhotoUrl;
-
-    private FirebaseAuth mFirebaseAuth;
-    private GoogleSignInClient mSignInClient;
-    private static final int RC_SIGN_IN = 123;
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-        if(user != null){
-            Intent intent = new Intent(getApplicationContext(), ProfileFragment.class);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_main);
 
         //toolbar = findViewById(R.id.toolbar);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -81,19 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
             }
         }*/
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
-        createRequest();
-
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
     }
 
-    /*@Override
+   /*@Override
    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
@@ -108,53 +83,4 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }*/
-
-    public void createRequest(){
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mSignInClient = GoogleSignIn.getClient(this, gso);
-    }
-
-    private void signIn() {
-        Intent signInIntent = mSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                // ...
-                Toast.makeText(this,e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                        }
-                        // ...
-                    }
-                });
-    }
 }
