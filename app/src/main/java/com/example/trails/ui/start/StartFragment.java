@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +31,11 @@ import com.example.trails.R;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
-import com.example.trails.model.TerrainType;
+import com.example.trails.model.Pair;
 import com.example.trails.model.Trail;
-import com.example.trails.model.TrailDifficulty;
-import com.example.trails.ui.explore.RecyclerViewAdapter;
+import com.example.trails.ui.explore.TrailAdapter;
 import com.example.trails.ui.explore.TrailCard;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -55,6 +54,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.io.File;
 import java.io.IOException;
@@ -146,11 +146,13 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         takePhoto = root.findViewById(R.id.take_photo);
 
         mRecyclerView = root.findViewById(R.id.my_recycler_view);
+        Query query = db.collection("trails").limit(50);
+        FirestoreRecyclerOptions<Trail> options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
 
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecyclerViewAdapter(getActivity(), recyclerList);
+        mAdapter = new TrailAdapter(options,getActivity());
         mRecyclerView.setAdapter(mAdapter);
         CreateTrailsCards();
 
@@ -201,12 +203,12 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Characteristics c = new Characteristics("name", "desc", TrailDifficulty.Dificil, TerrainType.Alto, distance / 1000, SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
+                Characteristics c = new Characteristics(null, null, null, null, distance / 1000, SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
                 ArrayList<Coordinates> cd = new ArrayList<>();
                 for (LatLng lg : latLngs) {
                     cd.add(new Coordinates(lg.latitude, lg.longitude));
                 }
-                Trail trail = new Trail(c, cd, "1");
+                Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
                 trail.setImagesWithCoords(imagesWithCoords);
                 InsertTrailFragment itt = new InsertTrailFragment(trail);
                 setFragment(R.id.insert_trail_frag, itt);

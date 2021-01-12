@@ -3,6 +3,8 @@ package com.example.trails.ui.start;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,10 +15,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,9 +28,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
+import com.example.trails.model.Pair;
 import com.example.trails.model.TerrainType;
 import com.example.trails.model.Trail;
 import com.example.trails.model.TrailDifficulty;
@@ -64,8 +68,6 @@ public class InsertTrailFragment extends Fragment {
     private RadioGroup trailType, trailDifficulty;
     private List<Pair<Uri, LatLng>> imageUris;
 
-    private long startTime;
-
     public InsertTrailFragment(Trail trail) {
         this.trail = trail;
     }
@@ -86,6 +88,19 @@ public class InsertTrailFragment extends Fragment {
         trailDifficulty = view.findViewById(R.id.trail_difficulty);
 
         imageUris = new ArrayList<>();
+
+        Geocoder geocoder = new Geocoder(getContext());
+        Coordinates startPoint = trail.getCoordinates().get(0);
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(startPoint.getLatitude(), startPoint.getLongitude(), 1);
+            Address addr = addresses.get(0);
+            String address = addr.getLocality() + ", " + addr.getAdminArea() + ", " + addr.getCountryName();
+
+            trail.getCharacteristics().setLocation(new com.example.trails.model.Address(address, startPoint.getLatitude(), startPoint.getLongitude()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for (Pair<ImageData, LatLng> img : trail.getImagesWithCoords()) {
             createNewImageView(img.first.getBitmap());
@@ -178,7 +193,8 @@ public class InsertTrailFragment extends Fragment {
         final List<UploadTask> uploadTasks = new LinkedList<>();
         final List<Task<Uri>> downloadUriTask = new LinkedList<>();
         for (final Pair<Uri, LatLng> image : imageUris) {
-            final StorageReference ref = storage.getReference().child("images/" + UUID.randomUUID().toString());
+            String imageName = UUID.randomUUID().toString();
+            final StorageReference ref = storage.getReference().child("images/" + imageName);
             UploadTask uploadFile = ref.putFile(image.first);
             uploadTasks.add(uploadFile);
             uploadFile.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -202,6 +218,7 @@ public class InsertTrailFragment extends Fragment {
                             trail.getImages().add(downloadURL);
                         } else {
                             trail.getImagesCoords().add(new Pair<>(downloadURL, new Coordinates(image.second.latitude, image.second.longitude)));
+
                         }
                     }
                 }
@@ -214,32 +231,12 @@ public class InsertTrailFragment extends Fragment {
                 Tasks.whenAllComplete(downloadUriTask).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
                     @Override
                     public void onComplete(@NonNull Task<List<Task<?>>> task) {
-                        insertTrail(trail);
+                        DB.insertTrail(trail);
                     }
                 });
             }
         });
     }
-
-    private void insertTrail(Object object) {
-
-        db.collection("trails")
-                .add(object)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-
-    }
-
 
     private void setFragment(int layout, Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

@@ -1,6 +1,7 @@
 package com.example.trails.ui.details;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
+import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
 import com.example.trails.ui.explore.MapFragment;
+import com.example.trails.ui.explore.TrailAdapter;
 import com.example.trails.ui.start.StartFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import static com.example.trails.MainActivity.db;
+import static android.content.ContentValues.TAG;
 
 public class DetailsTrailFragment extends Fragment {
 
@@ -25,11 +36,15 @@ public class DetailsTrailFragment extends Fragment {
     private RatingBar ratingBar;
     private ImageButton downloadWalk;
     private ImageButton startWalk;
-    private Trail trail;
+    public static Trail trail;
 
     private ImageFlipperFragment imageFlipper;
 
-    private DB db;
+    private LocalDB localDb;
+
+    public DetailsTrailFragment(String trailId) {
+        retrieveData(trailId);
+    }
 
     public DetailsTrailFragment(Trail trail) {
         this.trail = trail;
@@ -53,15 +68,15 @@ public class DetailsTrailFragment extends Fragment {
         downloadWalk = root.findViewById(R.id.DownloadButton);
         startWalk = root.findViewById(R.id.StartButton);
         setFragment(R.id.explore_details_frag, map);
-        if (trail != null) {
-            fillFragment();
-        }
-        db = new DB();
+
+        fillFragment();
+
+        localDb = new LocalDB(getContext());
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("id", "nZPmn3x9wj9VjBH9d4Og"); // colocar id do document
+                bundle.putString("id", trail.getId()); // colocar id do document
                 StartFragment fragObj = new StartFragment();
                 fragObj.setArguments(bundle);
                 setFragment(R.id.nav_host_fragment, fragObj);
@@ -70,7 +85,7 @@ public class DetailsTrailFragment extends Fragment {
 
         downloadWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // db.insertData();
+                localDb.storeTrail(trail, trail.getId());
             }
         });
 
@@ -93,5 +108,22 @@ public class DetailsTrailFragment extends Fragment {
         transaction.replace(layout, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void retrieveData(String trailId) {
+        DocumentReference dc = MainActivity.db.collection("trails").document(trailId);
+
+        dc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    trail = document.toObject(Trail.class);
+                    fillFragment();
+                } else {
+                    Log.w(TAG, "Error getting documents.", task.getException());
+                }
+            }
+        });
     }
 }

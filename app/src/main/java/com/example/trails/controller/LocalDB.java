@@ -1,6 +1,7 @@
 package com.example.trails.controller;
 
 import android.content.Context;
+
 import com.example.trails.model.Trail;
 import com.google.gson.Gson;
 
@@ -20,30 +21,30 @@ public class LocalDB {
     private Context context;
     private Gson gson = new Gson();
 
-    public LocalDB(Context context){
+    public LocalDB(Context context) {
         this.context = context;
     }
 
-    public String createJsonFile(Trail trail){
+    public String createJsonFile(Trail trail) {
         String jsonTrail = gson.toJson(trail);
         return jsonTrail;
     }
 
-    public void saveJsonFile(String trail, String trailName){
+    public void saveJsonFile(String trail, String trailName) {
         try {
             String trialFile = trail;
-            File file = new File(context.getFilesDir(), trailName);
+            File file = new File(context.getFilesDir(), "trail_" + trailName);
             FileWriter fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(trialFile);
             bufferedWriter.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     // Nome do ficheiro tem que começar por "trail_"
-    public void storeTrail(Trail trail, String trailName){
+    public void storeTrail(Trail trail, String trailName) {
         saveJsonFile(createJsonFile(trail), trailName);
     }
 
@@ -71,17 +72,17 @@ public class LocalDB {
         try {
             Trail trail = gson.fromJson(response, Trail.class);
             return trail;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Trail getTrail(String trailName){
+    public Trail getTrail(String trailName) {
         return parseTrail(readTrail(trailName));
     }
 
-    public void deleteTrial(String trailName){
+    public void deleteTrial(String trailName) {
         File file = new File(context.getFilesDir(), trailName);
         file.delete();
     }
@@ -90,7 +91,7 @@ public class LocalDB {
         String[] files = context.fileList();
         ArrayList<String> filesNames = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
-            if(files[i].startsWith("trail_")){
+            if (files[i].startsWith("trail_")) {
                 filesNames.add(files[i]);
             }
         }
