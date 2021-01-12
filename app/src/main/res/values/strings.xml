@@ -37,4 +37,9 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
 
+
+    <string name="msgError_emailPass">Preencha o email e/ou password!</string>
+    <string name="seccessRegister">Utilizador criado com sucesso!</string>
+    <string name="msgError">Erro ao registar utilizador, por favor tente novamente!</string>
+
 </resources>

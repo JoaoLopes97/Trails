@@ -10,9 +10,10 @@ public class User {
 
     private String name;
     private Date dateOfBirth;
+    private String idUser;
+    private String photo;
     private Location location; // Localização de residencia
 
-    //private String image; https://www.youtube.com/watch?v=7puuTDSf3pk
 
     private String email;
 
@@ -28,9 +29,30 @@ public class User {
         this.downloadRoutes = downloadRoutes;
     }
 
-    public User(String name, String email) {
+    public User(String name, String email, String idUser, String photo) {
         this.name = name;
         this.email = email;
+        this.idUser = idUser;
+        this.photo = photo;
+    }
+
+    public User() {
+    }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getName() {

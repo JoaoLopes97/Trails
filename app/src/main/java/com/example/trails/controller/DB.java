@@ -1,9 +1,12 @@
 package com.example.trails.controller;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.trails.model.Comment;
 import com.example.trails.model.Trail;
 import com.example.trails.model.User;
@@ -17,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Instant;
 import java.util.Map;
 
 import static android.content.ContentValues.TAG;
@@ -67,6 +71,17 @@ public class DB {
                 });
     }*/
 
+    public static void loadWithGlide(Context context, String imageUrl, ImageView imageView) {
+
+        // Download directly from StorageReference using Glide
+        // (See MyAppGlideModule for Loader registration)
+
+        Glide.with(context /* context */)
+                .load(imageUrl)
+                .into(imageView);
+        // [END storage_load_with_glide]
+    }
+    
     public Trail retrieveData(String str) {
         DocumentReference dc = db.collection("trails").document("nZPmn3x9wj9VjBH9d4Og");
 
