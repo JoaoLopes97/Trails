@@ -30,8 +30,13 @@
         <item name="android:textSize">10dp</item>
         <item name="android:textColor">@color/Black</item>
     </style>
-    
+
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.OutlinedBox" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="colorControlActivated">@color/Grey</item>
+    </style>
+
     <style name="EditProfileEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.AppTheme.TextInputEditText.OutlinedBox</item>
         <item name="boxStrokeColor">@color/LightGrey</item>
         <item name="hintTextColor">@color/Grey</item>
         <item name="color">@color/Grey</item>
