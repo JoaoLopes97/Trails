@@ -30,5 +30,12 @@
         <item name="android:textSize">10dp</item>
         <item name="android:textColor">@color/Black</item>
     </style>
+    
+    <style name="EditProfileEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/LightGrey</item>
+        <item name="hintTextColor">@color/Grey</item>
+        <item name="color">@color/Grey</item>
+        <item name="maxLines">1</item>
+    </style>
 
 </resources>
