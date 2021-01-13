@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.start.StartFragment">
+    tools:context=".ui.start.StartFragment"
+    android:id="@+id/test">
 
     <fragment
         android:id="@+id/map_start"
@@ -16,5 +17,10 @@
 
     <include layout="@layout/bottom_sheet_persistent"/>
 
+
+    <FrameLayout
+        android:id="@+id/insert_trail_frag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
