@@ -11,7 +11,7 @@ public class Characteristics {
     private float distance;
     private float timeSpent;
 
-    //private location
+    private Address location;
 
     // mais caracteristicas
     // validações de null devem ser feitas na interface??
@@ -26,8 +26,9 @@ public class Characteristics {
     }
 
     public Characteristics(){
-
     }
+
+
     public String getName() {
         return name;
     }
@@ -74,5 +75,13 @@ public class Characteristics {
 
     public void setTimeSpent(float timeSpent) {
         this.timeSpent = timeSpent;
+    }
+
+    public Address getLocation() {
+        return location;
+    }
+
+    public void setLocation(Address location) {
+        this.location = location;
     }
 }

@@ -10,29 +10,42 @@ import android.widget.ViewFlipper;
 import androidx.fragment.app.Fragment;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
+import com.example.trails.model.Coordinates;
+import com.example.trails.model.Pair;
 
-public class ImageFlipperFragment extends Fragment{
+import java.util.ArrayList;
+import java.util.List;
+
+public class ImageFlipperFragment extends Fragment {
     ViewFlipper viewFlipper;
 
-    int gallery_grid_Images[] = {R.drawable.sa1, R.drawable.sa2,
-            R.drawable.sa3, R.drawable.sa4};
+    public List<String> images;
+
+    public ImageFlipperFragment(List<String> images, List<Pair<String, Coordinates>> imagesCoords) {
+        this.images = images;
+        for (Pair<String, Coordinates> image : imagesCoords) {
+            this.images.add(image.first);
+        }
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.image_slider_fragment, container, false);
 
         viewFlipper = root.findViewById(R.id.v_flipperId);
 
-        for(int i=0; i<gallery_grid_Images.length; i++){
-            setFlipperImage(gallery_grid_Images[i]);
+        for (String image : images){
+            setFlipperImage(image);
         }
 
-        return root;
+            return root;
     }
 
-    private void setFlipperImage(int res) {
+    private void setFlipperImage(String imageUrl) {
         ImageView image = new ImageView(getContext());
-        image.setBackgroundResource(res);
+        DB.loadWithGlide(getContext(), imageUrl, image);
+        //image.setBackgroundResource(res);
         viewFlipper.addView(image);
         viewFlipper.setFlipInterval(4000);
         viewFlipper.setAutoStart(true);

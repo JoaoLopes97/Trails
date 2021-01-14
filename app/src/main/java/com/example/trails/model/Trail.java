@@ -3,7 +3,6 @@ package com.example.trails.model;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
-import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.Exclude;

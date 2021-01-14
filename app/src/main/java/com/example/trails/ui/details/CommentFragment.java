@@ -54,12 +54,4 @@ public class CommentFragment extends Fragment {
         comment = new Comment(4,"Miguel","Melhor Caminho que já fiz!");
         commentsList.add(comment);
     }
-
-    /*public void setFragment(Fragment fragment){
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.images_frag, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }*/
-
 }

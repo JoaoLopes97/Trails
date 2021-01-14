@@ -9,21 +9,27 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
+import com.example.trails.model.Trail;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
+import static com.example.trails.MainActivity.db;
+import static com.example.trails.MainActivity.setFragment;
+
 public class ExploreFragment extends Fragment {
 
-    //private ExploreViewModel exploreViewModel;
     private FloatingActionButton viewMode;
     private ListFragment listFragment;
     private MapFragment mapFragment;
     private FilterFragment filterFragment;
     private View filterLayout;
-    public static ArrayList<TrailCard> trailCards = new ArrayList<>();
+    public static ArrayList<Trail> trailCards = new ArrayList<>();
 
     private boolean viewMode_Map = false; // true if viewMode is Map, false if viewMode is List.
     private boolean showingFilter = false;
@@ -32,7 +38,7 @@ public class ExploreFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.explore_fragment, container, false);
 
-        setFragment(R.id.explore_frag, new ListFragment());
+        setFragment(R.id.explore_frag, new ListFragment(),getActivity());
         viewMode = root.findViewById(R.id.view_mode);
         viewMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +57,7 @@ public class ExploreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!showingFilter) {
-                    setFragment(R.id.filter_frag, filterFragment);
+                    setFragment(R.id.filter_frag, filterFragment,getActivity());
                     filterLayout.setClickable(true);
                     showingFilter = true;
                 } else {
@@ -61,24 +67,8 @@ public class ExploreFragment extends Fragment {
                 }
             }
         });
-        if (trailCards.isEmpty()) {
-            CreateTrailsCards();
-        }
 
         return root;
-    }
-
-    private void CreateTrailsCards() {
-        TrailCard trail = new TrailCard("Trilho da Arrabida", "Arrabida,Setubal,Portugal", (float) 4.5, 57, R.mipmap.portinho_arrabida_1);
-        trailCards.add(trail);
-        trail = new TrailCard("Trilho da Arrabida 2", "Arrabida,Setubal,Portugal", (float) 2, 358, R.mipmap.portinho_arrabida_2);
-        trailCards.add(trail);
-        trail = new TrailCard("Trilho da Arrabida 3", "Arrabida,Setubal,Portugal", (float) 3.5, 170, R.mipmap.portinho_arrabida_1);
-        trailCards.add(trail);
-        trail = new TrailCard("Trilho da Arrabida 4", "Arrabida,Setubal,Portugal", (float) 1, 3, R.mipmap.portinho_arrabida_2);
-        trailCards.add(trail);
-        trail = new TrailCard("Trilho da Arrabida 5", "Arrabida,Setubal,Portugal", (float) 5, 10, R.mipmap.portinho_arrabida_1);
-        trailCards.add(trail);
     }
 
     private void changeViewMode() {
@@ -88,21 +78,14 @@ public class ExploreFragment extends Fragment {
             viewMode_Map = false;
 
             listFragment = new ListFragment();
-            setFragment(R.id.explore_frag, listFragment);
+            setFragment(R.id.explore_frag, listFragment,getActivity());
         } else {
             viewMode.setImageResource(R.drawable.ic_baseline_list_24);
             viewMode_Map = true;
 
             mapFragment = new MapFragment();
-            setFragment(R.id.explore_frag, mapFragment);
+            setFragment(R.id.explore_frag, mapFragment,getActivity());
         }
-    }
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     public void hideFilter() {

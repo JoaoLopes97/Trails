@@ -111,14 +111,11 @@
 
             </LinearLayout>
 
-            <fragment
+            <FrameLayout
                 android:id="@+id/images_frag"
-                android:name="com.example.trails.ui.details.ImageFlipperFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:label="@string/trails_image"
-                tools:layout="@layout/image_slider_fragment" />
+                android:layout_margin="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
