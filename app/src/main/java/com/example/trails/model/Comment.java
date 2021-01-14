@@ -1,24 +1,46 @@
 package com.example.trails.model;
 
+import com.google.firebase.firestore.Exclude;
+
 public class Comment {
 
-    private User user;
+    private String Id;
+    private String trailId;
+    private String userId;
     private String comment;
     private float rating;
 
-    public Comment(User user, String comment, float rating) {
-        this.user = user;
+    public Comment(String trailId,String userId, String comment, float rating) {
+        this.trailId = trailId;
+        this.userId = userId;
         this.comment = comment;
         this.rating = rating;
     }
     public Comment(){}
 
-    public User getUser() {
-        return user;
+    @Exclude
+    public String getId() {
+        return Id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setId(String id) {
+        Id = id;
+    }
+
+    public String getTrailId() {
+        return trailId;
+    }
+
+    public void setTrailId(String trailId) {
+        this.trailId = trailId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getComment() {

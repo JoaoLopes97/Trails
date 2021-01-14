@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,13 @@ import android.widget.RadioGroup;
 
 import com.example.trails.R;
 import com.example.trails.model.Characteristics;
+import com.example.trails.model.Coordinates;
+import com.example.trails.model.ImageData;
 import com.example.trails.model.TerrainType;
 import com.example.trails.model.Trail;
 import com.example.trails.model.TrailDifficulty;
-import com.example.trails.ui.Details.DetailsTrailFragment;
+import com.example.trails.ui.details.DetailsTrailFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,8 +41,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -50,6 +52,8 @@ import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
+import static com.example.trails.MainActivity.db;
+import static com.example.trails.MainActivity.storage;
 
 public class InsertTrailFragment extends Fragment {
 
@@ -58,12 +62,9 @@ public class InsertTrailFragment extends Fragment {
     private LinearLayout linearLayout;
     private EditText trailName, trailDescription;
     private RadioGroup trailType, trailDifficulty;
-    private List<Uri> imageUris;
+    private List<Pair<Uri, LatLng>> imageUris;
 
     private long startTime;
-
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public InsertTrailFragment(Trail trail) {
         this.trail = trail;
@@ -84,6 +85,12 @@ public class InsertTrailFragment extends Fragment {
         trailType = view.findViewById(R.id.trail_type);
         trailDifficulty = view.findViewById(R.id.trail_difficulty);
 
+        imageUris = new ArrayList<>();
+
+        for (Pair<ImageData, LatLng> img : trail.getImagesWithCoords()) {
+            createNewImageView(img.first.getBitmap());
+            imageUris.add(new Pair<>(img.first.getUri(), img.second));
+        }
 
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +119,7 @@ public class InsertTrailFragment extends Fragment {
                 saveTrail();
 
                 DetailsTrailFragment dt = new DetailsTrailFragment(trail);
-                setFragment(R.id.insert_trail_frag,dt);
+                setFragment(R.id.insert_trail_frag, dt);
             }
         });
 
@@ -125,14 +132,12 @@ public class InsertTrailFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == RESULT_OK) {
-
-            imageUris = new ArrayList<>();
             ClipData clipData = data.getClipData();
             Uri imageUri;
             if (clipData != null) {
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     imageUri = clipData.getItemAt(i).getUri();
-                    imageUris.add(imageUri);
+                    imageUris.add(new Pair<Uri, LatLng>(imageUri, null));
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                         createNewImageView(bitmap);
@@ -142,7 +147,7 @@ public class InsertTrailFragment extends Fragment {
                 }
             } else {
                 imageUri = data.getData();
-                imageUris.add(imageUri);
+                imageUris.add(new Pair<Uri, LatLng>(imageUri, null));
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                     createNewImageView(bitmap);
@@ -172,9 +177,9 @@ public class InsertTrailFragment extends Fragment {
     private void saveTrail() {
         final List<UploadTask> uploadTasks = new LinkedList<>();
         final List<Task<Uri>> downloadUriTask = new LinkedList<>();
-        for (Uri imageUri : imageUris) {
+        for (final Pair<Uri, LatLng> image : imageUris) {
             final StorageReference ref = storage.getReference().child("images/" + UUID.randomUUID().toString());
-            UploadTask uploadFile = ref.putFile(imageUri);
+            UploadTask uploadFile = ref.putFile(image.first);
             uploadTasks.add(uploadFile);
             uploadFile.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -193,7 +198,11 @@ public class InsertTrailFragment extends Fragment {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         String downloadURL = downloadUri.toString();
-                        trail.getImages().add(downloadURL);
+                        if (image.second == null) {
+                            trail.getImages().add(downloadURL);
+                        } else {
+                            trail.getImagesCoords().add(new Pair<>(downloadURL, new Coordinates(image.second.latitude, image.second.longitude)));
+                        }
                     }
                 }
             });

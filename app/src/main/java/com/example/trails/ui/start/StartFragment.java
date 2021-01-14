@@ -1,13 +1,17 @@
 package com.example.trails.ui.start;
 
 import android.Manifest;
-import android.content.SyncStats;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,25 +22,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
-import com.example.trails.controller.DB;
 import com.example.trails.model.Characteristics;
-import com.example.trails.model.Comment;
 import com.example.trails.model.Coordinates;
+import com.example.trails.model.ImageData;
 import com.example.trails.model.TerrainType;
 import com.example.trails.model.Trail;
 import com.example.trails.model.TrailDifficulty;
-import com.example.trails.model.User;
-import com.example.trails.ui.Details.DetailsTrailFragment;
 import com.example.trails.ui.explore.RecyclerViewAdapter;
 import com.example.trails.ui.explore.TrailCard;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -50,19 +50,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
+import java.util.Date;
+import java.util.List;
 
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
@@ -79,7 +78,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private long pauseOffset;
     private boolean running;
 
-    private FloatingActionButton startTrail;
+    private FloatingActionButton startTrail, takePhoto;
     private Button save, clear;
     private TextView kms;
 
@@ -88,12 +87,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int Request_User_Location_Code = 99;
+    private static final int CAMERA_PIC_REQUEST = 1337;
+    private Uri cameraPhoto;
 
     private Polyline polyline = null;
     private PolylineOptions polylineOptions;
     private float distance;
     private ArrayList<LatLng> latLngs = new ArrayList<>();
 
+    private String currentImagePath;
+    private Uri currentImageUri;
+    private List<Pair<ImageData, LatLng>> imagesWithCoords;
     private Location lastLocation;
     private int width = 5;
 
@@ -139,6 +143,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         save = root.findViewById(R.id.saveTrail);
         clear = root.findViewById(R.id.clearTrail);
         kms = root.findViewById(R.id.num_km);
+        takePhoto = root.findViewById(R.id.take_photo);
 
         mRecyclerView = root.findViewById(R.id.my_recycler_view);
 
@@ -149,7 +154,9 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         mRecyclerView.setAdapter(mAdapter);
         CreateTrailsCards();
 
+        imagesWithCoords = new ArrayList<>();
         checkUserLocationPermission();
+        checkCameraPermission();
 
 
         // Controla o intervalo de tempo entre cada pedido e a ACCURACY
@@ -180,7 +187,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback);
                     running = false;
                 } else {
-                    if(distance == 0) kms.setText("0,0");
+                    if (distance == 0) kms.setText("0,0");
                     checkUserLocationPermission();
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                     chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
@@ -200,9 +207,9 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     cd.add(new Coordinates(lg.latitude, lg.longitude));
                 }
                 Trail trail = new Trail(c, cd, "1");
-
+                trail.setImagesWithCoords(imagesWithCoords);
                 InsertTrailFragment itt = new InsertTrailFragment(trail);
-                setFragment(R.id.insert_trail_frag,itt);
+                setFragment(R.id.insert_trail_frag, itt);
             }
         });
 
@@ -218,12 +225,37 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        takePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+               // if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    File imageFile = null;
+                    try {
+                        imageFile = getImage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //File file = new File(Environment.getExternalStorageDirectory(), "MyPhoto.jpg");
+                    if (imageFile != null) {
+                        Uri uri = FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
+                        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
+                        startActivityForResult(intent, CAMERA_PIC_REQUEST);
+                    }
+                //}
+                /*
+                chronometer.stop();
+                pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();*/
+            }
+        });
+
         if (getArguments() != null) {
             String str = getArguments().getString("id");
             if (str != null) {
                 loadTrail(str);
             }
         }
+
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -232,15 +264,38 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         return root;
     }
 
+    private File getImage() throws IOException {
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
+        String imageName = "jpg_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        File imageFile = File.createTempFile(imageName, ".jpg", storageDir);
+        currentImagePath = imageFile.getAbsolutePath();
+        return imageFile;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_PIC_REQUEST) {
+
+            Bitmap bitmap = BitmapFactory.decodeFile(currentImagePath);
+            Uri uri = Uri.fromFile(new File(currentImagePath));//FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", file);
+
+
+            imagesWithCoords.add(new Pair<>(new ImageData(uri, bitmap), latLngs.get(latLngs.size() - 1)));
+        }
+    }
+
     private void changeButtonStart() {
         if (!running) {
             startTrail.setImageResource(R.drawable.ic_baseline_pause_24);
             save.setVisibility(View.INVISIBLE);
             clear.setVisibility(View.INVISIBLE);
+            takePhoto.setVisibility(View.VISIBLE);
         } else {
             startTrail.setImageResource(R.drawable.ic_baseline_play_arrow_24);
             save.setVisibility(View.VISIBLE);
             clear.setVisibility(View.VISIBLE);
+            takePhoto.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -268,6 +323,15 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    public boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_PIC_REQUEST);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private void CreateTrailsCards() {
         TrailCard trail = new TrailCard("Trilho da Arrabida", "Arrabida,Setubal,Portugal", (float) 4.5, 57, R.mipmap.portinho_arrabida_1);
         recyclerList.add(trail);
@@ -287,7 +351,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         for (Coordinates lg : trail.getCoordinates()) {
             latLngs.add(new LatLng(lg.getLatitude(), lg.getLongitude()));
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0),15));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
         map.addMarker(new MarkerOptions()
                 .position(latLngs.get(0)));
         for (int i = 0; i < latLngs.size(); i++) {
