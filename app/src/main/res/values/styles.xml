@@ -46,5 +46,16 @@
         <item name="android:layout_marginTop">20dp</item>
     </style>
 
+    <style name="RegistarEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.AppTheme.TextInputEditText.OutlinedBox</item>
+        <item name="boxStrokeColor">@color/LightGrey</item>
+        <item name="hintTextColor">@color/Grey</item>
+        <item name="color">@color/Grey</item>
+        <item name="maxLines">1</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
 
 </resources>
