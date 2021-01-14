@@ -17,12 +17,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
 import static com.example.trails.MainActivity.db;
-import static com.example.trails.ui.explore.ExploreFragment.trailCards;
 
 public class ListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private FirestoreRecyclerAdapter<Trail, TrailAdapter.ViewHolder> mAdapter;
+    private FirestoreRecyclerAdapter<Trail, ExploreTrailAdapter.ViewHolder> mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -38,7 +37,7 @@ public class ListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TrailAdapter(options,getActivity());
+        mAdapter = new ExploreTrailAdapter(options,getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         return root;

@@ -41,14 +41,11 @@ public class DetailsTrailFragment extends Fragment {
 
     private ImageFlipperFragment imageFlipper;
 
-    private LocalDB localDb;
-
     public DetailsTrailFragment(Trail trail) {
         this.trail = trail;
     }
 
     public DetailsTrailFragment() {
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -69,23 +66,16 @@ public class DetailsTrailFragment extends Fragment {
 
         fillFragment();
 
-        localDb = new LocalDB(getContext());
-
-        setFragment(R.id.images_frag, new ImageFlipperFragment(trail.getImages(),trail.getImagesCoords()), getActivity());
-
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("id", trail.getId()); // colocar id do document
-                StartFragment fragObj = new StartFragment();
-                fragObj.setArguments(bundle);
-                setFragment(R.id.nav_host_fragment, fragObj, getActivity());
+                StartFragment fragObj = new StartFragment(trail);
+                setFragment(R.id.nav_host_fragment, fragObj);
             }
         });
 
         downloadWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                localDb.storeTrail(trail, trail.getId());
+                LocalDB.storeTrail(getContext(),trail, trail.getId());
             }
         });
 

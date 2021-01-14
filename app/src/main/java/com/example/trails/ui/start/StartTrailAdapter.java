@@ -1,4 +1,4 @@
-package com.example.trails.ui.explore;
+package com.example.trails.ui.start;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,35 +14,27 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
+import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
 import com.example.trails.ui.details.DetailsTrailFragment;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.example.trails.MainActivity.db;
-import static com.example.trails.MainActivity.storage;
+public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.ViewHolder>  {
 
-public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.ViewHolder> {
-
+    List<Trail> trails;
     Context context;
 
-    public TrailAdapter(@NonNull FirestoreRecyclerOptions<Trail> options, Context context) {
-        super(options);
+    public StartTrailAdapter(Context context, ArrayList<String> trailsNames) {
         this.context = context;
-    }
-
-    @Override
-    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Trail model) {
-        holder.setDetails(model);
-        holder.setTrail(model);
+        trails = new ArrayList<>();
+        for (String trailName : trailsNames){
+            trails.add(LocalDB.getTrail(context,trailName));
+        }
     }
 
     @NonNull
@@ -51,6 +43,18 @@ public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.V
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
 
         return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Trail trail = trails.get(position);
+        holder.trail = trail;
+        holder.setDetails();
+    }
+
+    @Override
+    public int getItemCount() {
+        return trails.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,7 +70,8 @@ public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.V
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.setFragment(R.id.details_frag, new DetailsTrailFragment(trail), (AppCompatActivity) context);
+                    StartFragment fragObj = new StartFragment(trail);
+                    setFragment(R.id.nav_host_fragment, fragObj);
                 }
             });
 
@@ -77,7 +82,7 @@ public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.V
             trailPhotoCard = itemView.findViewById(R.id.trail_photo);
         }
 
-        void setDetails(Trail trail) {
+        void setDetails() {
             Characteristics ch = trail.getCharacteristics();
             txtTrailNameCard.setText(ch.getName());
             txtLocationCard.setText(ch.getLocation().getAddress());
@@ -91,4 +96,10 @@ public class TrailAdapter extends FirestoreRecyclerAdapter<Trail, TrailAdapter.V
         }
     }
 
+    private void setFragment(int layout, Fragment fragment) {
+        FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+        transaction.replace(layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 }
