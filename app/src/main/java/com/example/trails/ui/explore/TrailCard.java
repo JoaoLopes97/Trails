@@ -8,7 +8,7 @@ public class TrailCard {
     private int reviews;
     private int photo;
 
-    public TrailCard(String trailName, String location, float rating, int reviews,int photo) {
+    public TrailCard(String trailName, String location, float rating, int reviews, int photo) {
         this.trailName = trailName;
         this.location = location;
         this.rating = rating;

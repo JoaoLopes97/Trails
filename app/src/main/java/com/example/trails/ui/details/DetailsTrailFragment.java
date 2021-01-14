@@ -1,7 +1,6 @@
 package com.example.trails.ui.details;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +10,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.example.trails.MainActivity;
 import com.example.trails.R;
-import com.example.trails.controller.DB;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
 import com.example.trails.ui.explore.MapFragment;
-import com.example.trails.ui.explore.TrailAdapter;
 import com.example.trails.ui.start.StartFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import static com.example.trails.MainActivity.db;
-import static android.content.ContentValues.TAG;
 import static com.example.trails.MainActivity.setFragment;
 
 public class DetailsTrailFragment extends Fragment {
@@ -69,13 +58,13 @@ public class DetailsTrailFragment extends Fragment {
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 StartFragment fragObj = new StartFragment(trail);
-                setFragment(R.id.nav_host_fragment, fragObj);
+                setFragment(R.id.nav_host_fragment, fragObj,getActivity());
             }
         });
 
         downloadWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LocalDB.storeTrail(getContext(),trail, trail.getId());
+                LocalDB.storeTrail(getContext(), trail, trail.getId());
             }
         });
 

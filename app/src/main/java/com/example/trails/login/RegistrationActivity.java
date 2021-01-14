@@ -33,10 +33,10 @@ import com.google.firebase.storage.UploadTask;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private static int REQUESCODE = 1 ;
-    private static int PReqCode = 1 ;
+    private static int REQUESCODE = 1;
+    private static int PReqCode = 1;
     private ImageView ImgUserPhoto;
-    private Uri pickedImgUri ;
+    private Uri pickedImgUri;
     private EditText email, password, username;
     private Button regBtn;
     private TextView msgError;
@@ -64,16 +64,14 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        ImgUserPhoto = findViewById(R.id.regUserPhoto) ;
+        ImgUserPhoto = findViewById(R.id.regUserPhoto);
 
         ImgUserPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Build.VERSION.SDK_INT >= 22) {
                     checkAndRequestForPermission();
-                }
-                else
-                {
+                } else {
                     openGallery();
                 }
             }
@@ -112,11 +110,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            msgError.setText(R.string.msgError);
-                        }
-                    });
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    msgError.setText(R.string.msgError);
+                }
+            });
         }
     }
 
@@ -157,31 +155,28 @@ public class RegistrationActivity extends AppCompatActivity {
         //TODO: open gallery intent and wait for user to pick an image !
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,REQUESCODE);
+        startActivityForResult(galleryIntent, REQUESCODE);
     }
 
     private void checkAndRequestForPermission() {
         if (ContextCompat.checkSelfPermission(RegistrationActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(RegistrationActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Toast.makeText(RegistrationActivity.this,"Please accept for required permission",Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
+                Toast.makeText(RegistrationActivity.this, "Please accept for required permission", Toast.LENGTH_SHORT).show();
+            } else {
                 ActivityCompat.requestPermissions(RegistrationActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PReqCode);
             }
-        }
-        else
+        } else
             openGallery();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUESCODE && data != null ) {
+        if (resultCode == RESULT_OK && requestCode == REQUESCODE && data != null) {
             // the user has successfully picked an image
             // we need to save its reference to a Uri variable
-            pickedImgUri = data.getData() ;
+            pickedImgUri = data.getData();
             ImgUserPhoto.setImageURI(pickedImgUri);
         }
     }

@@ -1,14 +1,15 @@
 package com.example.trails.ui.myTrails;
 
 import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.trails.R;
 
-public class PagerAdapter extends FragmentStatePagerAdapter  {
-   private Context context;
+public class PagerAdapter extends FragmentStatePagerAdapter {
+    private Context context;
 
     public PagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -28,7 +29,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter  {
     @Override
     public CharSequence getPageTitle(int position) {
 
-        switch(position){
+        switch (position) {
             case 0:
                 return context.getResources().getString(R.string.title_my_trails);
             case 1:
