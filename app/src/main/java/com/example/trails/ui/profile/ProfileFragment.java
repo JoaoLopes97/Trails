@@ -41,6 +41,16 @@ public class ProfileFragment extends Fragment {
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View root = inflater.inflate(R.layout.profile_fragment, container, false);
 
+        barraEditPerfil = root.findViewById(R.id.barraPerfil);
+
+        barraEditPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
         logout = root.findViewById(R.id.sign_out_menu);
 
         logout.setOnClickListener(new View.OnClickListener() {
