@@ -28,12 +28,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
+import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.explore.TrailAdapter;
+import com.example.trails.ui.explore.ExploreTrailAdapter;
 import com.example.trails.ui.explore.TrailCard;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -62,6 +63,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.trails.MainActivity.db;
 
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
@@ -101,9 +104,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private Location lastLocation;
     private int width = 5;
 
+    private Trail loadedTrail;
     private LocationRequest locationRequest;
-
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -136,6 +138,14 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
+    public StartFragment(Trail trail) {
+        loadedTrail = trail;
+    }
+
+    public StartFragment(){
+
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.start_fragment, container, false);
@@ -146,20 +156,16 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         takePhoto = root.findViewById(R.id.take_photo);
 
         mRecyclerView = root.findViewById(R.id.my_recycler_view);
-        Query query = db.collection("trails").limit(50);
-        FirestoreRecyclerOptions<Trail> options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
 
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TrailAdapter(options,getActivity());
+        mAdapter = new StartTrailAdapter(getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
         mRecyclerView.setAdapter(mAdapter);
-        CreateTrailsCards();
 
         imagesWithCoords = new ArrayList<>();
         checkUserLocationPermission();
         checkCameraPermission();
-
 
         // Controla o intervalo de tempo entre cada pedido e a ACCURACY
         locationRequest = LocationRequest.create();
@@ -231,38 +237,29 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-               // if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    File imageFile = null;
-                    try {
-                        imageFile = getImage();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //File file = new File(Environment.getExternalStorageDirectory(), "MyPhoto.jpg");
-                    if (imageFile != null) {
-                        Uri uri = FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
-                        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(intent, CAMERA_PIC_REQUEST);
-                    }
-                //}
+                File imageFile = null;
+                try {
+                    imageFile = getImage();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (imageFile != null) {
+                    Uri uri = FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
+                    intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
+                    startActivityForResult(intent, CAMERA_PIC_REQUEST);
+                }
                 /*
                 chronometer.stop();
                 pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();*/
             }
         });
 
-        if (getArguments() != null) {
-            String str = getArguments().getString("id");
-            if (str != null) {
-                loadTrail(str);
-            }
-        }
-
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         latLngs = new ArrayList<>();
+
         return root;
     }
 
@@ -278,10 +275,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_PIC_REQUEST) {
-
             Bitmap bitmap = BitmapFactory.decodeFile(currentImagePath);
             Uri uri = Uri.fromFile(new File(currentImagePath));//FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", file);
-
 
             imagesWithCoords.add(new Pair<>(new ImageData(uri, bitmap), latLngs.get(latLngs.size() - 1)));
         }
@@ -314,6 +309,10 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
         }
+
+        if (loadedTrail != null) {
+            drawTrail(loadedTrail);
+        }
     }
 
     public boolean checkUserLocationPermission() {
@@ -334,18 +333,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void CreateTrailsCards() {
-        TrailCard trail = new TrailCard("Trilho da Arrabida", "Arrabida,Setubal,Portugal", (float) 4.5, 57, R.mipmap.portinho_arrabida_1);
-        recyclerList.add(trail);
-        trail = new TrailCard("Trilho da Arrabida 4", "Arrabida,Setubal,Portugal", (float) 1, 3, R.mipmap.portinho_arrabida_2);
-        recyclerList.add(trail);
-        trail = new TrailCard("Trilho da Arrabida 5", "Arrabida,Setubal,Portugal", (float) 5, 10, R.mipmap.portinho_arrabida_1);
-        recyclerList.add(trail);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void drawTrail(Trail trail) {
-        System.out.println(trail);
+    public void drawTrail(Trail trail) {
         Characteristics ch = trail.getCharacteristics();
         kms.setText(String.format("%.2f", ch.getDistance()));
 

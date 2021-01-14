@@ -1,6 +1,5 @@
 package com.example.trails.controller;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
@@ -8,25 +7,10 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
-import com.example.trails.model.Comment;
 import com.example.trails.model.Trail;
-import com.example.trails.model.User;
-import com.example.trails.ui.details.DetailsTrailFragment;
-import com.example.trails.ui.explore.TrailAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.nio.InvalidMarkException;
-import java.util.List;
-import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 import static com.example.trails.MainActivity.db;

@@ -14,26 +14,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class LocalDB {
 
-    private Context context;
-    private Gson gson = new Gson();
+    private static Gson gson = new Gson();
 
-    public LocalDB(Context context) {
-        this.context = context;
-    }
-
-    public String createJsonFile(Trail trail) {
+    public static String createJsonFile(Trail trail) {
         String jsonTrail = gson.toJson(trail);
         return jsonTrail;
     }
 
-    public void saveJsonFile(String trail, String trailName) {
+    public static void saveJsonFile(Context context, String trail, String trailId) {
         try {
             String trialFile = trail;
-            File file = new File(context.getFilesDir(), "trail_" + trailName);
+
+            File file = new File(context.getFilesDir(), "trail_" + trailId);
             FileWriter fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(trialFile);
@@ -44,13 +44,13 @@ public class LocalDB {
     }
 
     // Nome do ficheiro tem que começar por "trail_"
-    public void storeTrail(Trail trail, String trailName) {
-        saveJsonFile(createJsonFile(trail), trailName);
+    public static void storeTrail(Context context, Trail trail, String trailId) {
+        saveJsonFile(context, createJsonFile(trail), trailId);
     }
 
-    public String readTrail(String nameTrail) {
+    public static String readTrail(Context context, String trailName) {
         try {
-            FileInputStream fis = context.openFileInput(nameTrail);
+            FileInputStream fis = context.openFileInput(trailName);
             InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(isr);
             StringBuilder sb = new StringBuilder();
@@ -68,7 +68,7 @@ public class LocalDB {
         }
     }
 
-    public Trail parseTrail(String response) {
+    public static Trail parseTrail(String response) {
         try {
             Trail trail = gson.fromJson(response, Trail.class);
             return trail;
@@ -78,16 +78,16 @@ public class LocalDB {
         return null;
     }
 
-    public Trail getTrail(String trailName) {
-        return parseTrail(readTrail(trailName));
+    public static Trail getTrail(Context context, String trailName) {
+        return parseTrail(readTrail(context, trailName));
     }
 
-    public void deleteTrial(String trailName) {
+    public static void deleteTrial(Context context, String trailName) {
         File file = new File(context.getFilesDir(), trailName);
         file.delete();
     }
 
-    public String getTrailsNameFromAssets() {
+    public static ArrayList<String> getTrailsNameFromAssets(Context context) {
         String[] files = context.fileList();
         ArrayList<String> filesNames = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
@@ -95,6 +95,6 @@ public class LocalDB {
                 filesNames.add(files[i]);
             }
         }
-        return filesNames.toString();
+        return filesNames;
     }
 }
