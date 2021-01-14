@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1004579954189",
+    "project_id": "fcul-cm-trails-2d017",
+    "storage_bucket": "fcul-cm-trails-2d017.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004579954189:android:be1b0e954094bbcbf57f44",
+        "android_client_info": {
+          "package_name": "com.example.trails"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004579954189-cglo5i2q9cqegpd970tccbq1s2sd1ivg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trails",
+            "certificate_hash": "e5a02d8904f2837360ee3ead8f1b3003f12fd6d1"
+          }
+        },
+        {
+          "client_id": "1004579954189-v8okvh01pariuk6m442ulilo2818j5n2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trails",
+            "certificate_hash": "2d13b37037f216e20e6b64c6a0e225c0f4c6b13a"
+          }
+        },
+        {
+          "client_id": "1004579954189-17emeqoui7n9cq1e597ppcj6732sd5gc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLONUEkXjJGiC4MhA0tn0MwW_KQh7BGWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004579954189-17emeqoui7n9cq1e597ppcj6732sd5gc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
