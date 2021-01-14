@@ -1,5 +1,7 @@
 package com.example.trails.ui;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -12,14 +14,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.trails.MainActivity;
 import com.example.trails.R;
+import com.example.trails.login.LoginActivity;
 import com.example.trails.login.RegistrationActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private ImageView topSplash, logo, bottomSplash;
+    private ImageView topSplash, logo,bottomSplash;
     private TextView textSplash;
     private CharSequence charSequence;
     private int index;
@@ -43,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         Animation animation1 = AnimationUtils.loadAnimation(this, R.anim.top_wave);
         topSplash.setAnimation(animation1);
 
-        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(logo, PropertyValuesHolder.ofFloat("scaleX", 1.2f), PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(logo, PropertyValuesHolder.ofFloat("scaleX",1.2f), PropertyValuesHolder.ofFloat("scaleY", 1.2f));
         objectAnimator.setDuration(500);
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
         objectAnimator.setRepeatMode(ValueAnimator.REVERSE);
@@ -69,17 +71,17 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void run() {
             textSplash.setText(charSequence.subSequence(0, index++));
-            if (index <= charSequence.length()) {
+            if(index<= charSequence.length()){
                 handler.postDelayed(runnable, delay);
             }
         }
     };
 
-    public void animateText(CharSequence cs) {
+    public void animateText (CharSequence cs){
         charSequence = cs;
-        index = 0;
+        index=0;
         textSplash.setText("");
         handler.removeCallbacks(runnable);
-        handler.postDelayed(runnable, delay);
+        handler.postDelayed(runnable,delay);
     }
 }

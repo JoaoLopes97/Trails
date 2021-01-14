@@ -37,7 +37,7 @@ public class ListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ExploreTrailAdapter(options, getActivity());
+        mAdapter = new ExploreTrailAdapter(options,getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         return root;
@@ -48,7 +48,6 @@ public class ListFragment extends Fragment {
         super.onStart();
         mAdapter.startListening();
     }
-
     @Override
     public void onStop() {
         super.onStop();

@@ -2,6 +2,7 @@ package com.example.trails.model;
 
 import android.location.Location;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -94,11 +95,11 @@ public class User {
         this.favoriteRoutes = favoriteRoutes;
     }
 
-    public void addFavoriteTrail(int trailId) {
+    public void addFavoriteTrail(int trailId){
         this.favoriteRoutes.add(trailId);
     }
 
-    public void removeFavoriteTrail(int trailId) {
+    public void removeFavoriteTrail(int trailId){
         this.favoriteRoutes.remove(trailId);
     }
 

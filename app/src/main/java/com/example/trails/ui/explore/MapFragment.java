@@ -1,6 +1,7 @@
 package com.example.trails.ui.explore;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +51,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.mMap = mMap;
     }
 
-    public void setLocation(float lat, float lon, String localName) {
-        LatLng local = new LatLng(lat, lon);
+    public void setLocation(float lat, float lon, String localName){
+        LatLng local = new LatLng(lat,lon);
         mMap.addMarker(new MarkerOptions()
                 .position(local)
                 .title(localName));

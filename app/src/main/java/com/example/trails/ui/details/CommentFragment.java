@@ -30,28 +30,28 @@ public class CommentFragment extends Fragment {
         return root;
     }
 
-    public void setButtons(View root) {
+    public void setButtons(View root){
         nameUser = root.findViewById(R.id.NameUser);
         ratingUser = root.findViewById(R.id.RatingUser);
         commentUser = root.findViewById(R.id.CommentUser);
     }
 
-    public void createComments() {
-        Comment comment = new Comment(3, "Ricardo", "Gostei muito!");
+    public void createComments(){
+        Comment comment = new Comment(3,"Ricardo","Gostei muito!");
         commentsList.add(comment);
-        comment = new Comment(5, "Teresa", "Melhor Caminho que já fiz!");
+        comment = new Comment(5,"Teresa","Melhor Caminho que já fiz!");
         commentsList.add(comment);
-        comment = new Comment(4, "Francisco", "Para repetir.");
+        comment = new Comment(4,"Francisco","Para repetir.");
         commentsList.add(comment);
-        comment = new Comment(4, "Daniel", "Gostei muito!");
+        comment = new Comment(4,"Daniel","Gostei muito!");
         commentsList.add(comment);
-        comment = new Comment(2, "Inês", "Melhor Caminho que já fiz!");
+        comment = new Comment(2,"Inês","Melhor Caminho que já fiz!");
         commentsList.add(comment);
-        comment = new Comment(1, "Tiago", "Para repetir.");
+        comment = new Comment(1,"Tiago","Para repetir.");
         commentsList.add(comment);
-        comment = new Comment(5, "Andreia", "Gostei muito!");
+        comment = new Comment(5,"Andreia","Gostei muito!");
         commentsList.add(comment);
-        comment = new Comment(4, "Miguel", "Melhor Caminho que já fiz!");
+        comment = new Comment(4,"Miguel","Melhor Caminho que já fiz!");
         commentsList.add(comment);
     }
 }

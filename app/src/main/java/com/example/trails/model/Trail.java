@@ -1,9 +1,15 @@
 package com.example.trails.model;
 
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.Exclude;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Trail {
@@ -12,8 +18,8 @@ public class Trail {
     private Characteristics characteristics;
     private ArrayList<Coordinates> coordinates;
     private String userId;
-    private List<Pair<ImageData, LatLng>> imagesWithCoords;
-    private List<Pair<String, Coordinates>> imagesCoords;
+    private List<Pair<ImageData,LatLng>> imagesWithCoords;
+    private List<Pair<String,Coordinates>> imagesCoords;
     private List<String> images;
     private float trailRating;
     //private List<Comment> listComments;
@@ -27,7 +33,7 @@ public class Trail {
         //listComments = new ArrayList<>();
     }
 
-    public Trail() {
+    public Trail(){
 
     }
 
@@ -65,19 +71,19 @@ public class Trail {
     }
 
     @Exclude
-    public List<Pair<ImageData, LatLng>> getImagesWithCoords() {
+    public List<Pair<ImageData,LatLng>> getImagesWithCoords() {
         return imagesWithCoords;
     }
 
-    public void setImagesWithCoords(List<Pair<ImageData, LatLng>> imagesWithCoords) {
+    public void setImagesWithCoords(List<Pair<ImageData,LatLng>> imagesWithCoords) {
         this.imagesWithCoords = imagesWithCoords;
     }
 
-    public List<Pair<String, Coordinates>> getImagesCoords() {
+    public List<Pair<String,Coordinates>> getImagesCoords() {
         return imagesCoords;
     }
 
-    public void setImagesCoords(List<Pair<String, Coordinates>> imagesCoords) {
+    public void setImagesCoords(List<Pair<String,Coordinates>> imagesCoords) {
         this.imagesCoords = imagesCoords;
     }
 

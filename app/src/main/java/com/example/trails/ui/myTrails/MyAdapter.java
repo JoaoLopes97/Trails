@@ -20,7 +20,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public CardView mCardView;
         public TextView mTextView;
-
         public MyViewHolder(View v) {
             super(v);
 

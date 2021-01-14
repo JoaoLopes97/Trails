@@ -10,15 +10,37 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 
 import com.example.trails.MainActivity;
 import com.example.trails.R;
+import com.example.trails.ui.explore.ExploreFragment;
+import com.facebook.FacebookSdk;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,12 +50,15 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText email, password;
+    private EditText emailTV, passwordTV;
     private Button loginBtn;
-    private LoginButton loginBtnFacebook;
+    private LoginButton  loginBtnFacebook;
     private ProgressBar progressBar;
 
     private Button loginRes;
@@ -100,8 +125,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         String email, password;
-        email = this.email.getText().toString();
-        password = this.password.getText().toString();
+        email = emailTV.getText().toString();
+        password = passwordTV.getText().toString();
 
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
@@ -122,7 +147,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                        } else {
+                        }
+                        else {
                             Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
                         }
@@ -131,8 +157,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void initializeUI() {
-        email = findViewById(R.id.emailLoginActivity);
-        password = findViewById(R.id.passwordLoginActivity);
+        emailTV = findViewById(R.id.emailLoginActivity);
+        passwordTV = findViewById(R.id.passwordLoginActivity);
 
         loginBtn = findViewById(R.id.loginLoginActivity);
         progressBar = findViewById(R.id.progressBarLoginActivity);
@@ -143,17 +169,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
+        if(currentUser != null){
             FirebaseUser user = mAuth.getCurrentUser();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         }
     }
+
+
+
+
+
+
+
+
+
 
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
