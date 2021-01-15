@@ -19,7 +19,7 @@
     <string name="btn_Save">Guardar</string>
     <string name="trails_image">Trail Images</string>
     <string name="trails_comment">Trail Comment</string>
-    <string name="ver_perfil">Ver Perfil</string>
+    <string name="editar_perfil">Editar Perfil</string>
     <string name="username">Username</string>
     <string name="title_download">Descarregados</string>
     <string name="title_trails">Meus Percursos</string>

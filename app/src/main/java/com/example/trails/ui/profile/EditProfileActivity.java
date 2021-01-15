@@ -1,6 +1,7 @@
 package com.example.trails.ui.profile;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -10,14 +11,25 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
+import com.example.trails.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,10 +37,14 @@ import java.util.Calendar;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private ImageView userImage;
+    private ImageView userPhoto;
+    private TextInputLayout editProfileNomeContainer;
     private TextInputLayout editProfileBirthdayContainer;
     private TextInputEditText editProfileBirthdayText;
     private DatePickerDialog.OnDateSetListener dataPickerListener;
+
+    private FirebaseFirestore fireStore;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +59,9 @@ public class EditProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Editar Perfil");
 
+        loadData(this.getBaseContext());
 
-        userImage = this.findViewById(R.id.UserImage);
-
-        userImage.setImageResource(R.mipmap.portrait_background);
+        userPhoto = findViewById(R.id.userPhoto);
 
         editProfileBirthdayContainer = findViewById(R.id.editProfileBirthday);
         editProfileBirthdayText = findViewById(R.id.editProfileBirthdayText);
@@ -100,9 +115,30 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
             }
-
-            ;
         });
 
     }
+
+    public void loadData(final Context context) {
+        fireStore = FirebaseFirestore.getInstance();
+
+        userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference df = fireStore.collection("users").document("iIiEW75WbSNdrAH1ycRzUC4zIMU2");
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User userObject = documentSnapshot.toObject(User.class);
+
+                DB.loadWithGlide(context, userObject.getPhoto(), userPhoto);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
+    }
+
+
 }
