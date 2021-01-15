@@ -105,7 +105,13 @@ public class ProfileFragment extends Fragment {
                 User userObject = documentSnapshot.toObject(User.class);
                 username.setText(userObject.getName());
 
-                DB.loadWithGlide(root.getContext(), userObject.getPhoto(), userPhoto);
+                if(userObject.getPhoto() == null) {
+                    userPhoto.setImageResource(R.drawable.ic_baseline_account_circle_24);
+                } else {
+                    DB.loadWithGlide(root.getContext(), userObject.getPhoto(), userPhoto);
+
+                }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
                     @Override

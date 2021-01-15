@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme.Fullscreen">
         <activity
             android:name=".ui.profile.EditProfileActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            ></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

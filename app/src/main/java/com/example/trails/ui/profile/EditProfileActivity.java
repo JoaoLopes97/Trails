@@ -1,15 +1,20 @@
 package com.example.trails.ui.profile;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.User;
@@ -30,11 +36,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.internal.InternalTokenProvider;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -47,12 +55,17 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputLayout editProfileNewPasswordContainer;
     private TextInputLayout editProfileNewPasswordConfContainer;
 
+    private Button buttonEditUser;
+
 
 
     private DatePickerDialog.OnDateSetListener dataPickerListener;
 
     private FirebaseFirestore fireStore;
-    private String userId;
+
+    private DocumentReference df;
+
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +80,13 @@ public class EditProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Editar Perfil");
 
-        loadData(this.getBaseContext());
+        context = this;
+
+        fireStore = FirebaseFirestore.getInstance();
+
+        String userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        df = fireStore.collection("users").document("iIiEW75WbSNdrAH1ycRzUC4zIMU2");
 
         userPhoto = findViewById(R.id.userPhoto);
         editProfileNomeContainer = findViewById(R.id.editProfileNome);
@@ -78,11 +97,15 @@ public class EditProfileActivity extends AppCompatActivity {
         editProfileNewPasswordContainer = findViewById(R.id.editProfileNewPassword);
         editProfileNewPasswordConfContainer = findViewById(R.id.editProfileNewPasswordConf);
 
+        buttonEditUser = findViewById(R.id.editButton);
+
+        loadUserData();
+
+
         dataPickerListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
-
                 String date = day + "/" + String.format("%01d", month) + "/" + year;
                 editProfileBirthdayText.setText(date);
             }
@@ -133,14 +156,24 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        buttonEditUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editUser();
+            }
+        });
+
     }
 
-    public void loadData(final Context context) {
-        fireStore = FirebaseFirestore.getInstance();
+    @Override
+    public boolean onSupportNavigateUp() {
 
-        userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        backMainActivityProfile();
 
-        DocumentReference df = fireStore.collection("users").document("iIiEW75WbSNdrAH1ycRzUC4zIMU2");
+        return super.onSupportNavigateUp();
+    }
+
+    public void loadUserData() {
 
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -162,6 +195,63 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
 
                 editProfileCityContainer.getEditText().setText(userObject.getCity());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
+    }
+
+
+
+    public void editUser() {
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User userObject = documentSnapshot.toObject(User.class);
+
+                String userName = editProfileNomeContainer.getEditText().getText().toString();
+                String email = editProfileEmailContainer.getEditText().getText().toString();
+                String dateBirthString = editProfileBirthdayContainer.getEditText().getText().toString();
+                Date dateBirth = null;
+                try {
+                    dateBirth = new SimpleDateFormat("dd/MM/yyyy").parse(dateBirthString);
+                } catch (Exception e) {
+                }
+
+                String city = editProfileCityContainer.getEditText().getText().toString();
+
+                String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString();
+                String newPasswordConf = editProfileNewPasswordConfContainer.getEditText().getText().toString();
+
+                final User editedUser = new User(userName, dateBirth, userObject.getLocation(), email, userObject.getFavoriteRoutes(), userObject.getDownloadRoutes(), city);
+
+
+                AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(context);
+
+                confirmationDialogBuilder.setTitle("Confirmação - Editar Perfil");
+                confirmationDialogBuilder.setMessage("Tem a certeza que pretende alterar o seu perfil?");
+
+                confirmationDialogBuilder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        df.set(editedUser);
+
+                        backMainActivityProfile();
+                    }
+                });
+
+                confirmationDialogBuilder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog confirmationDialog = confirmationDialogBuilder.create();
+                confirmationDialog.show();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -171,5 +261,10 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    public void backMainActivityProfile() {
+        Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+        intent.putExtra("profile", R.id.nav_profile);
+        startActivityForResult(intent, 1);
+    }
 
 }
