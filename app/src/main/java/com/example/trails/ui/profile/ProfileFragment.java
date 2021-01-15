@@ -15,9 +15,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.trails.R;
 import com.example.trails.login.LoginActivity;
+import com.example.trails.login.RegistrationActivity;
+import com.example.trails.model.User;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileFragment extends Fragment {
 
@@ -27,18 +35,19 @@ public class ProfileFragment extends Fragment {
     private ImageButton logout;
     private TextView username;
 
+    private FirebaseFirestore fireStore;
+
     private LinearLayout barraEditPerfil;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.profile_fragment, container, false);
 
-        userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        username = root.findViewById(R.id.usernameText);
-        username.setText("teste");
-
         barraEditPerfil = root.findViewById(R.id.barraPerfil);
+        username = root.findViewById(R.id.usernameText);
+
+        loadData();
+
 
         barraEditPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,5 +81,25 @@ public class ProfileFragment extends Fragment {
         });
 
         return root;
+    }
+
+    public void loadData() {
+        fireStore = FirebaseFirestore.getInstance();
+
+        userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference df = fireStore.collection("users").document(userId);
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User userObject = documentSnapshot.toObject(User.class);
+                username.setText(userObject.getName());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 }
