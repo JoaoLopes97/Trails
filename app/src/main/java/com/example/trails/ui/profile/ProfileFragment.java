@@ -109,7 +109,6 @@ public class ProfileFragment extends Fragment {
                     userPhoto.setImageResource(R.drawable.ic_baseline_account_circle_24);
                 } else {
                     DB.loadWithGlide(root.getContext(), userObject.getPhoto(), userPhoto);
-
                 }
 
             }

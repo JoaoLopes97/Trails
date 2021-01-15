@@ -22,6 +22,7 @@ import com.example.trails.R;
 import com.example.trails.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +38,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private static int PReqCode = 1;
     private ImageView ImgUserPhoto;
     private Uri pickedImgUri;
-    private EditText email, password, username;
+    private TextInputLayout email, password, passwordConf, username;
     private Button regBtn;
     private TextView msgError;
 
@@ -88,11 +89,21 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void registerNewUser() {
-        String email, password;
-        email = this.email.getText().toString().trim();
-        password = this.password.getText().toString().trim();
+        String email, password, passwordConf;
+        email = this.email.getEditText().getText().toString();
+        password = this.password.getEditText().getText().toString();
+        passwordConf = this.passwordConf.getEditText().getText().toString();
 
         //Verificar campos
+
+        if(email.isEmpty()) {
+            this.email.setError("Por favor insira um email");
+            if(!isValidEmail(email)) {
+                this.email.setError("Por favor insira um email válido.");
+            }
+        }
+
+
 
         if (email.isEmpty() || password.isEmpty()) {
             msgError.setText(R.string.msgError_emailPass);
@@ -130,7 +141,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         DocumentReference df = fireStore.collection("users").document(currentUser.getUid());
-                        User newUser = new User(username.getText().toString(), email.getText().toString(), currentUser.getUid(), uri.toString());
+                        User newUser = new User(username.getEditText().getText().toString(), email.getEditText().getText().toString(), currentUser.getUid(), uri.toString());
                         df.set(newUser);
                         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                         startActivity(intent);
@@ -145,6 +156,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void initializeUI() {
         email = findViewById(R.id.emailLogin);
         password = findViewById(R.id.passwordLogin);
+        passwordConf = findViewById(R.id.passwordLoginConf);
         regBtn = findViewById(R.id.registerLogin);
         msgError = findViewById(R.id.msgError);
         username = findViewById(R.id.username);
@@ -180,4 +192,10 @@ public class RegistrationActivity extends AppCompatActivity {
             ImgUserPhoto.setImageURI(pickedImgUri);
         }
     }
+
+    static boolean isValidEmail(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
+    }
+
 }

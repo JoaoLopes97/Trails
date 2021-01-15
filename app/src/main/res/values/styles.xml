@@ -43,7 +43,7 @@
         <item name="maxLines">1</item>
         <item name="android:layout_marginRight">30dp</item>
         <item name="android:layout_marginLeft">30dp</item>
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginTop">30dp</item>
     </style>
 
 

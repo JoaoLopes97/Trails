@@ -28,11 +28,16 @@ import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,6 +57,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputEditText editProfileBirthdayText;
     private TextInputLayout editProfileEmailContainer;
     private TextInputLayout editProfileCityContainer;
+    private TextInputLayout editProfileOldPasswordContainer;
     private TextInputLayout editProfileNewPasswordContainer;
     private TextInputLayout editProfileNewPasswordConfContainer;
 
@@ -66,6 +72,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private DocumentReference df;
 
     private Context context;
+
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +92,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
         fireStore = FirebaseFirestore.getInstance();
 
-        String userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        df = fireStore.collection("users").document("iIiEW75WbSNdrAH1ycRzUC4zIMU2");
+        String userId  = user.getUid();
+
+        df = fireStore.collection("users").document(userId);
 
         userPhoto = findViewById(R.id.userPhoto);
         editProfileNomeContainer = findViewById(R.id.editProfileNome);
@@ -94,6 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
         editProfileBirthdayContainer = findViewById(R.id.editProfileBirthday);
         editProfileBirthdayText = findViewById(R.id.editProfileBirthdayText);
         editProfileCityContainer = findViewById(R.id.editProfileCity);
+        editProfileOldPasswordContainer = findViewById(R.id.editProfileOldPassword);
         editProfileNewPasswordContainer = findViewById(R.id.editProfileNewPassword);
         editProfileNewPasswordConfContainer = findViewById(R.id.editProfileNewPasswordConf);
 
@@ -174,13 +185,16 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void loadUserData() {
-
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User userObject = documentSnapshot.toObject(User.class);
 
-                DB.loadWithGlide(context, userObject.getPhoto(), userPhoto);
+                if(userObject.getPhoto() == null) {
+                    userPhoto.setImageResource(R.drawable.ic_baseline_account_circle_24);
+                } else {
+                    DB.loadWithGlide(context, userObject.getPhoto(), userPhoto);
+                }
 
                 editProfileNomeContainer.getEditText().setText(userObject.getName());
                 editProfileEmailContainer.getEditText().setText(userObject.getEmail());
@@ -219,15 +233,45 @@ public class EditProfileActivity extends AppCompatActivity {
                 try {
                     dateBirth = new SimpleDateFormat("dd/MM/yyyy").parse(dateBirthString);
                 } catch (Exception e) {
+                    return;
                 }
 
                 String city = editProfileCityContainer.getEditText().getText().toString();
 
-                String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString();
+                String oldPassword = editProfileOldPasswordContainer.getEditText().getText().toString();
+                final String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString();
                 String newPasswordConf = editProfileNewPasswordConfContainer.getEditText().getText().toString();
 
-                final User editedUser = new User(userName, dateBirth, userObject.getLocation(), email, userObject.getFavoriteRoutes(), userObject.getDownloadRoutes(), city);
+                if (!oldPassword.equals("")) {
+                    if (newPassword.equals(newPasswordConf)) {
+                        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
+                        user.reauthenticate(credential)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        user.updatePassword(newPassword);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                editProfileOldPasswordContainer.setError("A password inserida não está correta.");
+                                return;
+                            }
+                        });
+                    } else {
+                        editProfileNewPasswordContainer.setError("As password inseridas não correspondem.");
+                        editProfileNewPasswordConfContainer.setError("As password inseridas não correspondem.");
+                        return;
+                    }
+                } else if (!newPassword.equals("") || !newPasswordConf.equals("")) {
+                    editProfileOldPasswordContainer.setError("Necessita de inserir a sua password atual.");
+                    editProfileNewPasswordContainer.setError("Necessita de inserir a sua password atual.");
+                    editProfileNewPasswordConfContainer.setError("Necessita de inserir a sua password atual.");
+                    return;
+                }
 
+                final User editedUser = new User(userName, dateBirth, userObject.getLocation(), email, userObject.getFavoriteRoutes(), userObject.getDownloadRoutes(), city);
 
                 AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(context);
 
@@ -260,6 +304,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
     }
+
 
     public void backMainActivityProfile() {
         Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);

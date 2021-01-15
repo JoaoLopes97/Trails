@@ -30,29 +30,8 @@
         android:layout_height="wrap_content"
         android:text="Register new account" />
 
-
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nome do Utilizador"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/emailLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email" />
-
-    <EditText
-        android:id="@+id/passwordLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword" />
-
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/username2"
+        android:id="@+id/username"
         style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,7 +45,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailLogin2"
+        android:id="@+id/emailLogin"
         style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,7 +59,23 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordLogin2"
+        android:id="@+id/passwordLogin"
+        style="@style/EditProfileEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        app:endIconMode="password_toggle"
+        app:layout_constraintTop_toBottomOf="@+id/UserImage">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLoginConf"
         style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
