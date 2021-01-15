@@ -10,13 +10,15 @@ public class Comment {
     private String comment;
     private float rating;
 
-    public Comment(String trailId,String userId, String comment, float rating) {
+    public Comment(String trailId, String userId, String comment, float rating) {
         this.trailId = trailId;
         this.userId = userId;
         this.comment = comment;
         this.rating = rating;
     }
-    public Comment(){}
+
+    public Comment() {
+    }
 
     @Exclude
     public String getId() {

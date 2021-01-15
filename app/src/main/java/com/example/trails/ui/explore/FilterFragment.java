@@ -1,20 +1,16 @@
 package com.example.trails.ui.explore;
 
-import android.media.Rating;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trails.R;
 import com.google.android.material.slider.LabelFormatter;

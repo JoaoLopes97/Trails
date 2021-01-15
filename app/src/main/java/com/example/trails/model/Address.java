@@ -7,7 +7,7 @@ public class Address {
     private double longitude;
 
 
-    public Address(String address,double latitude, double longitude) {
+    public Address(String address, double latitude, double longitude) {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;

@@ -11,9 +11,10 @@ public class Coordinates {
         this.longitude = longitude;
     }
 
-    public Coordinates(){
+    public Coordinates() {
 
     }
+
     public double getLatitude() {
         return latitude;
     }
@@ -30,7 +31,7 @@ public class Coordinates {
         this.longitude = longitude;
     }
 
-    public String toString(){
+    public String toString() {
         return "Longitude: " + getLongitude() + "- Latitude: " + getLatitude();
     }
 }

@@ -14,7 +14,6 @@ import com.example.trails.controller.DB;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImageFlipperFragment extends Fragment {
@@ -35,11 +34,11 @@ public class ImageFlipperFragment extends Fragment {
 
         viewFlipper = root.findViewById(R.id.v_flipperId);
 
-        for (String image : images){
+        for (String image : images) {
             setFlipperImage(image);
         }
 
-            return root;
+        return root;
     }
 
     private void setFlipperImage(String imageUrl) {

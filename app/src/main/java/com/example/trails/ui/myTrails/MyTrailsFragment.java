@@ -13,9 +13,8 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MyTrailsFragment extends Fragment {
 
-    private MyTrailsViewModel myTrailsViewModel;
     private ViewPager viewPager;
-    private TabLayout tabLayout ;
+    private TabLayout tabLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.my_trails_fragment, container, false);
