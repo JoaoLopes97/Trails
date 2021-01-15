@@ -28,9 +28,11 @@ public class User {
         this.city = city;
     }
 
-    public User(String name, String email, String idUser, String photo) {
+    public User(String name, String email, Date dateOfBirth, String city, String idUser, String photo) {
         this.name = name;
         this.email = email;
+        this.dateOfBirth = dateOfBirth;
+        this.city = city;
         this.idUser = idUser;
         this.photo = photo;
     }

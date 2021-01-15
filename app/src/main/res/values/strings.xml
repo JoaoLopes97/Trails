@@ -26,8 +26,8 @@
     <string name="title_history">Histórico</string>
     <string name="title_favorites">Favoritos</string>
 
-    <string name="btn_login">Login</string>
-    <string name="btn_register">Register</string>
+    <string name="btn_login">Entrar</string>
+    <string name="btn_register">Registar</string>
 
     <string name="facebook_app_id">3691948064231784</string>
     <string name="fb_login_protocol_scheme">fb3691948064231784</string>
@@ -42,8 +42,20 @@
     <string name="sign_up">Sign Up</string>
 
 
-    <string name="msgError_emailPass">Preencha o email e/ou password!</string>
+    <string name="msgError_fields">Preencha os restantes campos!</string>
     <string name="seccessRegister">Utilizador criado com sucesso!</string>
     <string name="msgError">Erro ao registar utilizador, por favor tente novamente!</string>
+    <string name="txtUsername">Nome de Utilizador</string>
+    <string name="txtEmail">Email</string>
+    <string name="txtPassword">Password</string>
+    <string name="txtBirthday">Data de Nascimento</string>
+    <string name="txtCity">Cidade</string>
+    <string name="txtTitleNewAccount">Registo</string>
+
+    <string name="errorUserName">Nome necessário</string>
+    <string name="errorUserEmail">Email necessário</string>
+    <string name="errorUserEmail1">Este email não é válido</string>
+    <string name="errorUserPassword">Password necessária</string>
+    <string name="errorUserPassword1">A password não é válida, deve ter mais de 5 caracteres</string>
 
 </resources>
