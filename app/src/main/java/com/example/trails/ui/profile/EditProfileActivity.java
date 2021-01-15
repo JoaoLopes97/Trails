@@ -271,7 +271,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                final User editedUser = new User(userName, dateBirth, userObject.getAddress(), email, userObject.getFavoriteRoutes(), userObject.getDownloadRoutes());
+                final User editedUser = new User(userName, dateBirth, userObject.getAddress(), email, userObject.getFavoriteTrails());
 
                 AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(context);
 

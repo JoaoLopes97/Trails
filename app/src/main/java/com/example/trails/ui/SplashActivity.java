@@ -15,7 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.trails.R;
-import com.example.trails.login.RegistrationActivity;
+import com.example.trails.ui.login.RegistrationActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
