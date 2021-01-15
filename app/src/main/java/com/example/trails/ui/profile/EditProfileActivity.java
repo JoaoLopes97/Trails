@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +42,13 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputLayout editProfileNomeContainer;
     private TextInputLayout editProfileBirthdayContainer;
     private TextInputEditText editProfileBirthdayText;
+    private TextInputLayout editProfileEmailContainer;
+    private TextInputLayout editProfileCityContainer;
+    private TextInputLayout editProfileNewPasswordContainer;
+    private TextInputLayout editProfileNewPasswordConfContainer;
+
+
+
     private DatePickerDialog.OnDateSetListener dataPickerListener;
 
     private FirebaseFirestore fireStore;
@@ -62,9 +70,13 @@ public class EditProfileActivity extends AppCompatActivity {
         loadData(this.getBaseContext());
 
         userPhoto = findViewById(R.id.userPhoto);
-
+        editProfileNomeContainer = findViewById(R.id.editProfileNome);
+        editProfileEmailContainer = findViewById(R.id.editProfileEmail);
         editProfileBirthdayContainer = findViewById(R.id.editProfileBirthday);
         editProfileBirthdayText = findViewById(R.id.editProfileBirthdayText);
+        editProfileCityContainer = findViewById(R.id.editProfileCity);
+        editProfileNewPasswordContainer = findViewById(R.id.editProfileNewPassword);
+        editProfileNewPasswordConfContainer = findViewById(R.id.editProfileNewPasswordConf);
 
         dataPickerListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -108,7 +120,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     sdf.parse(editProfileBirthdayContainer.getEditText().getText().toString());
                     editProfileBirthdayContainer.setError(null);
                 } catch (ParseException e) {
-                    editProfileBirthdayContainer.setError("A data inserida é inválida.");
+                    if (editProfileBirthdayContainer.getEditText().getText().toString().equals("")) {
+                        editProfileBirthdayContainer.setError(null);
+                    } else {
+                        editProfileBirthdayContainer.setError("A data inserida é inválida.");
+                    }
                 }
             }
 
@@ -132,6 +148,21 @@ public class EditProfileActivity extends AppCompatActivity {
                 User userObject = documentSnapshot.toObject(User.class);
 
                 DB.loadWithGlide(context, userObject.getPhoto(), userPhoto);
+
+                editProfileNomeContainer.getEditText().setText(userObject.getName());
+                editProfileEmailContainer.getEditText().setText(userObject.getEmail());
+
+                try {
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    String strDate = dateFormat.format(userObject.getDateOfBirth());
+                    editProfileBirthdayContainer.getEditText().setText(strDate);
+
+                } catch (Exception e) {
+                    editProfileBirthdayContainer.getEditText().setText("");
+                }
+
+                editProfileCityContainer.getEditText().setText(userObject.getCity());
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
