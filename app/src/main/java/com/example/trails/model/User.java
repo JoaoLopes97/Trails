@@ -1,7 +1,5 @@
 package com.example.trails.model;
 
-import android.location.Location;
-
 import java.util.Date;
 import java.util.List;
 
@@ -11,30 +9,29 @@ public class User {
     private Date dateOfBirth;
     private String idUser;
     private String photo;
-    private Location location; // Localização de residencia
-    private String city;
+    private Address address;
     private String email;
 
     private List<Integer> favoriteRoutes;
     private List<Integer> downloadRoutes;
 
-    public User(String name, Date dateOfBirth, Location location, String email, List<Integer> favoriteRoutes, List<Integer> downloadRoutes, String city) {
+    public User(String name, Date dateOfBirth, Address address, String email, List<Integer> favoriteRoutes, List<Integer> downloadRoutes) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
-        this.location = location;
+        this.address = address;
         this.email = email;
         this.favoriteRoutes = favoriteRoutes;
         this.downloadRoutes = downloadRoutes;
-        this.city = city;
     }
 
-    public User(String name, String email, Date dateOfBirth, String city, String idUser, String photo) {
+    public User(String name, String email, Date dateOfBirth, Address address, String idUser, String photo) {
         this.name = name;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
-        this.city = city;
         this.idUser = idUser;
         this.photo = photo;
+        this.address = address;
+
     }
 
     public User() {
@@ -72,12 +69,12 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Location getLocation() {
-        return location;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getEmail() {
@@ -113,10 +110,6 @@ public class User {
     }
 
     public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
+        return address.getAddress();
     }
 }

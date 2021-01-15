@@ -42,7 +42,7 @@
     <string name="sign_up">Sign Up</string>
 
 
-    <string name="msgError_fields">Preencha os restantes campos!</string>
+    <string name="msgError_fields">Verifique os campos!</string>
     <string name="seccessRegister">Utilizador criado com sucesso!</string>
     <string name="msgError">Erro ao registar utilizador, por favor tente novamente!</string>
     <string name="txtUsername">Nome de Utilizador</string>
@@ -57,5 +57,9 @@
     <string name="errorUserEmail1">Este email não é válido</string>
     <string name="errorUserPassword">Password necessária</string>
     <string name="errorUserPassword1">A password não é válida, deve ter mais de 5 caracteres</string>
+    <string name="errorBirthday">Data de nascimento necessária</string>
+    <string name="errorBirthday1">A data é superior à data atual</string>
+    <string name="errorCity">Cidade necessária</string>
+    <string name="errorCity1">Coloque uma cidade válida</string>
 
 </resources>

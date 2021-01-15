@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="30dp"
-    tools:context=".login.RegistrationActivity">
+    tools:context=".ui.login.RegistrationActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -84,7 +84,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtBirthday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:focusable="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -100,6 +101,7 @@
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/msgError"

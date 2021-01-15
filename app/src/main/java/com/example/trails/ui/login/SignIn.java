@@ -1,4 +1,4 @@
-package com.example.trails.login;
+package com.example.trails.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
