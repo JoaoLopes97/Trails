@@ -25,7 +25,7 @@ public class User {
         this.email = email;
         this.favoriteRoutes = favoriteRoutes;
         this.downloadRoutes = downloadRoutes;
-        this.cidade = cidade
+        this.cidade = cidade;
     }
 
     public User(String name, String email, String idUser, String photo) {
