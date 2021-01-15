@@ -12,20 +12,20 @@ public class User {
     private String idUser;
     private String photo;
     private Location location; // Localização de residencia
-    private String cidade;
+    private String city;
     private String email;
 
     private List<Integer> favoriteRoutes;
     private List<Integer> downloadRoutes;
 
-    public User(String name, Date dateOfBirth, Location location, String email, List<Integer> favoriteRoutes, List<Integer> downloadRoutes, String cidade) {
+    public User(String name, Date dateOfBirth, Location location, String email, List<Integer> favoriteRoutes, List<Integer> downloadRoutes, String city) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.location = location;
         this.email = email;
         this.favoriteRoutes = favoriteRoutes;
         this.downloadRoutes = downloadRoutes;
-        this.cidade = cidade;
+        this.city = city;
     }
 
     public User(String name, String email, String idUser, String photo) {
@@ -110,11 +110,11 @@ public class User {
         this.downloadRoutes = downloadRoutes;
     }
 
-    public String getCidade() {
-        return cidade;
+    public String getCity() {
+        return city;
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public void setCity(String city) {
+        this.city = city;
     }
 }
