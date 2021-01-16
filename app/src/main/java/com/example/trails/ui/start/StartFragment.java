@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,9 +33,7 @@ import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.explore.ExploreTrailAdapter;
 import com.example.trails.ui.explore.TrailCard;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -54,8 +51,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +60,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.trails.MainActivity.db;
-
 import static com.example.trails.MainActivity.setFragment;
 
 
@@ -120,9 +114,9 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 // Centrar e alterar zoom na posição
-                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                 // Apenas centrar na posição
-                map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                //map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
                 latLngs.add(latLng);
 
@@ -144,7 +138,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         loadedTrail = trail;
     }
 
-    public StartFragment(){
+    public StartFragment() {
 
     }
 
@@ -219,7 +213,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
                 trail.setImagesWithCoords(imagesWithCoords);
                 InsertTrailFragment itt = new InsertTrailFragment(trail);
-                setFragment(R.id.insert_trail_frag, itt,getActivity());
+                setFragment(R.id.insert_trail_frag, itt, getActivity());
             }
         });
 
@@ -279,7 +273,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == CAMERA_PIC_REQUEST) {
 
             Bitmap bitmap = BitmapFactory.decodeFile(currentImagePath);
-            Uri uri = Uri.fromFile(new File(currentImagePath));//FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", file);
+            Uri uri = Uri.fromFile(new File(currentImagePath));
 
 
             imagesWithCoords.add(new Pair<>(new ImageData(uri, bitmap), latLngs.get(latLngs.size() - 1)));
@@ -312,6 +306,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
+
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
 
         if (loadedTrail != null) {
