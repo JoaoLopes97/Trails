@@ -77,8 +77,6 @@ public class ProfileFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-
-
             }
         });
 
@@ -90,7 +88,7 @@ public class ProfileFragment extends Fragment {
 
         userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DocumentReference df = fireStore.collection("users").document("iIiEW75WbSNdrAH1ycRzUC4zIMU2");
+        DocumentReference df = fireStore.collection("users").document(userId);
 
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

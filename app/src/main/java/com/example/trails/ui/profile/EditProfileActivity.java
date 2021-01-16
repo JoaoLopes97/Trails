@@ -1,15 +1,20 @@
 package com.example.trails.ui.profile;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,15 +24,21 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
+import com.example.trails.model.Address;
 import com.example.trails.model.User;
+import com.example.trails.ui.login.LoginActivity;
+import com.example.trails.ui.login.RegistrationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,17 +53,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.internal.InternalTokenProvider;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     private ImageView userPhoto;
-    private TextInputLayout editProfileNomeContainer;
+    private TextInputLayout editProfileNameContainer;
     private TextInputLayout editProfileBirthdayContainer;
     private TextInputEditText editProfileBirthdayText;
     private TextInputLayout editProfileEmailContainer;
@@ -74,6 +90,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private Context context;
 
     private FirebaseUser user;
+    private Uri pickedImgUri;
+
+    private static int PReqCode = 1;
+    private static int REQUESCODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +119,7 @@ public class EditProfileActivity extends AppCompatActivity {
         df = fireStore.collection("users").document(userId);
 
         userPhoto = findViewById(R.id.userPhoto);
-        editProfileNomeContainer = findViewById(R.id.editProfileNome);
+        editProfileNameContainer = findViewById(R.id.editProfileNome);
         editProfileEmailContainer = findViewById(R.id.editProfileEmail);
         editProfileBirthdayContainer = findViewById(R.id.editProfileBirthday);
         editProfileBirthdayText = findViewById(R.id.editProfileBirthdayText);
@@ -111,6 +131,17 @@ public class EditProfileActivity extends AppCompatActivity {
         buttonEditUser = findViewById(R.id.editButton);
 
         loadUserData();
+
+        userPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= 22) {
+                    checkAndRequestForPermission();
+                } else {
+                    openGallery();
+                }
+            }
+        });
 
 
         dataPickerListener = new DatePickerDialog.OnDateSetListener() {
@@ -140,6 +171,44 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        editProfileNameContainer.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(editProfileNameContainer.getEditText().getText().toString().isEmpty()) {
+                    editProfileNameContainer.setError("Este campo é obrigatório.");
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        editProfileEmailContainer.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!isValidEmail(editProfileEmailContainer.getEditText().getText().toString())) {
+                    editProfileEmailContainer.setError("O email inserido não é válido.");
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
+
         editProfileBirthdayText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -147,7 +216,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //Check if data is valid
+                //Check if date is valid
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
                 sdf.setLenient(false);
                 try {
@@ -170,7 +239,25 @@ public class EditProfileActivity extends AppCompatActivity {
         buttonEditUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editUser();
+                // Confirm Edit
+
+                AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(context);
+                confirmationDialogBuilder.setTitle("Confirmação - Editar Perfil");
+                confirmationDialogBuilder.setMessage("Tem a certeza que pretende alterar o seu perfil?");
+                confirmationDialogBuilder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editUser();
+                    }
+                });
+                confirmationDialogBuilder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog confirmationDialog = confirmationDialogBuilder.create();
+                confirmationDialog.show();
+
             }
         });
 
@@ -196,7 +283,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     DB.loadWithGlide(context, userObject.getPhoto(), userPhoto);
                 }
 
-                editProfileNomeContainer.getEditText().setText(userObject.getName());
+                editProfileNameContainer.getEditText().setText(userObject.getName());
                 editProfileEmailContainer.getEditText().setText(userObject.getEmail());
 
                 try {
@@ -217,6 +304,14 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUESCODE && data != null) {
+            pickedImgUri = data.getData();
+            userPhoto.setImageURI(pickedImgUri);
+        }
+    }
 
 
     public void editUser() {
@@ -226,8 +321,10 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User userObject = documentSnapshot.toObject(User.class);
 
-                String userName = editProfileNomeContainer.getEditText().getText().toString();
+                String userName = editProfileNameContainer.getEditText().getText().toString();
+
                 String email = editProfileEmailContainer.getEditText().getText().toString();
+
                 String dateBirthString = editProfileBirthdayContainer.getEditText().getText().toString();
                 Date dateBirth = null;
                 try {
@@ -236,7 +333,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                String city = editProfileCityContainer.getEditText().getText().toString();
+                Address address = convertCityToAddress(editProfileCityContainer.getEditText().getText().toString());
 
                 String oldPassword = editProfileOldPasswordContainer.getEditText().getText().toString();
                 final String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString();
@@ -249,7 +346,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         user.updatePassword(newPassword);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -271,31 +367,17 @@ public class EditProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                final User editedUser = new User(userName, dateBirth, userObject.getAddress(), email, userObject.getFavoriteTrails());
+                if (userObject.getPhoto() != null) {
+                    pickedImgUri = Uri.parse(userObject.getPhoto());
+                }
 
-                AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(context);
+                if(pickedImgUri != null){
+                    updateUserInfo(pickedImgUri, user, userName, email, dateBirth, address);
+                }else{
+                    DB.insertUser(user, userName, email, dateBirth, address, null);
+                }
 
-                confirmationDialogBuilder.setTitle("Confirmação - Editar Perfil");
-                confirmationDialogBuilder.setMessage("Tem a certeza que pretende alterar o seu perfil?");
-
-                confirmationDialogBuilder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        df.set(editedUser);
-
-                        backMainActivityProfile();
-                    }
-                });
-
-                confirmationDialogBuilder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                AlertDialog confirmationDialog = confirmationDialogBuilder.create();
-                confirmationDialog.show();
+                backMainActivityProfile();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -310,6 +392,60 @@ public class EditProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
         intent.putExtra("profile", R.id.nav_profile);
         startActivityForResult(intent, 1);
+        finish();
+    }
+
+
+    static boolean isValidEmail(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
+    }
+
+    private Address convertCityToAddress(String userCity){
+        Geocoder geocoder = new Geocoder(getApplicationContext());
+        try {
+            List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
+            android.location.Address address = addresses.get(0);
+            Address userAddress = new Address(address.getLocality(), address.getLatitude(), address.getLongitude());
+            return userAddress;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void checkAndRequestForPermission() {
+        if (ContextCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(EditProfileActivity.this, "Please accept for required permission", Toast.LENGTH_SHORT).show();
+            } else {
+                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PReqCode);
+            }
+        } else
+            openGallery();
+    }
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, REQUESCODE);
+    }
+
+    private void updateUserInfo(Uri pickedImgUri, final FirebaseUser currentUser, final String name, final String email, final Date dateOfBirth, final Address address) {
+        StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
+        final StorageReference imageFilePath = mStorage.child(pickedImgUri.getLastPathSegment());
+        imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        DB.insertUser(currentUser, name, email, dateOfBirth, address, uri.toString());
+                    }
+                });
+            }
+        });
     }
 
 }
