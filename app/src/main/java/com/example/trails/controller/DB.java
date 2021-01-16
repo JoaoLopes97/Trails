@@ -7,15 +7,24 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.example.trails.model.Address;
 import com.example.trails.model.Trail;
+import com.example.trails.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.Date;
 
 import static android.content.ContentValues.TAG;
-import static com.example.trails.MainActivity.db;
 
 public class DB {
+
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public static void insertTrail(final Trail trail) {
 
@@ -42,5 +51,11 @@ public class DB {
         Glide.with(context)
                 .load(imageUrl)
                 .into(imageView);
+    }
+
+    public static void insertUser(final FirebaseUser currentUser, String name, String email, Date dateOfBirth, Address address, String photo){
+        DocumentReference df = db.collection("users").document(currentUser.getUid());
+        User newUser = new User(name, email, dateOfBirth, address , currentUser.getUid(), photo);
+        df.set(newUser);
     }
 }

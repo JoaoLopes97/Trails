@@ -1,11 +1,8 @@
 package com.example.trails;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,18 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Toolbar toolbar;
-
-    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public static FirebaseStorage storage = FirebaseStorage.getInstance();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

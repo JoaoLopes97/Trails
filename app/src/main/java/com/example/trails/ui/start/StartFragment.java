@@ -64,7 +64,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.trails.MainActivity.db;
+import static com.example.trails.controller.DB.*;
 
 import static com.example.trails.MainActivity.setFragment;
 
