@@ -220,11 +220,15 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                save.setVisibility(View.INVISIBLE);
+                clear.setVisibility(View.INVISIBLE);
                 latLngs.clear();
                 distance = 0;
-                kms.setText("0,0");
+                kms.setText("0,00");
                 chronometer.setBase(SystemClock.elapsedRealtime());
+                pauseOffset = 0;
                 lastLocation = null;
+                imagesWithCoords.clear();
                 map.clear();
             }
         });
