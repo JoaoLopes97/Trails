@@ -24,8 +24,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
 import com.example.trails.model.Address;
-import com.example.trails.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,8 +33,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -66,9 +64,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextView msgError;
 
     private Button loginRes;
-
     private FirebaseAuth mAuth;
-    private FirebaseFirestore fireStore;
 
 
     @Override
@@ -77,7 +73,6 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         mAuth = FirebaseAuth.getInstance();
-        fireStore = FirebaseFirestore.getInstance();
 
         initializeUI();
 
@@ -133,7 +128,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             if(pickedImgUri != null){
                                 updateUserInfo(pickedImgUri, user, name, email, birthday, address);
                             }else{
-                                createUser(user, name, email, birthday, address, null);
+                                DB.insertUser(user, name, email, birthday, address, null);
                                 Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -149,9 +144,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    // update user photo and name
     private void updateUserInfo(Uri pickedImgUri, final FirebaseUser currentUser, final String name, final String email, final Date dateOfBirth, final Address address) {
-        // first we need to upload user photo to firebase storage and get url
         StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
         final StorageReference imageFilePath = mStorage.child(pickedImgUri.getLastPathSegment());
         imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -160,7 +153,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        createUser(currentUser, name, email, dateOfBirth, address, uri.toString());
+                        DB.insertUser(currentUser, name, email, dateOfBirth, address, uri.toString());
                         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
@@ -168,13 +161,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
             }
         });
-
-    }
-
-    private void createUser(final FirebaseUser currentUser, String name, String email, Date dateOfBirth, Address address, String photo){
-        DocumentReference df = fireStore.collection("users").document(currentUser.getUid());
-        User newUser = new User(name, email, dateOfBirth, address , currentUser.getUid(), photo);
-        df.set(newUser);
     }
 
     private void initializeUI() {
