@@ -1,5 +1,7 @@
 package com.example.trails.model;
 
+import com.google.firebase.firestore.Exclude;
+
 import java.util.Date;
 import java.util.List;
 
@@ -99,6 +101,7 @@ public class User {
         this.favoriteTrails.remove(trailId);
     }
 
+    @Exclude
     public String getCity() {
         return address.getAddress();
     }
