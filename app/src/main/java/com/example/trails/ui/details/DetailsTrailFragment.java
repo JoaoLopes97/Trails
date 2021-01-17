@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.trails.R;
 import com.example.trails.controller.LocalDB;
@@ -17,6 +20,8 @@ import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
 import com.example.trails.ui.explore.MapFragment;
 import com.example.trails.ui.start.StartFragment;
+
+import java.io.Serializable;
 
 import static com.example.trails.MainActivity.setFragment;
 
@@ -27,6 +32,7 @@ public class DetailsTrailFragment extends Fragment {
     private ImageButton downloadWalk;
     private ImageButton startWalk;
     public static Trail trail;
+
 
     private ImageFlipperFragment imageFlipper;
 
@@ -57,8 +63,9 @@ public class DetailsTrailFragment extends Fragment {
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StartFragment fragObj = new StartFragment(trail);
-                setFragment(R.id.nav_host_fragment, fragObj,getActivity());
+                Bundle b = new Bundle();
+                b.putSerializable("trail",trail);
+                    Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.nav_start,b);
             }
         });
 

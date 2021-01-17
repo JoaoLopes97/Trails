@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
@@ -34,7 +35,6 @@ import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.explore.TrailCard;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -44,6 +44,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -55,6 +57,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,6 +103,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private Trail loadedTrail;
     private LocationRequest locationRequest;
     private CoordinatorLayout coordinatorLayout;
+
     LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -111,10 +115,9 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 // Centrar e alterar zoom na posição
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                 // Apenas centrar na posição
                 //map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
                 latLngs.add(latLng);
 
                 for (int i = 0; i < latLngs.size(); i++) {
@@ -131,17 +134,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public StartFragment(Trail trail) {
-        loadedTrail = trail;
-    }
-
     public StartFragment() {
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.start_fragment, container, false);
+
+
+        if(getArguments() != null) {
+            loadedTrail = (Trail) getArguments().getSerializable("trail");
+        }
         startTrail = root.findViewById(R.id.startTrail);
         save = root.findViewById(R.id.saveTrail);
         clear = root.findViewById(R.id.clearTrail);
@@ -154,7 +157,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new StartTrailAdapter(getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
+        mAdapter = new StartTrailAdapter(getContext(),getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
         imagesWithCoords = new ArrayList<>();
@@ -189,7 +192,9 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback);
                     running = false;
                 } else {
-                    if (distance == 0) kms.setText("0,0");
+                    if (distance == 0) {
+                        kms.setText("0,00");
+                    }
                     checkUserLocationPermission();
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                     chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
@@ -274,10 +279,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_PIC_REQUEST) {
-
             Bitmap bitmap = BitmapFactory.decodeFile(currentImagePath);
             Uri uri = Uri.fromFile(new File(currentImagePath));
-
 
             imagesWithCoords.add(new Pair<>(new ImageData(uri, bitmap), latLngs.get(latLngs.size() - 1)));
         }
@@ -309,12 +312,12 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
-
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
 
         if (loadedTrail != null) {
             drawTrail(loadedTrail);
+        } else {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
     }
 
@@ -337,20 +340,56 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void drawTrail(Trail trail) {
-        Characteristics ch = trail.getCharacteristics();
-        kms.setText(String.format("%.2f", ch.getDistance()));
 
         ArrayList<LatLng> latLngs = new ArrayList<>();
         for (Coordinates lg : trail.getCoordinates()) {
             latLngs.add(new LatLng(lg.getLatitude(), lg.getLongitude()));
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
-        map.addMarker(new MarkerOptions()
-                .position(latLngs.get(0)));
+
         for (int i = 0; i < latLngs.size(); i++) {
             polylineOptions = new PolylineOptions().addAll(latLngs).width(width).color(getResources().getColor(R.color.Green));
             polyline = map.addPolyline(polylineOptions);
         }
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 17));
+        map.addMarker(new MarkerOptions()
+                .position(latLngs.get(0)));
+        for (Pair<String, Coordinates> imageWithCoords : trail.getImagesCoords()) {
+            new RetrieveImagesTask().execute(imageWithCoords);
+        }
+    }
+
+    private class RetrieveImagesTask extends AsyncTask<Pair<String, Coordinates>, Void, Bitmap> {
+
+        private Exception exception;
+        private Coordinates coordinates;
+
+        @Override
+        protected Bitmap doInBackground(Pair<String, Coordinates>... pairs) {
+            try {
+                coordinates = pairs[0].second;
+                URL url = new URL(pairs[0].first);
+                Bitmap image = BitmapFactory.decodeStream(url.openStream());
+
+                return image;
+            } catch (Exception e) {
+                this.exception = e;
+                return null;
+            }
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            if (image != null) {
+                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons(image, 150, 200));
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
+                        .icon(bitmapDescriptor));
+            }
+        }
+    }
+
+    public Bitmap resizeMapIcons(Bitmap bitmap, int width, int height) {
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        return resizedBitmap;
     }
 
     private void loadTrail(String documentId) {

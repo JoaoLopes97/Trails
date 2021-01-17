@@ -1,6 +1,8 @@
 package com.example.trails.ui.start;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
@@ -19,21 +19,22 @@ import com.example.trails.controller.DB;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.details.DetailsTrailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.ViewHolder>  {
+public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.ViewHolder> {
 
     List<Trail> trails;
     Context context;
+    Activity activity;
 
-    public StartTrailAdapter(Context context, ArrayList<String> trailsNames) {
+    public StartTrailAdapter(Context context, Activity activity, ArrayList<String> trailsNames) {
         this.context = context;
+        this.activity = activity;
         trails = new ArrayList<>();
-        for (String trailName : trailsNames){
-            trails.add(LocalDB.getTrail(context,trailName));
+        for (String trailName : trailsNames) {
+            trails.add(LocalDB.getTrail(context, trailName));
         }
     }
 
@@ -70,8 +71,9 @@ public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StartFragment fragObj = new StartFragment(trail);
-                    setFragment(R.id.nav_host_fragment, fragObj);
+                    Bundle b = new Bundle();
+                    b.putSerializable("trail", trail);
+                    Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(R.id.nav_start, b);
                 }
             });
 
@@ -90,16 +92,5 @@ public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.Vi
             //txtReviewsCard.setText(trail.getReviews() + " Reviews");
             DB.loadWithGlide(context, trail.getImages().get(0), trailPhotoCard); // TODO caso n haja ir buscar foto com coords
         }
-
-        void setTrail(Trail trail) {
-            this.trail = trail;
-        }
-    }
-
-    private void setFragment(int layout, Fragment fragment) {
-        FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-        transaction.replace(layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }

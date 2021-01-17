@@ -3,10 +3,11 @@ package com.example.trails.model;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.Exclude;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Trail {
+public class Trail implements Serializable {
 
     private String Id;
     private Characteristics characteristics;
