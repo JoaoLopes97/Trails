@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/start_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.start.StartFragment"
-    android:id="@+id/test">
+    tools:context=".ui.start.StartFragment">
 
-    <fragment
-        android:id="@+id/map_start"
-        android:name="com.example.trails.ui.start.MapStart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/fragment_map_start"
-        />
+        <fragment
+            android:id="@+id/map_start"
+            android:name="com.example.trails.ui.start.MapStart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_map_start" />
 
-    <include layout="@layout/bottom_sheet_persistent"/>
+    <include layout="@layout/bottom_sheet_persistent" />
 
-
-    <FrameLayout
-        android:id="@+id/insert_trail_frag"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

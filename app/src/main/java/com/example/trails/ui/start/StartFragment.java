@@ -19,6 +19,7 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -65,12 +66,9 @@ import static com.example.trails.MainActivity.setFragment;
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
 
-    private StartViewModel mViewModel;
-
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<TrailCard> recyclerList = new ArrayList<>();
 
     //Chronometer
     private Chronometer chronometer;
@@ -81,13 +79,13 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private Button save, clear;
     private TextView kms;
 
+
     //MapView
     private MapView mapView;
     private GoogleMap map;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int Request_User_Location_Code = 99;
     private static final int CAMERA_PIC_REQUEST = 1337;
-    private Uri cameraPhoto;
 
     private Polyline polyline = null;
     private PolylineOptions polylineOptions;
@@ -95,14 +93,13 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<LatLng> latLngs = new ArrayList<>();
 
     private String currentImagePath;
-    private Uri currentImageUri;
     private List<Pair<ImageData, LatLng>> imagesWithCoords;
     private Location lastLocation;
     private int width = 5;
 
     private Trail loadedTrail;
     private LocationRequest locationRequest;
-
+    private CoordinatorLayout coordinatorLayout;
     LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -150,6 +147,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         clear = root.findViewById(R.id.clearTrail);
         kms = root.findViewById(R.id.num_km);
         takePhoto = root.findViewById(R.id.take_photo);
+        coordinatorLayout = (CoordinatorLayout) root;
 
         mRecyclerView = root.findViewById(R.id.my_recycler_view);
 
@@ -213,7 +211,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
                 trail.setImagesWithCoords(imagesWithCoords);
                 InsertTrailFragment itt = new InsertTrailFragment(trail);
-                setFragment(R.id.insert_trail_frag, itt, getActivity());
+                coordinatorLayout.removeAllViewsInLayout();
+                setFragment(R.id.start_fragment, itt, getActivity());
             }
         });
 
