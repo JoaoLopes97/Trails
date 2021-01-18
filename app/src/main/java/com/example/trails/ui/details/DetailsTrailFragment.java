@@ -15,7 +15,6 @@ import com.example.trails.R;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.explore.MapFragment;
 import com.example.trails.ui.start.StartFragment;
 
 import static com.example.trails.MainActivity.setFragment;
@@ -26,7 +25,7 @@ public class DetailsTrailFragment extends Fragment {
     private RatingBar ratingBar;
     private ImageButton downloadWalk;
     private ImageButton startWalk;
-    public static Trail trail;
+    public Trail trail;
 
     private ImageFlipperFragment imageFlipper;
 
@@ -41,7 +40,7 @@ public class DetailsTrailFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.details_fragment, container, false);
 
-        MapFragment map = new MapFragment();
+        //MapFragment map = new MapFragment(); Using this fragment will give an error, use another one or just an image
 
         titleWalk = root.findViewById(R.id.title_walk);
         ratingBar = root.findViewById(R.id.rating_bar);
@@ -51,14 +50,14 @@ public class DetailsTrailFragment extends Fragment {
         downloadWalk = root.findViewById(R.id.DownloadButton);
         startWalk = root.findViewById(R.id.StartButton);
 
-        setFragment(R.id.explore_details_frag, map, getActivity());
+        //setFragment(R.id.explore_details_frag, map, getActivity());
 
         fillFragment();
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 StartFragment fragObj = new StartFragment(trail);
-                setFragment(R.id.nav_host_fragment, fragObj,getActivity());
+                setFragment(R.id.nav_host_fragment, fragObj, getActivity());
             }
         });
 

@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trails.R;
-import com.example.trails.model.Trail;
+import com.example.trails.model.Coordinates;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.example.trails.MainActivity.setFragment;
 
@@ -24,7 +24,7 @@ public class ExploreFragment extends Fragment {
     private MapFragment mapFragment;
     private FilterFragment filterFragment;
     private View filterLayout;
-    public static ArrayList<Trail> trailCards = new ArrayList<>();
+    public static HashMap<String, Coordinates> trails = new HashMap<>();
 
     private boolean viewMode_Map = false; // true if viewMode is Map, false if viewMode is List.
     private boolean showingFilter = false;

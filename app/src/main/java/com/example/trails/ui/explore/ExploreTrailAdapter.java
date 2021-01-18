@@ -75,7 +75,15 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             txtLocationCard.setText(ch.getLocation().getAddress());
             txtRatingCard.setRating(trail.getTrailRating());
             //txtReviewsCard.setText(trail.getReviews() + " Reviews");
-            DB.loadWithGlide(context, trail.getImages().get(0), trailPhotoCard); // TODO caso n haja ir buscar foto com coords
+            String imageUrl = null;
+            if (trail.getImages() != null) {
+                imageUrl = trail.getImages().get(0);
+            } else if (trail.getImagesCoords() != null) {
+                imageUrl = trail.getImagesCoords().get(0).first;
+            }
+
+            if (imageUrl != null)
+                DB.loadWithGlide(context, trail.getImages().get(0), trailPhotoCard);
         }
     }
 }
