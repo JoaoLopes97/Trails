@@ -61,5 +61,7 @@
     <string name="errorBirthday1">A data é superior à data atual</string>
     <string name="errorCity">Cidade necessária</string>
     <string name="errorCity1">Coloque uma cidade válida</string>
+    <string name="photoTxt">Fotografia</string>
+    <string name="titleAccountLogin">Login</string>
 
 </resources>

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +21,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -31,10 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText email, password;
+    private TextInputLayout email, password;
     private Button loginBtn;
     private LoginButton loginBtnFacebook;
-    private ProgressBar progressBar;
 
     private Button loginRes;
 
@@ -42,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private CallbackManager mCallbackManager;
-    private FirebaseAuth mFirebaseAuth;
 
 
     @Override
@@ -97,11 +94,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginUserAccount() {
-        progressBar.setVisibility(View.VISIBLE);
-
         String email, password;
-        email = this.email.getText().toString();
-        password = this.password.getText().toString();
+        email = this.email.getEditText().getText().toString().trim();
+        password = this.password.getEditText().getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
@@ -118,13 +113,11 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
 
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {
                             Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -133,12 +126,8 @@ public class LoginActivity extends AppCompatActivity {
     public void initializeUI() {
         email = findViewById(R.id.emailLoginActivity);
         password = findViewById(R.id.passwordLoginActivity);
-
         loginBtn = findViewById(R.id.loginLoginActivity);
-        progressBar = findViewById(R.id.progressBarLoginActivity);
-
         loginRes = findViewById(R.id.loginRegisterBtn);
-
         loginBtnFacebook = findViewById(R.id.login_button_facebook);
     }
 

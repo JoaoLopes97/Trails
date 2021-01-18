@@ -6,51 +6,80 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="25dp"
     tools:context=".ui.login.LoginActivity">
 
-    <TextView
+
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Account login"/>
-    <EditText
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="30dp"></ImageView>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailLoginActivity"
+        style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email" />
+        android:hint="@string/txtEmail"
+        app:layout_constraintTop_toBottomOf="@+id/UserImage"
+        app:errorEnabled="true">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordLoginActivity"
+        style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword" />
+        android:hint="@string/txtPassword"
+        app:endIconMode="password_toggle"
+        app:errorEnabled="true"
+        app:layout_constraintTop_toBottomOf="@+id/UserImage">
 
-    <Button
-        android:id="@+id/loginLoginActivity"
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login" />
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginTop="25dp">
 
-    <ProgressBar
-        android:id="@+id/progressBarLoginActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/loginLoginActivity"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorMenuSelected"
+            android:text="@string/btn_login" />
 
-    <Button
-        android:id="@+id/loginRegisterBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_login" />
+        <Button
+            android:id="@+id/loginRegisterBtn"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorMenuSelected"
+            android:text="@string/btn_register" />
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button_facebook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button_facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+
+    </LinearLayout>
+
 
 
 </LinearLayout>

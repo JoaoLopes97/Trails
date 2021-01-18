@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.Address;
@@ -154,7 +155,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         DB.insertUser(currentUser, name, email, dateOfBirth, address, uri.toString());
-                        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
