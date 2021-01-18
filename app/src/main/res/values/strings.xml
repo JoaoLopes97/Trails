@@ -28,4 +28,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="title_location">Localização: </string>
+    <string name="title_distance">Distância: </string>
+    <string name="title_difficulty">Dificuldade: </string>
+    <string name="title_terrain">Tipo de Terreno: </string>
+    <string name="title_time">Tempo: </string>
 </resources>

@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_width="415dp"
-        android:layout_height="780dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,145 +25,336 @@
             <FrameLayout
                 android:id="@+id/explore_details_frag"
                 android:layout_width="match_parent"
-                android:layout_height="196dp">
+                android:layout_height="201dp">
 
             </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/title_walk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="10dp"
+                        android:textColor="@color/colorMenuSelected"
+                        android:layout_marginRight="15dp"/>
+
+                    <ImageButton
+                        android:id="@+id/DownloadButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_baseline_get_app_24"
+                        android:background="@android:color/transparent"/>
+                      </LinearLayout>
+
+
                 <TextView
-                    android:id="@+id/title_walk"
+                    android:id="@+id/trail_description"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="15sp"/>
 
-                <RatingBar
-                    android:id="@+id/rating_bar"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:isIndicator="true"
-                    android:numStars="5"
-                    android:rating="4.5"
-                    android:theme="@style/RatingBar" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/title_trail_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="center"
+                        android:text="@string/title_location"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                android:id="@+id/distance"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/trail_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:textSize="15sp"/>
+                </LinearLayout>
 
-                <TextView
-                android:id="@+id/time_spent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/title_trail_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:text="@string/title_distance"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/trail_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="center"
+                        android:textSize="15sp"/>
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="25dp">
+
+                    <ImageView
+                        android:id="@+id/title_trail_terrain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/ic_baseline_terrain_24"/>
+
+                    <TextView
+                        android:id="@+id/trail_terrain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="25dp">
+
+                    <ImageView
+                        android:id="@+id/title_trail_difficulty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/ic_baseline_fitness_center_24"/>
+
+                    <TextView
+                        android:id="@+id/trail_difficulty"
+                        android:layout_width="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_height="match_parent"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+                    <ImageView
+                        android:id="@+id/title_trail_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/time"/>
+
+                    <TextView
+                        android:id="@+id/trail_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/photosTrail"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">>
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="15dp">
 
-                <ImageButton
-                    android:id="@+id/DownloadButton"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="10dp"
-                    android:backgroundTint="@color/colorMenuSelected"
-                    android:outlineAmbientShadowColor="@color/Green"
-                    android:outlineSpotShadowColor="@color/Green"
-                    app:srcCompat="@android:drawable/stat_sys_download" />
+                <LinearLayout
+                    android:id="@+id/photosTitle"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_margin="10dp">
 
-                <ImageButton
-                    android:id="@+id/StartButton"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:backgroundTint="@color/colorMenuSelected"
-                    android:outlineAmbientShadowColor="@color/Green"
-                    android:outlineSpotShadowColor="@color/Green"
-                    app:srcCompat="@android:drawable/ic_media_play" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fotografias"
+                        android:layout_gravity="center"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginRight="5dp"/>
+
+                    <ImageView
+                        android:id="@+id/downPhoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/down"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/photosContent"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:id="@+id/images_frag"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/images_frag"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/ll_comments"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp" />
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="15dp">
 
-            <TextView
+                <LinearLayout
+                    android:id="@+id/commentsTitle"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_margin="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Comentários"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="35dp"/>
+
+                    <RatingBar
+                        android:id="@+id/trail_rating"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.1"
+                        android:theme="@style/RatingBar" />
+
+                    <ImageView
+                        android:id="@+id/iconComment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/down"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/commentsContent"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <fragment
+                        android:id="@+id/comment_frag1"
+                        android:name="com.example.trails.ui.details.CommentFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:label="@string/trails_comment"
+                        tools:layout="@layout/comments_fragment" />
+
+                    <fragment
+                        android:id="@+id/comment_frag2"
+                        android:name="com.example.trails.ui.details.CommentFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:label="@string/trails_comment"
+                        tools:layout="@layout/comments_fragment" />
+
+                    <fragment
+                        android:id="@+id/comment_frag3"
+                        android:name="com.example.trails.ui.details.CommentFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:label="@string/trails_comment"
+                        tools:layout="@layout/comments_fragment" />
+
+                    <fragment
+                        android:id="@+id/comment_frag4"
+                        android:name="com.example.trails.ui.details.CommentFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:label="@string/trails_comment"
+                        tools:layout="@layout/comments_fragment" />
+
+                    <fragment
+                        android:id="@+id/comment_frag5"
+                        android:name="com.example.trails.ui.details.CommentFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:label="@string/trails_comment"
+                        tools:layout="@layout/comments_fragment" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/StartButton"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Comentários"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:layout_marginTop="25dp"
+                android:backgroundTint="@color/colorMenuSelected"
+                android:drawableTint="@color/White"
+                android:drawableLeft="@drawable/ic_baseline_play_arrow_24"
+                android:text="Começar Trilho"/>
+        </LinearLayout>
 
-            <fragment
-                android:id="@+id/comment_frag1"
-                android:name="com.example.trails.ui.details.CommentFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:label="@string/trails_comment"
-                tools:layout="@layout/comments_fragment" />
 
-            <fragment
-                android:id="@+id/comment_frag2"
-                android:name="com.example.trails.ui.details.CommentFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:label="@string/trails_comment"
-                tools:layout="@layout/comments_fragment" />
-
-            <fragment
-                android:id="@+id/comment_frag3"
-                android:name="com.example.trails.ui.details.CommentFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:label="@string/trails_comment"
-                tools:layout="@layout/comments_fragment" />
-
-            <fragment
-                android:id="@+id/comment_frag4"
-                android:name="com.example.trails.ui.details.CommentFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:label="@string/trails_comment"
-                tools:layout="@layout/comments_fragment" />
-
-            <fragment
-                android:id="@+id/comment_frag5"
-                android:name="com.example.trails.ui.details.CommentFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:label="@string/trails_comment"
-                tools:layout="@layout/comments_fragment" />
 
 
         </LinearLayout>
