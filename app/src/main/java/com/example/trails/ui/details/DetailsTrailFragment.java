@@ -29,12 +29,9 @@ public class DetailsTrailFragment extends Fragment {
     private LinearLayout commentsTitle, commentsContent, photosTitle, photosContent;
     private RatingBar ratingBar;
     private ImageButton downloadWalk;
-    private ImageButton startWalk;
+    private Button startWalk;
     public Trail trail;
     private ImageFlipperFragment imageFlipper;
-    private Button startWalk;
-
-
     private LocalDB localDb;
 
     public DetailsTrailFragment(Trail trail) {
@@ -63,6 +60,7 @@ public class DetailsTrailFragment extends Fragment {
 
         MapDraw mapDraw = new MapDraw(trail);
         setFragment(R.id.map_fragment, mapDraw, getActivity());
+
         commentsTitle = root.findViewById(R.id.commentsTitle);
         commentsContent = root.findViewById(R.id.commentsContent);
 
@@ -90,8 +88,6 @@ public class DetailsTrailFragment extends Fragment {
                 }
             }
         });
-
-        setFragment(R.id.explore_details_frag, map, getActivity());
 
         fillFragment();
 
