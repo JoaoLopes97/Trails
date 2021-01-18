@@ -1,7 +1,6 @@
 package com.example.trails.ui.details;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +13,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.example.trails.MainActivity;
 import com.example.trails.R;
-import com.example.trails.controller.DB;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.explore.MapFragment;
-import com.example.trails.ui.explore.TrailAdapter;
 import com.example.trails.ui.start.StartFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.android.gms.maps.MapView;
 
-import static com.example.trails.MainActivity.db;
-import static android.content.ContentValues.TAG;
 import static com.example.trails.MainActivity.setFragment;
 
 public class DetailsTrailFragment extends Fragment {
@@ -40,8 +29,10 @@ public class DetailsTrailFragment extends Fragment {
     private LinearLayout commentsTitle, commentsContent, photosTitle, photosContent;
     private RatingBar ratingBar;
     private ImageButton downloadWalk;
+    private ImageButton startWalk;
+    public Trail trail;
+    private ImageFlipperFragment imageFlipper;
     private Button startWalk;
-    public static Trail trail;
 
 
     private LocalDB localDb;
@@ -58,7 +49,6 @@ public class DetailsTrailFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.details_fragment, container, false);
 
-        MapFragment map = new MapFragment();
 
         titleWalk = root.findViewById(R.id.title_walk);
         ratingBar = root.findViewById(R.id.trail_rating);
@@ -71,6 +61,8 @@ public class DetailsTrailFragment extends Fragment {
         downloadWalk = root.findViewById(R.id.DownloadButton);
         startWalk = root.findViewById(R.id.StartButton);
 
+        MapDraw mapDraw = new MapDraw(trail);
+        setFragment(R.id.map_fragment, mapDraw, getActivity());
         commentsTitle = root.findViewById(R.id.commentsTitle);
         commentsContent = root.findViewById(R.id.commentsContent);
 
@@ -105,7 +97,7 @@ public class DetailsTrailFragment extends Fragment {
 
         localDb = new LocalDB(getContext());
 
-        setFragment(R.id.images_frag, new ImageFlipperFragment(trail.getImages(),trail.getImagesCoords()), getActivity());
+        setFragment(R.id.images_frag, new ImageFlipperFragment(trail.getImages(), trail.getImagesCoords()), getActivity());
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

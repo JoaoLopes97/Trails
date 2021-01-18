@@ -23,9 +23,9 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:id="@+id/explore_details_frag"
+                android:id="@+id/map_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="201dp">
+                android:layout_height="196dp">
 
             </FrameLayout>
 
