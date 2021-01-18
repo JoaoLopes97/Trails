@@ -197,7 +197,7 @@
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
-                <ScrollView
+                <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="150dp">
 
@@ -215,7 +215,7 @@
                             android:backgroundTint="@color/colorMenuSelected"
                             android:text="+" />
                     </LinearLayout>
-                </ScrollView>
+                </HorizontalScrollView>
 
                 <Button
                     android:id="@+id/save_trail"
