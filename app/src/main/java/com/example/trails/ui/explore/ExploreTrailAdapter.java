@@ -32,7 +32,7 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Trail model) {
-        model.setId(getSnapshots().get(position).getId());
+        model.setId(getSnapshots().getSnapshot(position).getId());
         holder.trail = model;
         holder.setDetails();
     }
