@@ -17,7 +17,7 @@ public class Trail implements Serializable {
     private List<Pair<String, Coordinates>> imagesCoords;
     private List<String> images;
     private float trailRating;
-    //private List<Comment> listComments;
+    private List<Review> listReviews;
 
     public Trail(Characteristics characteristics, ArrayList<Coordinates> coordinates, String userId) {
         this.characteristics = characteristics;
@@ -25,7 +25,7 @@ public class Trail implements Serializable {
         this.userId = userId;
         this.images = new ArrayList<>();
         this.imagesCoords = new ArrayList<>();
-        //listComments = new ArrayList<>();
+        this.listReviews = new ArrayList<>();
     }
 
     public Trail() {
@@ -70,6 +70,7 @@ public class Trail implements Serializable {
         return imagesWithCoords;
     }
 
+    @Exclude
     public void setImagesWithCoords(List<Pair<ImageData, LatLng>> imagesWithCoords) {
         this.imagesWithCoords = imagesWithCoords;
     }
@@ -94,18 +95,22 @@ public class Trail implements Serializable {
         return trailRating;
     }
 
-   /* public List<Comment> getListComments() {
-        return listComments;
+    public List<Review> getListReviews() {
+        return listReviews;
     }
 
-    public void addComment(Comment comment){
-        if(comment != null){
-            listComments.add(comment);
-            updateRating();
+    public void setListReviews(List<Review> listReviews) {
+        this.listReviews = listReviews;
+    }
+
+    public void addComment(Review comment) {
+        if (comment != null) {
+            listReviews.add(comment);
+            //updateRating();
         }
     }
 
-    public void updateRating() {
+  /*  public void updateRating() {
         int numComments = 0;
         float rating = 0;
         for (Comment c : listComments) {

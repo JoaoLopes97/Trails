@@ -50,10 +50,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +60,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.trails.MainActivity.db;
 import static com.example.trails.MainActivity.setFragment;
 
 
@@ -120,14 +116,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 //map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 latLngs.add(latLng);
 
-                for (int i = 0; i < latLngs.size(); i++) {
-                    polylineOptions = new PolylineOptions().addAll(latLngs).width(width);
-                    polyline = map.addPolyline(polylineOptions);
+                if (running) {
+                    for (int i = 0; i < latLngs.size(); i++) {
+                        polylineOptions = new PolylineOptions().addAll(latLngs).width(width);
+                        polyline = map.addPolyline(polylineOptions);
+                    }
+
+                    if (lastLocation != null) {
+                        distance += lastLocation.distanceTo(location);
+                    }
                 }
 
-                if (lastLocation != null) {
-                    distance += lastLocation.distanceTo(location);
-                }
                 kms.setText(String.format("%.2f", distance / 1000));
                 lastLocation = location;
             }
@@ -142,9 +141,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         View root = inflater.inflate(R.layout.start_fragment, container, false);
 
 
-        if(getArguments() != null) {
-            loadedTrail = (Trail) getArguments().getSerializable("trail");
-        }
         startTrail = root.findViewById(R.id.startTrail);
         save = root.findViewById(R.id.saveTrail);
         clear = root.findViewById(R.id.clearTrail);
@@ -152,12 +148,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         takePhoto = root.findViewById(R.id.take_photo);
         coordinatorLayout = (CoordinatorLayout) root;
 
+        if (getArguments() != null) {
+            loadedTrail = (Trail) getArguments().getSerializable("trail");
+            save.setText("Avaliar");
+        }
+
         mRecyclerView = root.findViewById(R.id.my_recycler_view);
 
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new StartTrailAdapter(getContext(),getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
+        mAdapter = new StartTrailAdapter(getContext(), getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
         imagesWithCoords = new ArrayList<>();
@@ -208,14 +209,28 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Characteristics c = new Characteristics(null, null, null, null, distance / 1000, SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
-                ArrayList<Coordinates> cd = new ArrayList<>();
-                for (LatLng lg : latLngs) {
-                    cd.add(new Coordinates(lg.latitude, lg.longitude));
+                Bundle bundle = new Bundle();
+                if (loadedTrail != null) {
+                    loadedTrail.setImagesWithCoords(imagesWithCoords);
+
+                    bundle.putSerializable("trail", loadedTrail);
+                    bundle.putInt("type", 1);
+                } else {
+                    Characteristics c = new Characteristics(null, null, null, null, distance / 1000, SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
+                    ArrayList<Coordinates> cd = new ArrayList<>();
+                    for (LatLng lg : latLngs) {
+                        cd.add(new Coordinates(lg.latitude, lg.longitude));
+                    }
+                    Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
+                    trail.setImagesWithCoords(imagesWithCoords);
+
+                    bundle.putSerializable("trail", trail);
+                    bundle.putInt("type", 0);
                 }
-                Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
-                trail.setImagesWithCoords(imagesWithCoords);
-                InsertTrailFragment itt = new InsertTrailFragment(trail);
+
+                SaveTrailFragment itt = new SaveTrailFragment();
+                itt.setArguments(bundle);
+
                 coordinatorLayout.removeAllViewsInLayout();
                 setFragment(R.id.start_fragment, itt, getActivity());
             }
@@ -282,20 +297,28 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             Bitmap bitmap = BitmapFactory.decodeFile(currentImagePath);
             Uri uri = Uri.fromFile(new File(currentImagePath));
 
-            imagesWithCoords.add(new Pair<>(new ImageData(uri, bitmap), latLngs.get(latLngs.size() - 1)));
+            if (loadedTrail != null) {
+                imagesWithCoords.add(new Pair<ImageData, LatLng>(new ImageData(uri, bitmap), null));
+            } else {
+                imagesWithCoords.add(new Pair<>(new ImageData(uri, bitmap), latLngs.get(latLngs.size() - 1)));
+            }
         }
     }
 
     private void changeButtonStart() {
         if (!running) {
             startTrail.setImageResource(R.drawable.ic_baseline_pause_24);
-            save.setVisibility(View.INVISIBLE);
-            clear.setVisibility(View.INVISIBLE);
+            if (loadedTrail == null) {
+                clear.setVisibility(View.INVISIBLE);
+            }
             takePhoto.setVisibility(View.VISIBLE);
+            save.setVisibility(View.INVISIBLE);
         } else {
-            startTrail.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            if (loadedTrail == null) {
+                clear.setVisibility(View.VISIBLE);
+            }
             save.setVisibility(View.VISIBLE);
-            clear.setVisibility(View.VISIBLE);
+            startTrail.setImageResource(R.drawable.ic_baseline_play_arrow_24);
             takePhoto.setVisibility(View.INVISIBLE);
         }
     }
@@ -387,23 +410,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public Bitmap resizeMapIcons(Bitmap bitmap, int width, int height) {
+    private Bitmap resizeMapIcons(Bitmap bitmap, int width, int height) {
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
         return resizedBitmap;
-    }
-
-    private void loadTrail(String documentId) {
-        DocumentReference dc = db.collection("trails").document(documentId);
-
-        dc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    Trail t = documentSnapshot.toObject(Trail.class);
-                    t.setId(documentSnapshot.getId());
-                    drawTrail(t);
-                }
-            }
-        });
     }
 }
