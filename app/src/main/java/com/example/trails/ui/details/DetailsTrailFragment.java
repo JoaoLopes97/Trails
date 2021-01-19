@@ -50,8 +50,6 @@ public class DetailsTrailFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.details_fragment, container, false);
 
-        MapFragment map = new MapFragment();
-
         titleWalk = root.findViewById(R.id.title_walk);
         ratingBar = root.findViewById(R.id.trail_rating);
         description = root.findViewById(R.id.trail_description);
@@ -116,15 +114,13 @@ public class DetailsTrailFragment extends Fragment {
         favoriteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                User user = SingletonCurrentUser.getCurrentUserInstance();
                 if(isChecked){
-                    User user = SingletonCurrentUser.getCurrentUserInstance();
                     user.getFavoriteTrails().add(trail.getId());
-                    DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
                 }else{
-                    User user = SingletonCurrentUser.getCurrentUserInstance();
                     user.removeFavoriteTrail(trail.getId());
-                    DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
                 }
+                DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
             }
         });
 
