@@ -44,7 +44,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Map;
 
 import static android.content.ContentValues.TAG;
-import static com.example.trails.MainActivity.db;
+import static com.example.trails.controller.DB.db;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 

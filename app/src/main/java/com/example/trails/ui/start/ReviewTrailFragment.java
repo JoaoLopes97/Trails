@@ -42,7 +42,7 @@ import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.trails.MainActivity.setFragment;
-import static com.example.trails.MainActivity.storage;
+import static com.example.trails.controller.DB.storage;
 
 public class ReviewTrailFragment extends Fragment {
 
