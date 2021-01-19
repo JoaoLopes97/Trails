@@ -39,6 +39,7 @@ import com.example.trails.model.Address;
 import com.example.trails.model.User;
 import com.example.trails.ui.login.LoginActivity;
 import com.example.trails.ui.login.RegistrationActivity;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -346,7 +347,16 @@ public class EditProfileActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        user.updatePassword(newPassword);
+                                        user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                FirebaseAuth.getInstance().signOut();
+                                                LoginManager.getInstance().logOut();
+
+                                                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        })
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
