@@ -78,8 +78,8 @@ public class LocalDB {
         return parseTrail(readTrail(context, trailName));
     }
 
-    public static void deleteTrial(Context context, String trailName) {
-        File file = new File(context.getFilesDir(), trailName);
+    public static void deleteTrial(Context context, String trailId) {
+        File file = new File(context.getFilesDir(),"trail_" + trailId);
         file.delete();
     }
 

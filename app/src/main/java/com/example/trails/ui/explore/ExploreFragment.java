@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trails.R;
 import com.example.trails.model.Trail;
+import com.example.trails.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -88,5 +89,7 @@ public class ExploreFragment extends Fragment {
 
         transaction.remove(filterFragment);
         transaction.commit();
+
+
     }
 }

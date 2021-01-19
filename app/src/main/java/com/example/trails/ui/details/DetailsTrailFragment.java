@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -12,9 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
+import com.example.trails.model.User;
 import com.example.trails.ui.explore.MapFragment;
 import com.example.trails.ui.start.StartFragment;
 
@@ -29,6 +34,7 @@ public class DetailsTrailFragment extends Fragment {
     public static Trail trail;
 
     private ImageFlipperFragment imageFlipper;
+    private CheckBox favoriteCheckBox;
 
     public DetailsTrailFragment(Trail trail) {
         this.trail = trail;
@@ -50,6 +56,7 @@ public class DetailsTrailFragment extends Fragment {
         time_spent = root.findViewById(R.id.time_spent);
         downloadWalk = root.findViewById(R.id.DownloadButton);
         startWalk = root.findViewById(R.id.StartButton);
+        favoriteCheckBox = root.findViewById(R.id.favoriteCheckBox);
 
         setFragment(R.id.explore_details_frag, map, getActivity());
 
@@ -68,7 +75,27 @@ public class DetailsTrailFragment extends Fragment {
             }
         });
 
+        favoriteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    User user = SingletonCurrentUser.getCurrentUserInstance();
+                    user.getFavoriteTrails().add(trail.getId());
+                    DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
+                }else{
+                    User user = SingletonCurrentUser.getCurrentUserInstance();
+                    user.removeFavoriteTrail(trail.getId());
+                    DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
+                }
+            }
+        });
+
         return root;
+    }
+
+    public boolean isFavoriteForUser(){
+        String trailId = trail.getId();
+        return SingletonCurrentUser.getCurrentUserInstance().getFavoriteTrails().contains(trailId);
     }
 
     private void fillFragment() {
@@ -79,6 +106,9 @@ public class DetailsTrailFragment extends Fragment {
         distance.setText(trailCh.getDistance() + " km"); //use resource string with placeholders
         time_spent.setText(trailCh.getTimeSpent() + "seconds");
 
+        if(isFavoriteForUser()){
+            favoriteCheckBox.setChecked(true);
+        }
 
     }
 }

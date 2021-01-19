@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -46,10 +47,20 @@ public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Trail trail = trails.get(position);
         holder.trail = trail;
         holder.setDetails();
+        holder.trash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                LocalDB.deleteTrial(context, trails.get(position).getId());
+                trails.remove(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
+                notifyItemRangeChanged(holder.getAdapterPosition(), trails.size());
+            }
+        });
     }
 
     @Override
@@ -63,8 +74,9 @@ public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.Vi
         RatingBar txtRatingCard;
         ImageView trailPhotoCard;
         Trail trail;
+        ImageButton trash;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +92,8 @@ public class StartTrailAdapter extends RecyclerView.Adapter<StartTrailAdapter.Vi
             txtRatingCard = itemView.findViewById(R.id.trail_rating);
             txtReviewsCard = itemView.findViewById(R.id.trail_reviews);
             trailPhotoCard = itemView.findViewById(R.id.trail_photo);
+            trash = itemView.findViewById(R.id.trash);
+            trash.setVisibility(View.VISIBLE);
         }
 
         void setDetails() {

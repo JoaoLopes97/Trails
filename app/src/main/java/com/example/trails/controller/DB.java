@@ -8,12 +8,14 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.example.trails.model.Address;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
 import com.example.trails.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -57,5 +59,22 @@ public class DB {
         DocumentReference df = db.collection("users").document(currentUser.getUid());
         User newUser = new User(name, email, dateOfBirth, address , currentUser.getUid(), photo);
         df.set(newUser);
+    }
+
+    public static void getCurrentUserDB(String userId){
+        DocumentReference df = db.getInstance().collection("users").document(userId);
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User userObject = documentSnapshot.toObject(User.class);
+                SingletonCurrentUser.setCurrentUserInstance(userObject);
+            }
+        });
+    }
+
+    public static void updateUser(User user){
+        DocumentReference df = db.getInstance().collection("users").document(user.getIdUser());
+        df.set(user);
     }
 }

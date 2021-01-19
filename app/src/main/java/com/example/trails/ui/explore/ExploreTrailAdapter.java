@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Trail model) {
-        model.setId(getSnapshots().get(position).getId());
+        model.setId(getSnapshots().getSnapshot(position).getId());
         holder.trail = model;
         holder.setDetails();
     }
@@ -51,6 +52,8 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
         RatingBar txtRatingCard;
         ImageView trailPhotoCard;
         Trail trail;
+
+        ImageButton favorites;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
