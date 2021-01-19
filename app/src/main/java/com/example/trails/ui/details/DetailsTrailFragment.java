@@ -6,26 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.trails.R;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Trail;
-import com.example.trails.ui.explore.MapFragment;
-import com.example.trails.ui.start.StartFragment;
-import com.google.android.gms.maps.MapView;
-
-import java.io.Serializable;
 
 import static com.example.trails.MainActivity.setFragment;
 
@@ -38,7 +30,6 @@ public class DetailsTrailFragment extends Fragment {
     private Button startWalk;
     public Trail trail;
     private ImageFlipperFragment imageFlipper;
-    private LocalDB localDb;
 
     public DetailsTrailFragment(Trail trail) {
         this.trail = trail;
@@ -75,9 +66,9 @@ public class DetailsTrailFragment extends Fragment {
         commentsTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(commentsContent.getVisibility() == View.GONE){
+                if (commentsContent.getVisibility() == View.GONE) {
                     commentsContent.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     commentsContent.setVisibility(View.GONE);
                 }
             }
@@ -86,9 +77,9 @@ public class DetailsTrailFragment extends Fragment {
         photosTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(photosContent.getVisibility() == View.GONE){
+                if (photosContent.getVisibility() == View.GONE) {
                     photosContent.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     photosContent.setVisibility(View.GONE);
                 }
             }
@@ -96,15 +87,13 @@ public class DetailsTrailFragment extends Fragment {
 
         fillFragment();
 
-        localDb = new LocalDB(getContext());
-
         setFragment(R.id.images_frag, new ImageFlipperFragment(trail.getImages(), trail.getImagesCoords()), getActivity());
 
         startWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
-                b.putSerializable("trail",trail);
-                    Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.nav_start,b);
+                b.putSerializable("trail", trail);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_start, b);
             }
         });
 
