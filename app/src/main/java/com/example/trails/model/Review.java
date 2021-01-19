@@ -2,31 +2,31 @@ package com.example.trails.model;
 
 import com.google.firebase.firestore.Exclude;
 
-public class Comment {
+public class Review {
 
-    private String Id;
+    private String id;
     private String trailId;
     private String userId;
     private String comment;
     private float rating;
 
-    public Comment(String trailId, String userId, String comment, float rating) {
+    public Review(String trailId, String userId, String comment, float rating) {
         this.trailId = trailId;
         this.userId = userId;
         this.comment = comment;
         this.rating = rating;
     }
 
-    public Comment() {
+    public Review() {
     }
 
     @Exclude
     public String getId() {
-        return Id;
+        return id;
     }
 
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getTrailId() {

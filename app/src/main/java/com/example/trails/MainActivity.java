@@ -2,7 +2,10 @@ package com.example.trails;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.example.trails.controller.DB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -42,5 +45,10 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(layout, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public static void globalUser(){
+        String userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DB.getCurrentUserDB(userId);
     }
 }

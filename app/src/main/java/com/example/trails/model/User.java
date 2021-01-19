@@ -2,6 +2,7 @@ package com.example.trails.model;
 
 import com.google.firebase.firestore.Exclude;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,15 +15,7 @@ public class User {
     private Address address;
     private String email;
 
-    private List<Integer> favoriteTrails;
-
-    public User(String name, Date dateOfBirth, Address address, String email, List<Integer> favoriteTrails) {
-        this.name = name;
-        this.dateOfBirth = dateOfBirth;
-        this.address = address;
-        this.email = email;
-        this.favoriteTrails = favoriteTrails;
-    }
+    private List<String> favoriteTrails = new ArrayList<>();
 
     public User(String name, String email, Date dateOfBirth, Address address, String idUser, String photo) {
         this.name = name;
@@ -31,7 +24,6 @@ public class User {
         this.idUser = idUser;
         this.photo = photo;
         this.address = address;
-
     }
 
     public User() {
@@ -85,19 +77,19 @@ public class User {
         this.email = email;
     }
 
-    public List<Integer> getFavoriteTrails() {
+    public List<String> getFavoriteTrails() {
         return favoriteTrails;
     }
 
-    public void setFavoriteRoutes(List<Integer> favoriteRoutes) {
-        this.favoriteTrails = favoriteRoutes;
+    public void setFavoriteTrails(List<String> favoriteTrails) {
+        this.favoriteTrails = favoriteTrails;
     }
 
-    public void addFavoriteTrail(int trailId) {
+    public void addFavoriteTrail(String trailId) {
         this.favoriteTrails.add(trailId);
     }
 
-    public void removeFavoriteTrail(int trailId) {
+    public void removeFavoriteTrail(String trailId) {
         this.favoriteTrails.remove(trailId);
     }
 
@@ -105,4 +97,5 @@ public class User {
     public String getCity() {
         return address.getAddress();
     }
+
 }

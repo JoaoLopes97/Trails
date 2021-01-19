@@ -50,7 +50,6 @@ public class ProfileFragment extends Fragment {
 
         loadData(root);
 
-
         barraEditPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

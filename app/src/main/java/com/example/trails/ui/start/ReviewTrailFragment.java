@@ -3,48 +3,34 @@ package com.example.trails.ui.start;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.example.trails.R;
 import com.example.trails.controller.DB;
-import com.example.trails.model.Characteristics;
-import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
-import com.example.trails.model.TerrainType;
+import com.example.trails.model.Review;
 import com.example.trails.model.Trail;
-import com.example.trails.model.TrailDifficulty;
 import com.example.trails.ui.details.DetailsTrailFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -58,52 +44,40 @@ import static android.app.Activity.RESULT_OK;
 import static com.example.trails.MainActivity.setFragment;
 import static com.example.trails.controller.DB.storage;
 
-public class InsertTrailFragment extends Fragment {
+public class ReviewTrailFragment extends Fragment {
+
+    private LinearLayout linearLayout;
+    private Button imageBtn, saveBtn;
+    private RatingBar ratingBar;
+    private TextView comment;
 
     private Trail trail;
-    private Button imageBtn, saveBtn;
-    private LinearLayout linearLayout;
-    private EditText trailName, trailDescription;
-    private RadioGroup trailType, trailDifficulty;
-    private List<Pair<Uri, LatLng>> imageUris;
+    private List<Uri> imageUris;
 
-    public InsertTrailFragment(Trail trail) {
+    public ReviewTrailFragment(Trail trail) {
         this.trail = trail;
+    }
+
+    public ReviewTrailFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.insert_trail_fragment, container, false);
+        View view = inflater.inflate(R.layout.review_trail_fragment, container, false);
 
+        linearLayout = view.findViewById(R.id.images_layout);
         saveBtn = view.findViewById(R.id.save_trail);
         imageBtn = view.findViewById(R.id.images_btn);
-        linearLayout = view.findViewById(R.id.images_layout);
-
-        trailName = view.findViewById(R.id.name);
-        trailDescription = view.findViewById(R.id.trail_description);
-        trailType = view.findViewById(R.id.trail_type);
-        trailDifficulty = view.findViewById(R.id.trail_difficulty);
+        ratingBar = view.findViewById(R.id.rating_bar);
+        comment = view.findViewById(R.id.comment);
 
         imageUris = new ArrayList<>();
 
-        Geocoder geocoder = new Geocoder(getContext());
-        Coordinates startPoint = trail.getCoordinates().get(0);
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocation(startPoint.getLatitude(), startPoint.getLongitude(), 1);
-            Address addr = addresses.get(0);
-            String address = addr.getLocality() + ", " + addr.getAdminArea() + ", " + addr.getCountryName();
-
-            trail.getCharacteristics().setLocation(new com.example.trails.model.Address(address, startPoint.getLatitude(), startPoint.getLongitude()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         for (Pair<ImageData, LatLng> img : trail.getImagesWithCoords()) {
             createNewImageView(img.first.getBitmap());
-            imageUris.add(new Pair<>(img.first.getUri(), img.second));
+            imageUris.add(img.first.getUri());
         }
 
         imageBtn.setOnClickListener(new View.OnClickListener() {
@@ -121,25 +95,19 @@ public class InsertTrailFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RadioButton type = getView().findViewById(trailType.getCheckedRadioButtonId());
-                RadioButton difficulty = getView().findViewById(trailDifficulty.getCheckedRadioButtonId());
+                Review review = new Review(trail.getId(), "1", comment.getText().toString(), ratingBar.getRating()); //TODO get userId
 
-                Characteristics ch = trail.getCharacteristics();
-                ch.setName(trailName.getText().toString());
-                ch.setDescription(trailDescription.getText().toString());
-                ch.setDifficulty(TrailDifficulty.valueOf((String) difficulty.getText()));
-                ch.setTerrainType(TerrainType.valueOf((String) type.getText()));
+                //TODO save user review
 
-                saveTrail();
+                //saveTrail();
 
                 DetailsTrailFragment dt = new DetailsTrailFragment(trail);
-                setFragment(R.id.start_fragment, dt,getActivity());
+                setFragment(R.id.start_fragment, dt, getActivity());
             }
         });
-
-
         return view;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -151,7 +119,7 @@ public class InsertTrailFragment extends Fragment {
             if (clipData != null) {
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     imageUri = clipData.getItemAt(i).getUri();
-                    imageUris.add(new Pair<Uri, LatLng>(imageUri, null));
+                    imageUris.add(imageUri);
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                         createNewImageView(bitmap);
@@ -161,7 +129,7 @@ public class InsertTrailFragment extends Fragment {
                 }
             } else {
                 imageUri = data.getData();
-                imageUris.add(new Pair<Uri, LatLng>(imageUri, null));
+                imageUris.add(imageUri);
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                     createNewImageView(bitmap);
@@ -180,7 +148,7 @@ public class InsertTrailFragment extends Fragment {
         iv.setImageBitmap(bitmap);
         // Create layout parameters for ImageView
         final float scale = getContext().getResources().getDisplayMetrics().density;
-        LayoutParams lp = new LayoutParams((int) (100 * scale + 0.5f), (int) (120 * scale + 0.5f));
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) (100 * scale + 0.5f), (int) (120 * scale + 0.5f));
 
         iv.setLayoutParams(lp);
 
@@ -191,10 +159,10 @@ public class InsertTrailFragment extends Fragment {
     private void saveTrail() {
         final List<UploadTask> uploadTasks = new LinkedList<>();
         final List<Task<Uri>> downloadUriTask = new LinkedList<>();
-        for (final Pair<Uri, LatLng> image : imageUris) {
+        for (final Uri image : imageUris) {
             String imageName = UUID.randomUUID().toString();
             final StorageReference ref = storage.getReference().child("images/" + imageName);
-            UploadTask uploadFile = ref.putFile(image.first);
+            UploadTask uploadFile = ref.putFile(image);
             uploadTasks.add(uploadFile);
             uploadFile.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -213,27 +181,24 @@ public class InsertTrailFragment extends Fragment {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         String downloadURL = downloadUri.toString();
-                        if (image.second == null) {
-                            trail.getImages().add(downloadURL);
-                        } else {
-                            trail.getImagesCoords().add(new Pair<>(downloadURL, new Coordinates(image.second.latitude, image.second.longitude)));
-
-                        }
+                        trail.getImages().add(downloadURL);
                     }
                 }
             });
         }
         // might need to review
-        Tasks.whenAllComplete(uploadTasks).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<Task<?>>> task) {
-                Tasks.whenAllComplete(downloadUriTask).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+        Tasks.whenAllComplete(uploadTasks).
+
+                addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
                     @Override
                     public void onComplete(@NonNull Task<List<Task<?>>> task) {
-                        DB.insertTrail(trail);
+                        Tasks.whenAllComplete(downloadUriTask).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                            @Override
+                            public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                                DB.insertTrail(trail);
+                            }
+                        });
                     }
                 });
-            }
-        });
     }
 }
