@@ -356,7 +356,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                                                 startActivity(intent);
                                             }
-                                        })
+                                        });
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
