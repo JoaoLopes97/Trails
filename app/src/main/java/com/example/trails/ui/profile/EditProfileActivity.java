@@ -257,7 +257,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
                 AlertDialog confirmationDialog = confirmationDialogBuilder.create();
                 confirmationDialog.show();
-
             }
         });
 
@@ -339,8 +338,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 final String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString();
                 String newPasswordConf = editProfileNewPasswordConfContainer.getEditText().getText().toString();
 
-                if (!oldPassword.equals("")) {
-                    if (newPassword.equals(newPasswordConf)) {
+                if (!oldPassword.isEmpty()) {
+                    if (newPassword.equals(newPasswordConf) && newPassword.length() > 5) {
                         AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
                         user.reauthenticate(credential)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
