@@ -36,6 +36,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="title_location">Localização: </string>
+    <string name="title_distance">Distância: </string>
+    <string name="title_difficulty">Dificuldade: </string>
+    <string name="title_terrain">Tipo de Terreno: </string>
+    <string name="title_time">Tempo: </string>
     <string name="sign_out">Sign Out</string>
     <string name="contacts_permission_rationale">Access to account information is required to sign in.</string>
     <string name="sign_in">Sign In</string>

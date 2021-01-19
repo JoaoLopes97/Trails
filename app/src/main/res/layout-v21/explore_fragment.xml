@@ -103,9 +103,10 @@
                 android:orientation="horizontal" />
         </FrameLayout>
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/details_frag"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/White"/>
+        android:layout_height="match_parent"/>
+
 </FrameLayout>

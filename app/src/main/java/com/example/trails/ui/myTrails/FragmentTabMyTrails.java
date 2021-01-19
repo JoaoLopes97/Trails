@@ -83,7 +83,7 @@ public class FragmentTabMyTrails extends Fragment {
                 mRecyclerView.setAdapter(startTrailAdapter);*/
                 break;
             case 1: // Download
-                startTrailAdapter = new StartTrailAdapter(getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
+                startTrailAdapter = new StartTrailAdapter(getContext(), getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
                 mRecyclerView.setAdapter(startTrailAdapter);
                 break;
             case 2: //Historico
