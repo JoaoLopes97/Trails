@@ -1,10 +1,8 @@
 package com.example.trails;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,11 +14,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Toolbar toolbar;
-
-    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public static FirebaseStorage storage = FirebaseStorage.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +29,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(navView, navController);
 
-        //NavigationUI.setupWithNavController(toolbar, navController);
-        //getSupportActionBar().setElevation(0);
+        try {
+            Intent intent = getIntent();
+            int answer = intent.getIntExtra("profile", 0);
+            navController.navigate(answer);
+        } catch (Exception e){};
+
     }
 
     public static void setFragment(int layout, Fragment fragment, FragmentActivity activity) {

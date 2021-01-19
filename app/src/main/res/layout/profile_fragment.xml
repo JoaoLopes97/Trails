@@ -43,14 +43,13 @@
         tools:ignore="MissingConstraints">
 
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="0dp"
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/imageViewUserPhoto"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_baseline_account_circle_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+            android:layout_margin="10dp"
+            android:layout_marginRight="30dp"/>
 
         <LinearLayout
             android:gravity="center_vertical"
@@ -64,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Black"
-                android:text="João Paiva"
+                android:text=""
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -72,7 +71,7 @@
                 android:id="@+id/viewProfileText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ver_perfil" />
+                android:text="@string/editar_perfil" />
         </LinearLayout>
 
         <ImageView

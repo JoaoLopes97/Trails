@@ -19,7 +19,7 @@
     <string name="btn_Save">Guardar</string>
     <string name="trails_image">Trail Images</string>
     <string name="trails_comment">Trail Comment</string>
-    <string name="ver_perfil">Ver Perfil</string>
+    <string name="editar_perfil">Editar Perfil</string>
     <string name="username">Username</string>
     <string name="title_download">Descarregados</string>
     <string name="title_trails">Meus Percursos</string>
@@ -27,7 +27,7 @@
     <string name="title_favorites">Favoritos</string>
 
     <string name="btn_login">Login</string>
-    <string name="btn_register">Register</string>
+    <string name="btn_register">Registar</string>
 
     <string name="facebook_app_id">3691948064231784</string>
     <string name="fb_login_protocol_scheme">fb3691948064231784</string>
@@ -47,8 +47,26 @@
     <string name="sign_up">Sign Up</string>
 
 
-    <string name="msgError_emailPass">Preencha o email e/ou password!</string>
+    <string name="msgError_fields">Verifique os campos!</string>
     <string name="seccessRegister">Utilizador criado com sucesso!</string>
     <string name="msgError">Erro ao registar utilizador, por favor tente novamente!</string>
+    <string name="txtUsername">Nome de Utilizador</string>
+    <string name="txtEmail">Email</string>
+    <string name="txtPassword">Password</string>
+    <string name="txtBirthday">Data de Nascimento</string>
+    <string name="txtCity">Cidade</string>
+    <string name="txtTitleNewAccount">Registo</string>
+
+    <string name="errorUserName">Nome necessário</string>
+    <string name="errorUserEmail">Email necessário</string>
+    <string name="errorUserEmail1">Este email não é válido</string>
+    <string name="errorUserPassword">Password necessária</string>
+    <string name="errorUserPassword1">A password não é válida, deve ter mais de 5 caracteres</string>
+    <string name="errorBirthday">Data de nascimento necessária</string>
+    <string name="errorBirthday1">A data é superior à data atual</string>
+    <string name="errorCity">Cidade necessária</string>
+    <string name="errorCity1">Coloque uma cidade válida</string>
+    <string name="photoTxt">Fotografia</string>
+    <string name="titleAccountLogin">Login</string>
 
 </resources>

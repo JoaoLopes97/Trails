@@ -16,7 +16,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
-import static com.example.trails.MainActivity.db;
+import static com.example.trails.controller.DB.*;
 
 public class ListFragment extends Fragment {
 

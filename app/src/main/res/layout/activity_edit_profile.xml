@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.profile.EditProfileActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -22,6 +26,7 @@
             >
 
             <Button
+                android:id="@+id/editButton"
                 android:layout_gravity="right"
                 android:text="Guardar"
                 android:layout_width="wrap_content"
@@ -35,21 +40,22 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ImageView
-        android:id="@+id/UserImage"
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/userPhoto"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"/>
+
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nome"
-        app:layout_constraintTop_toBottomOf="@+id/UserImage">
+        app:layout_constraintTop_toBottomOf="@+id/userPhoto">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -77,6 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@+id/editProfileNome">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -91,6 +98,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Data de nascimento"
+        app:placeholderText="dd/mm/aaaa"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@+id/editProfileEmail"
         app:startIconDrawable="@drawable/ic_baseline_calendar"
         app:errorEnabled="true">
@@ -102,26 +111,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editProfileConcelho"
-        style="@style/EditProfileEditTextStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Concelho"
-        app:layout_constraintTop_toBottomOf="@+id/editProfileBirthday"
-        android:layout_marginTop="0dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editProfileCidade"
+        android:id="@+id/editProfileCity"
         style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Cidade"
-        app:layout_constraintTop_toBottomOf="@+id/editProfileConcelho">
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/editProfileBirthday">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -129,16 +125,56 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editProfilePais"
+        android:id="@+id/editProfileOldPassword"
         style="@style/EditProfileEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="País"
-        app:layout_constraintTop_toBottomOf="@+id/editProfileCidade">
+        android:hint="Password atual"
+        app:endIconMode="password_toggle"
+        app:layout_constraintTop_toBottomOf="@+id/editProfileCity"
+        app:errorEnabled="true"
+        android:layout_marginTop="20dp" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editProfileNewPassword"
+        style="@style/EditProfileEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:hint="Nova password"
+        app:endIconMode="password_toggle"
+        app:layout_constraintTop_toBottomOf="@+id/editProfileOldPassword"
+        app:errorEnabled="true" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editProfileNewPasswordConf"
+        style="@style/EditProfileEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirme nova password"
+        android:layout_marginTop="0dp"
+        app:endIconMode="password_toggle"
+        app:layout_constraintTop_toBottomOf="@+id/editProfileNewPassword"
+        app:errorEnabled="true" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -15,16 +15,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.trails.R;
-import com.example.trails.login.RegistrationActivity;
+import com.example.trails.ui.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
     private ImageView topSplash, logo, bottomSplash;
-    private TextView textSplash;
-    private CharSequence charSequence;
-    private int index;
-    private long delay = 200;
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +29,6 @@ public class SplashActivity extends AppCompatActivity {
         topSplash = findViewById(R.id.topSplash);
         logo = findViewById(R.id.logo);
         bottomSplash = findViewById(R.id.bottomSplash);
-        textSplash = findViewById(R.id.textSplash);
 
         //SetFullScreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -49,8 +43,6 @@ public class SplashActivity extends AppCompatActivity {
         objectAnimator.setRepeatMode(ValueAnimator.REVERSE);
         objectAnimator.start();
 
-        animateText("TRAILS");
-
         //Top Animation
         Animation animation2 = AnimationUtils.loadAnimation(this, R.anim.bottom_wave);
         bottomSplash.setAnimation(animation2);
@@ -58,28 +50,10 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, RegistrationActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 finish();
             }
         }, 4000);
     }
 
-
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            textSplash.setText(charSequence.subSequence(0, index++));
-            if (index <= charSequence.length()) {
-                handler.postDelayed(runnable, delay);
-            }
-        }
-    };
-
-    public void animateText(CharSequence cs) {
-        charSequence = cs;
-        index = 0;
-        textSplash.setText("");
-        handler.removeCallbacks(runnable);
-        handler.postDelayed(runnable, delay);
-    }
 }
