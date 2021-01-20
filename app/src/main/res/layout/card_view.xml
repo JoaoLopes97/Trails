@@ -73,26 +73,26 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="121dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/trash"
-            android:layout_width="wrap_content"
-            android:layout_height="59dp"
-            android:visibility="invisible"
-            app:srcCompat="@mipmap/ic_trash_round"></ImageButton>
+            <ImageButton
+                android:id="@+id/trash"
+                android:layout_width="wrap_content"
+                android:layout_height="59dp"
+                android:visibility="invisible"
+                app:srcCompat="@mipmap/ic_trash_round"></ImageButton>
 
-        <CheckBox
-            android:id="@+id/favoriteCheckBoxCardView"
-            style="?android:attr/starStyle"
-            android:layout_width="244dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible"
-            android:padding="10dp" />
+            <CheckBox
+                android:id="@+id/favoriteCheckBoxCardView"
+                style="?android:attr/starStyle"
+                android:layout_width="244dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:visibility="invisible" />
         </LinearLayout>
 
     </LinearLayout>

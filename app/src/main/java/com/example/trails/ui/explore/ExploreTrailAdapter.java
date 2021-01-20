@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -16,8 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
+import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
+import com.example.trails.model.User;
 import com.example.trails.ui.details.DetailsTrailFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -32,9 +37,21 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Trail model) {
+    protected void onBindViewHolder(@NonNull final ViewHolder holder, int position, @NonNull final Trail model) {
         model.setId(getSnapshots().getSnapshot(position).getId());
         holder.trail = model;
+        holder.favoriteCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User user = SingletonCurrentUser.getCurrentUserInstance();
+                if(holder.favoriteCheckBox.isChecked()){
+                    user.getFavoriteTrails().add(holder.trail.getId());
+                }else{
+                    user.removeFavoriteTrail(holder.trail.getId());
+                }
+                DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
+            }
+        });
         holder.setDetails();
     }
 
@@ -55,6 +72,8 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
 
         ImageButton favorites;
 
+        CheckBox favoriteCheckBox;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -70,6 +89,14 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             txtRatingCard = itemView.findViewById(R.id.trail_rating);
             txtReviewsCard = itemView.findViewById(R.id.trail_reviews);
             trailPhotoCard = itemView.findViewById(R.id.trail_photo);
+
+            favoriteCheckBox = itemView.findViewById(R.id.favoriteCheckBoxCardView);
+            favoriteCheckBox.setVisibility(View.VISIBLE);
+        }
+
+        boolean isFavoriteForUser(){
+            String trailId = trail.getId();
+            return SingletonCurrentUser.getCurrentUserInstance().getFavoriteTrails().contains(trailId);
         }
 
         void setDetails() {
@@ -83,6 +110,10 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
                 imageUrl = trail.getImages().get(0);
             } else if (trail.getImagesCoords() != null) {
                 imageUrl = trail.getImagesCoords().get(0).first;
+            }
+
+            if(isFavoriteForUser()){
+                favoriteCheckBox.setChecked(true);
             }
 
             if (imageUrl != null)

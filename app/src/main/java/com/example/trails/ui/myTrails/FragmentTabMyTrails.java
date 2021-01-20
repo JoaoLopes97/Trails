@@ -46,33 +46,6 @@ public class FragmentTabMyTrails extends Fragment {
 
         changeTabs(position);
 
-        /*startTrailAdapter = new StartTrailAdapter(getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
-        mRecyclerView.setAdapter(startTrailAdapter);*/
-
-        /*switch (position) {
-            case 0: // My trails
-                startTrailAdapter = new StartTrailAdapter(getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
-                mRecyclerView.setAdapter(startTrailAdapter);
-            case 1: // Download
-                startTrailAdapter = new StartTrailAdapter(getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
-                mRecyclerView.setAdapter(startTrailAdapter);
-            case 2: //Historico
-                query = db.collection("trails").limit(50); //we can order by
-                options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
-                mAdapter = new ExploreTrailAdapter(options, getActivity());
-                mRecyclerView.setAdapter(mAdapter);
-            case 3: // Favoritos
-                /*SingletonCurrentUser.getCurrentUserInstance().getFavoriteTrails();
-                query = db.collection("users").getwhereEqualTo("id", SingletonCurrentUser.getCurrentUserInstance().getIdUser());
-                startTrailAdapter = new StartTrailAdapter(getContext(), );
-                mRecyclerView.setAdapter(startTrailAdapter);*/
-            /*default:
-                query = db.collection("trails").limit(50); //we can order by
-                options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
-                mAdapter = new ExploreTrailAdapter(options, getActivity());
-                mRecyclerView.setAdapter(mAdapter);
-        }*/
-
         return rootView;
     }
 
