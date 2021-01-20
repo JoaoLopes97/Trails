@@ -1,12 +1,17 @@
 package com.example.trails.ui.explore;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,12 +44,12 @@ public class ExploreFragment extends Fragment {
     private static View filterLayout;
     public static HashMap<String, Coordinates> trails = new HashMap<>();
 
-    private boolean viewMode_Map = false; // true if viewMode is Map, false if viewMode is List.
+    private static boolean viewMode_Map = false; // true if viewMode is Map, false if viewMode is List.
     private static boolean showingFilter = false;
 
     private static FragmentActivity activity;
 
-    private FloatingActionButton btnSearch;
+    private EditText editTextSearch;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -57,7 +63,7 @@ public class ExploreFragment extends Fragment {
 
         mapFragment = new MapFragment();
 
-        activity = (FragmentActivity)root.getContext();
+        activity = (FragmentActivity) root.getContext();
 
 
         setFragment(R.id.explore_frag, listFragment, getActivity());
@@ -87,6 +93,21 @@ public class ExploreFragment extends Fragment {
                 }
             }
         });
+
+        editTextSearch = root.findViewById(R.id.search);
+        editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    filterDataSearch(editTextSearch.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
         return root;
     }
@@ -120,24 +141,6 @@ public class ExploreFragment extends Fragment {
 
         Query query = db.collection("trails");
 
-//        query = query.whereGreaterThanOrEqualTo("characteristics.distance", distanceLow);
-//        query = query.whereLessThanOrEqualTo("characteristics.distance", distanceHigh);
-
-//        List<String> terrenoFields = new ArrayList<String>();
-//
-//        if (terrainEasy) {
-//            terrenoFields.add("Baixo");
-//        }
-//        if (terrainMedium) {
-//            terrenoFields.add("Medio");
-//        }
-//        if (terrainHard) {
-//            terrenoFields.add("Alto");
-//        }
-//
-//        if (terrainEasy || terrainMedium || terrainHard) {
-//            query = query.whereIn("characteristics.terrainType", terrenoFields);
-//        }
 
         List<String> fields = new ArrayList<String>();
 
@@ -159,11 +162,26 @@ public class ExploreFragment extends Fragment {
             query = query.whereGreaterThanOrEqualTo("trailRating", rating);
         }
 
-        listFragment.setQuery(query);
+        if (viewMode_Map) {
+            mapFragment.setQuery(query);
+        } else {
+            listFragment.setQuery(query);
+        }
+    }
 
-        mapFragment.setQuery(query);
+    public void filterDataSearch(String text) {
+        Query query;
+        if(text.isEmpty()) {
+            query = db.collection("trails");
+        } else {
+            query = db.collection("trails").whereIn("characteristics.name", Collections.singletonList(text));
 
+        }
 
-        return;
+        if (viewMode_Map) {
+            mapFragment.setQuery(query);
+        } else {
+            listFragment.setQuery(query);
+        }
     }
 }
