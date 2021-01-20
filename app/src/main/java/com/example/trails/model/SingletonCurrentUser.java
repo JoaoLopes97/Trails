@@ -19,6 +19,10 @@ public class SingletonCurrentUser {
         if(currentUserInstance.getFavoriteTrails() == null){
             currentUserInstance.setFavoriteTrails(new ArrayList<String>());
         }
+
+        if(currentUserInstance.getMadeTrails() == null){
+            currentUserInstance.setMadeTrails(new ArrayList<String>());
+        }
         return currentUserInstance;
     }
 }

@@ -16,6 +16,7 @@ public class User {
     private String email;
 
     private List<String> favoriteTrails = new ArrayList<>();
+    private List<String> madeTrails = new ArrayList<>();
 
     public User(String name, String email, Date dateOfBirth, Address address, String idUser, String photo) {
         this.name = name;
@@ -91,6 +92,18 @@ public class User {
 
     public void removeFavoriteTrail(String trailId) {
         this.favoriteTrails.remove(trailId);
+    }
+
+    public List<String> getMadeTrails() {
+        return madeTrails;
+    }
+
+    public void setMadeTrails(List<String> madeTrails) {
+        this.madeTrails = madeTrails;
+    }
+
+    public void addMadeTrail(String trailId){
+        this.madeTrails.add(trailId);
     }
 
     @Exclude

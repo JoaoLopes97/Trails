@@ -101,6 +101,7 @@ public class ReviewTrailFragment extends Fragment {
                 User user = SingletonCurrentUser.getCurrentUserInstance();
                 Review review = new Review(trail.getId(), user.getIdUser(), comment.getText().toString(), ratingBar.getRating());
                 trail.addReview(review);
+                user.addMadeTrail(trail.getId());
                 saveTrail();
                 DB.updateUser(user);
 
