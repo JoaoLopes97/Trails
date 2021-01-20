@@ -3,7 +3,9 @@ package com.example.trails.model;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-public class ImageData {
+import java.io.Serializable;
+
+public class ImageData implements Serializable {
     private Uri uri;
     private Bitmap bitmap;
 

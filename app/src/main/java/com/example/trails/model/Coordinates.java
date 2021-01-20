@@ -1,6 +1,8 @@
 package com.example.trails.model;
 
-public class Coordinates {
+import java.io.Serializable;
+
+public class Coordinates implements Serializable {
 
     private double latitude;
     private double longitude;
