@@ -1,13 +1,12 @@
 package com.example.trails.ui.details;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,14 +27,8 @@ import com.example.trails.model.Characteristics;
 import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
 import com.example.trails.model.User;
-import com.example.trails.ui.explore.ExploreTrailAdapter;
-import com.example.trails.ui.explore.MapFragment;
-import com.example.trails.ui.start.StartFragment;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.Query;
 
 import static com.example.trails.MainActivity.setFragment;
-import static com.example.trails.controller.DB.db;
 
 public class DetailsTrailFragment extends Fragment {
 
@@ -45,7 +38,7 @@ public class DetailsTrailFragment extends Fragment {
     private RatingBar ratingBar;
     private ImageButton downloadWalk;
     private Button startWalk;
-    private ImageView commentsButton,photosButton;
+    private ImageView commentsButton, photosButton;
     public Trail trail;
     private ImageFlipperFragment imageFlipper;
     private CheckBox favoriteCheckBox;
@@ -115,7 +108,7 @@ public class DetailsTrailFragment extends Fragment {
         commentsRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         commentsRecyclerView.setLayoutManager(mLayoutManager);
-        ReviewTrailAdapter mAdapter = new ReviewTrailAdapter(requireContext(), requireActivity(),trail.getListReviews());
+        ReviewTrailAdapter mAdapter = new ReviewTrailAdapter(requireContext(), requireActivity(), trail.getListReviews());
         commentsRecyclerView.setAdapter(mAdapter);
 
         commentsRecyclerView.setNestedScrollingEnabled(false);
@@ -131,8 +124,12 @@ public class DetailsTrailFragment extends Fragment {
 
         downloadWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LocalDB.storeTrail(getContext(), trail, trail.getId());
-                Toast.makeText(getContext(), "Trilho descarregado!", Toast.LENGTH_LONG).show();
+                if (LocalDB.getTrail(getContext(),"trail_" + trail.getId()) == null) {
+                    LocalDB.storeTrail(getContext(), trail, trail.getId());
+                    Toast.makeText(getContext(), "Trilho descarregado!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getContext(), "Trilho já se encontra descarregado", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -140,9 +137,9 @@ public class DetailsTrailFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 User user = SingletonCurrentUser.getCurrentUserInstance();
-                if(isChecked){
+                if (isChecked) {
                     user.getFavoriteTrails().add(trail.getId());
-                }else{
+                } else {
                     user.removeFavoriteTrail(trail.getId());
                 }
                 DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
@@ -152,7 +149,7 @@ public class DetailsTrailFragment extends Fragment {
         return root;
     }
 
-    public boolean isFavoriteForUser(){
+    public boolean isFavoriteForUser() {
         String trailId = trail.getId();
         return SingletonCurrentUser.getCurrentUserInstance().getFavoriteTrails().contains(trailId);
     }
@@ -168,7 +165,7 @@ public class DetailsTrailFragment extends Fragment {
         distance.setText(trailCh.getDistance() + " km");
         time_spent.setText(trailCh.getTimeSpent() + " seconds");
 
-        if(isFavoriteForUser()){
+        if (isFavoriteForUser()) {
             favoriteCheckBox.setChecked(true);
         }
 
