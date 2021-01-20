@@ -12,7 +12,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,9 +21,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,9 +35,6 @@ import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.Address;
 import com.example.trails.model.User;
-import com.example.trails.ui.login.LoginActivity;
-import com.example.trails.ui.login.RegistrationActivity;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,13 +48,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.internal.InternalTokenProvider;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -86,7 +78,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputLayout editProfileNewPasswordConfContainer;
 
     private Button buttonEditUser;
-
 
 
     private DatePickerDialog.OnDateSetListener dataPickerListener;
@@ -124,7 +115,7 @@ public class EditProfileActivity extends AppCompatActivity {
         context = this;
         fireStore = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        String userId  = user.getUid();
+        String userId = user.getUid();
         df = fireStore.collection("users").document(userId);
 
         initializeUI();
@@ -149,7 +140,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(editProfileNameContainer.getEditText().getText().toString().isEmpty()) {
+                if (editProfileNameContainer.getEditText().getText().toString().isEmpty()) {
                     editProfileNameContainer.setError("Este campo é obrigatório.");
                     return;
                 }
@@ -177,7 +168,6 @@ public class EditProfileActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-
 
 
         editProfileBirthdayText.addTextChangedListener(new TextWatcher() {
@@ -297,10 +287,10 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onSuccess(final DocumentSnapshot documentSnapshot) {
                 final User userObject = documentSnapshot.toObject(User.class);
 
-                if (userObject.getPhoto() != null ) {
+                if (userObject.getPhoto() != null) {
                     pickedImgUri = Uri.parse(userObject.getPhoto());
                     DB.loadWithGlide(context, userObject.getPhoto(), userPhoto);
-                }else{
+                } else {
                     userPhoto.setImageResource(R.drawable.ic_baseline_account_circle_24);
                 }
 
@@ -335,92 +325,78 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     public void editUser() {
-        if (!verificationOfInputs(editProfileNameContainer.getEditText().getText().toString(),
-                editProfileEmailContainer.getEditText().getText().toString().trim(),
-                editProfileOldPasswordContainer.getEditText().getText().toString().trim(),
-                editProfileBirthdayContainer.getEditText().getText().toString().trim(),
-                editProfileCityContainer.getEditText().getText().toString())) {
+        String email = editProfileEmailContainer.getEditText().getText().toString().trim();
+        String oldPassword = editProfileOldPasswordContainer.getEditText().getText().toString().trim();
+        String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString().trim();
+        String newPasswordConf = editProfileNewPasswordConfContainer.getEditText().getText().toString().trim();
+        String name = editProfileNameContainer.getEditText().getText().toString();
+        Date birthday = convertStrToDate(editProfileBirthdayContainer.getEditText().getText().toString().trim());
+        Address address = convertCityToAddress(editProfileCityContainer.getEditText().getText().toString());
+
+        if (!verificationOfInputs(name, email, oldPassword, birthday.toString(), address.getAddress(), newPassword, newPasswordConf)) {
             Toast.makeText(getApplicationContext(), R.string.msgError_fields, Toast.LENGTH_LONG).show();
         } else {
-                    String email = editProfileEmailContainer.getEditText().getText().toString().trim();
-                    String oldPassword = editProfileOldPasswordContainer.getEditText().getText().toString().trim();
-                    String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString().trim();
-                    String newPasswordConf = editProfileNewPasswordConfContainer.getEditText().getText().toString().trim();
-                    String name = editProfileNameContainer.getEditText().getText().toString();
-                    Date birthday = convertStrToDate(editProfileBirthdayContainer.getEditText().getText().toString().trim());
-                    Address address = convertCityToAddress(editProfileCityContainer.getEditText().getText().toString());
+            if (pickedImgUri != null) {
+                if (photoIsChanged) {
+                    updateUserInfo(pickedImgUri, user, name, email, birthday, address);
+                } else {
+                    User userUpdate = new User(name, email, birthday, address, user.getUid(), pickedImgUri.toString());
+                    DB.updateUser(userUpdate);
+                }
+            } else {
+                User userUpdate = new User(name, email, birthday, address, user.getUid(), null);
+                DB.updateUser(userUpdate);
+            }
 
-                    if(pickedImgUri != null){
-                        if(photoIsChanged){
-                            updateUserInfo(pickedImgUri, user, name, email, birthday, address);
-                        }else{
-                            User userUpdate = new User(name, email, birthday, address, user.getUid(), pickedImgUri.toString());
-                            DB.updateUser(userUpdate);
-                        }
-                    }else{
-                        User userUpdate = new User(name, email, birthday, address, user.getUid(), null);
-                        DB.updateUser(userUpdate);
-                    }
-
-                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
-                    if(user.getEmail() != email && !oldPassword.isEmpty()){
-                        user.reauthenticate(credential)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        String email = editProfileEmailContainer.getEditText().getText().toString().trim();
-                                        user.updateEmail(email)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Toast.makeText(getApplicationContext(), "User email updated.", Toast.LENGTH_LONG).show();
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
+            if (user.getEmail() != email) {
+                user.reauthenticate(credential)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "User email failed.", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                        });
-                    }
-
-                    if(!newPassword.isEmpty() && !newPasswordConf.isEmpty()){
-                        if(!newPassword.equals(oldPassword)){
-                            if(newPassword.equals(newPasswordConf)){
-                                user.reauthenticate(credential)
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String email = editProfileEmailContainer.getEditText().getText().toString().trim();
+                                user.updateEmail(email)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString().trim();
-                                                user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        Toast.makeText(getApplicationContext(), "Password updated.", Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(getApplicationContext(), "User email updated.", Toast.LENGTH_LONG).show();
+                                                }
                                             }
-                                        }).addOnFailureListener(new OnFailureListener() {
+                                        });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "User email failed.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                });
+            }
+
+            if (newPassword != null) {
+                user.reauthenticate(credential)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString().trim();
+                                user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(), "Password failed.", Toast.LENGTH_LONG).show();
-                                        return;
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(getApplicationContext(), "Password updated.", Toast.LENGTH_LONG).show();
                                     }
                                 });
-                            }else{
-                                editProfileNewPasswordConfContainer.setError(getString(R.string.txtErorPassConf));
-                                return;
                             }
-                        }else{
-                            editProfileNewPasswordContainer.setError(getString(R.string.txtErorPass));
-                            return;
-                        }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Password failed.", Toast.LENGTH_LONG).show();
+                        return;
                     }
+                });
+            }
 
-                    backMainActivityProfile();
+            backMainActivityProfile();
         }
     }
 
@@ -438,7 +414,7 @@ public class EditProfileActivity extends AppCompatActivity {
         return email.matches(regex);
     }
 
-    private Address convertCityToAddress(String userCity){
+    private Address convertCityToAddress(String userCity) {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         try {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
@@ -485,14 +461,15 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    private boolean verificationOfInputs(String name, String email, String password, String birthday, String city){
+    private boolean verificationOfInputs(String name, String email, String password, String birthday, String city, String newPassword, String newPasswordConf) {
         boolean verifyName = validateUserName(name);
         boolean verifyEmail = validateEmail(email);
         boolean verifyPassword = validatePassword(password);
         boolean verifyBirthday = validateBirthday(birthday);
         boolean verifyCity = validateCity(city);
+        boolean verifyNewPassword = validateNewPassword(password, newPassword, newPasswordConf);
 
-        return (verifyName && verifyEmail && verifyPassword && verifyBirthday && verifyCity);
+        return (verifyName && verifyEmail && verifyPassword && verifyBirthday && verifyCity && verifyNewPassword);
     }
 
     private boolean validateUserName(String name) {
@@ -511,11 +488,11 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileEmailContainer.setError(getString(R.string.errorUserEmail));
             editProfileEmailContainer.setErrorEnabled(true);
             return false;
-        }else if(!matcher.matches()) {
+        } else if (!matcher.matches()) {
             editProfileEmailContainer.setError(getString(R.string.errorUserEmail1));
             editProfileEmailContainer.setErrorEnabled(true);
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -525,14 +502,40 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileOldPasswordContainer.setError(getString(R.string.errorUserPassword));
             editProfileOldPasswordContainer.setErrorEnabled(true);
             return false;
-        }else if(!(password.length() > 5)) {
+        } else if (!(password.length() > 5)) {
             editProfileOldPasswordContainer.setError(getString(R.string.errorUserPassword1));
             editProfileOldPasswordContainer.setErrorEnabled(true);
             return false;
-        }else{
+        } else {
             return true;
         }
     }
+
+    private boolean validateNewPassword(String oldPassword, String newPassword, String newPasswordConf) {
+        if (newPassword.isEmpty() && !newPasswordConf.isEmpty()) {
+            editProfileNewPasswordContainer.setError(getString(R.string.errorUserPassword));
+            editProfileNewPasswordContainer.setErrorEnabled(true);
+            return false;
+        }
+
+        if (!newPassword.isEmpty() && newPasswordConf.isEmpty()) {
+            editProfileNewPasswordConfContainer.setError(getString(R.string.errorUserPassword));
+            editProfileNewPasswordConfContainer.setErrorEnabled(true);
+            return false;
+        }
+
+        if (newPassword.equals(oldPassword)) {
+            editProfileNewPasswordContainer.setError(getString(R.string.txtErorPass));
+            editProfileNewPasswordContainer.setErrorEnabled(true);
+            return false;
+        } else if (!newPassword.equals(newPasswordConf)) {
+            editProfileNewPasswordContainer.setError(getString(R.string.txtErorPassConf));
+            editProfileNewPasswordContainer.setErrorEnabled(true);
+            return false;
+        }
+        return true;
+    }
+
 
     private boolean validateBirthday(String dateBirthday) {
         Date currentTime = Calendar.getInstance().getTime();
@@ -541,16 +544,16 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileBirthdayContainer.setError(getString(R.string.errorBirthday));
             editProfileBirthdayContainer.setErrorEnabled(true);
             return false;
-        } else if(dtBirthday.getTime() >= currentTime.getTime()){
+        } else if (dtBirthday.getTime() >= currentTime.getTime()) {
             editProfileBirthdayContainer.setError(getString(R.string.errorBirthday1));
             editProfileBirthdayContainer.setErrorEnabled(true);
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    private Date convertStrToDate(String userBirthday){
+    private Date convertStrToDate(String userBirthday) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         try {
             Date date = format.parse(userBirthday);
@@ -567,9 +570,9 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileCityContainer.setErrorEnabled(true);
             return false;
         } else {
-            if(checkCity(uCity)){
+            if (checkCity(uCity)) {
                 return true;
-            }else{
+            } else {
                 editProfileCityContainer.setError(getString(R.string.errorCity1));
                 editProfileCityContainer.setErrorEnabled(true);
                 return false;
@@ -578,13 +581,13 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkCity(String userCity){
+    private boolean checkCity(String userCity) {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         try {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
-            if(addresses.isEmpty()){
+            if (addresses.isEmpty()) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         } catch (IOException e) {
