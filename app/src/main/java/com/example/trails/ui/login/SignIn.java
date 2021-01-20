@@ -107,7 +107,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(SignIn.this, "Authentication failed.",
+                            Toast.makeText(SignIn.this, "Autenticação falhou!.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             startActivity(new Intent(SignIn.this, MainActivity.class));

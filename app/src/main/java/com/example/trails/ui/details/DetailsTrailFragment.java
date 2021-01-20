@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -131,6 +132,7 @@ public class DetailsTrailFragment extends Fragment {
         downloadWalk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LocalDB.storeTrail(getContext(), trail, trail.getId());
+                Toast.makeText(getContext(), "Trilho descarregado!", Toast.LENGTH_LONG).show();
             }
         });
 
