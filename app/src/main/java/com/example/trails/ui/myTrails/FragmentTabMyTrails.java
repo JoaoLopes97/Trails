@@ -17,6 +17,8 @@ import com.example.trails.ui.explore.ExploreTrailAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
+import java.util.List;
+
 import static com.example.trails.controller.DB.db;
 
 public class FragmentTabMyTrails extends Fragment {
@@ -51,20 +53,26 @@ public class FragmentTabMyTrails extends Fragment {
             case 0: // My trails
                 query = db.collection("trails").whereEqualTo("userId", user.getIdUser()).limit(50);
                 options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
-                exploreTrailAdapter = new ExploreTrailAdapter(options,requireContext());
+                exploreTrailAdapter = new ExploreTrailAdapter(options, requireContext());
                 mRecyclerView.setAdapter(exploreTrailAdapter);
                 break;
             case 2: //Historico
-                query = db.collection("trails").whereIn("id", user.getMadeTrails()); //we can order by
-                options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
-                exploreTrailAdapter = new ExploreTrailAdapter(options,requireContext());
-                mRecyclerView.setAdapter(exploreTrailAdapter);
+                List<String> madeTrails = user.getMadeTrails();
+                if (!madeTrails.isEmpty()) {
+                    query = db.collection("trails").whereIn("id", madeTrails); //we can order by
+                    options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
+                    exploreTrailAdapter = new ExploreTrailAdapter(options, requireContext());
+                    mRecyclerView.setAdapter(exploreTrailAdapter);
+                }
                 break;
             case 3: // Favoritos
-                query = db.collection("trails").whereIn("id", user.getFavoriteTrails());
-                options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
-                exploreTrailAdapter = new ExploreTrailAdapter(options,requireContext());
-                mRecyclerView.setAdapter(exploreTrailAdapter);
+                List<String> favouriteTrails = user.getFavoriteTrails();
+                if (!favouriteTrails.isEmpty()) {
+                    query = db.collection("trails").whereIn("id", favouriteTrails);
+                    options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
+                    exploreTrailAdapter = new ExploreTrailAdapter(options, requireContext());
+                    mRecyclerView.setAdapter(exploreTrailAdapter);
+                }
                 break;
         }
     }
@@ -72,13 +80,15 @@ public class FragmentTabMyTrails extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        exploreTrailAdapter.startListening();
+        if (exploreTrailAdapter != null)
+            exploreTrailAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        exploreTrailAdapter.stopListening();
+        if (exploreTrailAdapter != null)
+            exploreTrailAdapter.stopListening();
     }
 
 }

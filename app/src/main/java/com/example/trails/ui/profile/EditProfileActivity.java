@@ -34,6 +34,7 @@ import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
 import com.example.trails.model.Address;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -325,6 +326,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     public void editUser() {
+        User currentUser = SingletonCurrentUser.getCurrentUserInstance();
         String email = editProfileEmailContainer.getEditText().getText().toString().trim();
         String oldPassword = editProfileOldPasswordContainer.getEditText().getText().toString().trim();
         String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString().trim();
@@ -333,20 +335,24 @@ public class EditProfileActivity extends AppCompatActivity {
         Date birthday = convertStrToDate(editProfileBirthdayContainer.getEditText().getText().toString().trim());
         Address address = convertCityToAddress(editProfileCityContainer.getEditText().getText().toString());
 
-        if (!verificationOfInputs(name, email, oldPassword, birthday.toString(), address.getAddress(), newPassword, newPasswordConf)) {
+        if (!verificationOfInputs(name, email, oldPassword, birthday, address.getAddress(), newPassword, newPasswordConf)) {
             Toast.makeText(getApplicationContext(), R.string.msgError_fields, Toast.LENGTH_LONG).show();
         } else {
             if (pickedImgUri != null) {
                 if (photoIsChanged) {
                     updateUserInfo(pickedImgUri, user, name, email, birthday, address);
                 } else {
-                    User userUpdate = new User(name, email, birthday, address, user.getUid(), pickedImgUri.toString());
-                    DB.updateUser(userUpdate);
+                    currentUser.setPhoto(pickedImgUri.toString());
                 }
             } else {
-                User userUpdate = new User(name, email, birthday, address, user.getUid(), null);
-                DB.updateUser(userUpdate);
+                currentUser.setPhoto(null);
             }
+
+            currentUser.setName(name);
+            currentUser.setEmail(email);
+            currentUser.setDateOfBirth(birthday);
+            currentUser.setAddress(address);
+            DB.updateUser(currentUser);
 
             AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
             if (user.getEmail() != email) {
@@ -374,7 +380,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
             }
 
-            if (newPassword != null) {
+            if (!newPassword.isEmpty()) {
                 user.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -454,14 +460,21 @@ public class EditProfileActivity extends AppCompatActivity {
                 imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        DB.insertUser(currentUser, name, email, dateOfBirth, address, uri.toString());
+                        User user = SingletonCurrentUser.getCurrentUserInstance();
+
+                        user.setName(name);
+                        user.setEmail(email);
+                        user.setDateOfBirth(dateOfBirth);
+                        user.setAddress(address);
+                        user.setPhoto(uri.toString());
+                        DB.updateUser(user);
                     }
                 });
             }
         });
     }
 
-    private boolean verificationOfInputs(String name, String email, String password, String birthday, String city, String newPassword, String newPasswordConf) {
+    private boolean verificationOfInputs(String name, String email, String password, Date birthday, String city, String newPassword, String newPasswordConf) {
         boolean verifyName = validateUserName(name);
         boolean verifyEmail = validateEmail(email);
         boolean verifyPassword = validatePassword(password);
@@ -524,7 +537,7 @@ public class EditProfileActivity extends AppCompatActivity {
             return false;
         }
 
-        if (newPassword.equals(oldPassword)) {
+        if (!newPassword.isEmpty() && newPassword.equals(oldPassword)) {
             editProfileNewPasswordContainer.setError(getString(R.string.txtErorPass));
             editProfileNewPasswordContainer.setErrorEnabled(true);
             return false;
@@ -537,14 +550,13 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
-    private boolean validateBirthday(String dateBirthday) {
+    private boolean validateBirthday(Date dateBirthday) {
         Date currentTime = Calendar.getInstance().getTime();
-        Date dtBirthday = convertStrToDate(dateBirthday);
-        if (dateBirthday.isEmpty()) {
+        if (dateBirthday == null) {
             editProfileBirthdayContainer.setError(getString(R.string.errorBirthday));
             editProfileBirthdayContainer.setErrorEnabled(true);
             return false;
-        } else if (dtBirthday.getTime() >= currentTime.getTime()) {
+        } else if (dateBirthday.getTime() >= currentTime.getTime()) {
             editProfileBirthdayContainer.setError(getString(R.string.errorBirthday1));
             editProfileBirthdayContainer.setErrorEnabled(true);
             return false;
