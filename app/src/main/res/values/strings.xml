@@ -70,5 +70,7 @@
     <string name="titleAccountLogin">Login</string>
 
     <string name="txtSignOut">Terminar Sessão</string>
+    <string name="txtErorPassConf">A password de confirmação não coincide com a nova</string>
+    <string name="txtErorPass">A nova password é igual à sua password antiga</string>
 
 </resources>
