@@ -69,4 +69,6 @@
     <string name="photoTxt">Fotografia</string>
     <string name="titleAccountLogin">Login</string>
 
+    <string name="txtSignOut">Terminar Sessão</string>
+
 </resources>

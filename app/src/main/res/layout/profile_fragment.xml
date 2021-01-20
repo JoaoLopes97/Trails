@@ -7,26 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorMenuSelected"
-        >
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@color/White"
-            app:title="    Perfil">
-        </androidx.appcompat.widget.Toolbar>
-
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
     <LinearLayout
         android:id="@+id/barraPerfil"
         android:layout_width="409dp"
@@ -99,76 +79,6 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:paddingLeft="30dp"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Pessoal"
-            android:textColor="@color/colorMenuSelected"
-            tools:layout_editor_absoluteX="47dp"
-            tools:layout_editor_absoluteY="216dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/followers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:textStyle="bold"
-            android:text="Seguidores" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/following"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:textStyle="bold"
-            android:text="A seguir" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/stats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:textStyle="bold"
-            android:text="Estatisticas" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/fotos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:textStyle="bold"
-            android:text="Fotografias" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
             android:id="@+id/settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -198,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="10dp"
                 android:textStyle="bold"
-                android:text="Sign out"
+                android:text="@string/txtSignOut"
                 android:layout_weight="1"/>
 
             <ImageButton
@@ -206,6 +116,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_login_24"
+                android:background="@android:color/transparent"
                 android:title="@string/sign_out"
                 android:layout_weight="1"/>
         </LinearLayout>

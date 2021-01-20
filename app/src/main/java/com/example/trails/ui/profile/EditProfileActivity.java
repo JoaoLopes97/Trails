@@ -315,7 +315,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     public void editUser() {
-
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
