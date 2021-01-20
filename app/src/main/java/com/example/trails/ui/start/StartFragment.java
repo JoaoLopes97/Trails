@@ -34,6 +34,7 @@ import com.example.trails.model.Characteristics;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -54,6 +55,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,10 +67,6 @@ import static com.example.trails.MainActivity.setFragment;
 
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     //Chronometer
     private Chronometer chronometer;
@@ -111,12 +110,12 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 // Centrar e alterar zoom na posição
-                //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                 // Apenas centrar na posição
                 //map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                latLngs.add(latLng);
 
                 if (running) {
+                    latLngs.add(latLng);
                     for (int i = 0; i < latLngs.size(); i++) {
                         polylineOptions = new PolylineOptions().addAll(latLngs).width(width);
                         polyline = map.addPolyline(polylineOptions);
@@ -153,12 +152,12 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             save.setText("Avaliar");
         }
 
-        mRecyclerView = root.findViewById(R.id.my_recycler_view);
+        RecyclerView mRecyclerView = root.findViewById(R.id.my_recycler_view);
 
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new StartTrailAdapter(getContext(), getActivity(), LocalDB.getTrailsNameFromAssets(getContext()));
+        RecyclerView.Adapter mAdapter = new StartTrailAdapter(getContext(), getActivity(), LocalDB.getTrailsNameFromAssets(requireContext()));
         mRecyclerView.setAdapter(mAdapter);
 
         imagesWithCoords = new ArrayList<>();
@@ -194,7 +193,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     running = false;
                 } else {
                     if (distance == 0) {
-                        kms.setText("0,00");
+                        kms.setText("0.00");
                     }
                     checkUserLocationPermission();
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
@@ -216,12 +215,14 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     bundle.putSerializable("trail", loadedTrail);
                     bundle.putInt("type", 1);
                 } else {
-                    Characteristics c = new Characteristics(null, null, null, null, distance / 1000, SystemClock.elapsedRealtime() - chronometer.getBase() - pauseOffset);
+                    BigDecimal bd = BigDecimal.valueOf(distance / 1000).setScale(2, RoundingMode.HALF_UP);
+                    Characteristics c = new Characteristics(null, null, null, null, bd.floatValue(), Math.round(pauseOffset / 1000));
                     ArrayList<Coordinates> cd = new ArrayList<>();
+
                     for (LatLng lg : latLngs) {
                         cd.add(new Coordinates(lg.latitude, lg.longitude));
                     }
-                    Trail trail = new Trail(c, cd, "1"); //TODO get Current User ID
+                    Trail trail = new Trail(c, cd, SingletonCurrentUser.getCurrentUserInstance().getIdUser());
                     trail.setImagesWithCoords(imagesWithCoords);
 
                     bundle.putSerializable("trail", trail);
@@ -232,7 +233,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 itt.setArguments(bundle);
 
                 coordinatorLayout.removeAllViewsInLayout();
-                setFragment(R.id.start_fragment, itt, getActivity());
+                setFragment(R.id.start_fragment, itt, requireActivity());
             }
         });
 
@@ -243,7 +244,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 clear.setVisibility(View.INVISIBLE);
                 latLngs.clear();
                 distance = 0;
-                kms.setText("0,00");
+                kms.setText("0.00");
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 pauseOffset = 0;
                 lastLocation = null;
@@ -263,20 +264,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     e.printStackTrace();
                 }
                 if (imageFile != null) {
-                    Uri uri = FileProvider.getUriForFile(getContext(), getActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
+                    Uri uri = FileProvider.getUriForFile(requireContext(), requireActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
                     intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
                     startActivityForResult(intent, CAMERA_PIC_REQUEST);
                 }
-                /*
-                chronometer.stop();
-                pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();*/
             }
         });
 
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         latLngs = new ArrayList<>();
 
         return root;
@@ -285,7 +283,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     private File getImage() throws IOException {
         String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
         String imageName = "jpg_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         File imageFile = File.createTempFile(imageName, ".jpg", storageDir);
         currentImagePath = imageFile.getAbsolutePath();
@@ -333,7 +331,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
         }
 
@@ -344,26 +342,19 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public boolean checkUserLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Request_User_Location_Code);
-            return false;
-        } else {
-            return true;
+    public void checkUserLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Request_User_Location_Code);
         }
     }
 
-    public boolean checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_PIC_REQUEST);
-            return false;
-        } else {
-            return true;
+    public void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_PIC_REQUEST);
         }
     }
 
     public void drawTrail(Trail trail) {
-
         ArrayList<LatLng> latLngs = new ArrayList<>();
         for (Coordinates lg : trail.getCoordinates()) {
             latLngs.add(new LatLng(lg.getLatitude(), lg.getLongitude()));
@@ -383,26 +374,24 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
     private class RetrieveImagesTask extends AsyncTask<Pair<String, Coordinates>, Void, Bitmap> {
 
-        private Exception exception;
         private Coordinates coordinates;
 
+        @SafeVarargs
         @Override
-        protected Bitmap doInBackground(Pair<String, Coordinates>... pairs) {
+        protected final Bitmap doInBackground(Pair<String, Coordinates>... pairs ) {
             try {
                 coordinates = pairs[0].second;
                 URL url = new URL(pairs[0].first);
-                Bitmap image = BitmapFactory.decodeStream(url.openStream());
 
-                return image;
+                return BitmapFactory.decodeStream(url.openStream());
             } catch (Exception e) {
-                this.exception = e;
                 return null;
             }
         }
 
         protected void onPostExecute(Bitmap image) {
             if (image != null) {
-                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons(image, 150, 200));
+                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons(image));
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude()))
                         .icon(bitmapDescriptor));
@@ -410,8 +399,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private Bitmap resizeMapIcons(Bitmap bitmap, int width, int height) {
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        return resizedBitmap;
+    private Bitmap resizeMapIcons(Bitmap bitmap) {
+        return Bitmap.createScaledBitmap(bitmap, 150, 200, false);
     }
 }

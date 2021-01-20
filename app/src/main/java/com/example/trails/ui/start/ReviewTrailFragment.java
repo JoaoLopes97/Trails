@@ -24,7 +24,9 @@ import com.example.trails.controller.DB;
 import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
 import com.example.trails.model.Review;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
+import com.example.trails.model.User;
 import com.example.trails.ui.details.DetailsTrailFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
@@ -47,7 +50,6 @@ import static com.example.trails.controller.DB.storage;
 public class ReviewTrailFragment extends Fragment {
 
     private LinearLayout linearLayout;
-    private Button imageBtn, saveBtn;
     private RatingBar ratingBar;
     private TextView comment;
 
@@ -56,6 +58,7 @@ public class ReviewTrailFragment extends Fragment {
 
     public ReviewTrailFragment(Trail trail) {
         this.trail = trail;
+        if (trail.getListReviews() == null) trail.setListReviews(new ArrayList<Review>());
     }
 
     public ReviewTrailFragment() {
@@ -68,8 +71,8 @@ public class ReviewTrailFragment extends Fragment {
         View view = inflater.inflate(R.layout.review_trail_fragment, container, false);
 
         linearLayout = view.findViewById(R.id.images_layout);
-        saveBtn = view.findViewById(R.id.save_trail);
-        imageBtn = view.findViewById(R.id.images_btn);
+        Button saveBtn = view.findViewById(R.id.save_trail);
+        Button imageBtn = view.findViewById(R.id.images_btn);
         ratingBar = view.findViewById(R.id.rating_bar);
         comment = view.findViewById(R.id.comment);
 
@@ -95,14 +98,14 @@ public class ReviewTrailFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Review review = new Review(trail.getId(), "1", comment.getText().toString(), ratingBar.getRating()); //TODO get userId
-
-                //TODO save user review
-
-                //saveTrail();
+                User user = SingletonCurrentUser.getCurrentUserInstance();
+                Review review = new Review(trail.getId(), user.getIdUser(), comment.getText().toString(), ratingBar.getRating());
+                trail.addReview(review);
+                saveTrail();
+                DB.updateUser(user);
 
                 DetailsTrailFragment dt = new DetailsTrailFragment(trail);
-                setFragment(R.id.start_fragment, dt, getActivity());
+                setFragment(R.id.start_fragment, dt, requireActivity());
             }
         });
         return view;
@@ -113,7 +116,7 @@ public class ReviewTrailFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             ClipData clipData = data.getClipData();
             Uri imageUri;
             if (clipData != null) {
@@ -121,7 +124,7 @@ public class ReviewTrailFragment extends Fragment {
                     imageUri = clipData.getItemAt(i).getUri();
                     imageUris.add(imageUri);
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                         createNewImageView(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -131,7 +134,7 @@ public class ReviewTrailFragment extends Fragment {
                 imageUri = data.getData();
                 imageUris.add(imageUri);
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                     createNewImageView(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -143,16 +146,12 @@ public class ReviewTrailFragment extends Fragment {
     private void createNewImageView(Bitmap bitmap) {
 
         ImageView iv = new ImageView(getContext());
-
-        // Set an image for ImageView
         iv.setImageBitmap(bitmap);
-        // Create layout parameters for ImageView
-        final float scale = getContext().getResources().getDisplayMetrics().density;
+        final float scale = requireContext().getResources().getDisplayMetrics().density;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams((int) (100 * scale + 0.5f), (int) (120 * scale + 0.5f));
 
         iv.setLayoutParams(lp);
 
-        // Finally, add the ImageView to layout
         linearLayout.addView(iv);
     }
 
@@ -168,7 +167,7 @@ public class ReviewTrailFragment extends Fragment {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw Objects.requireNonNull(task.getException());
                     }
                     // Continue with the task to get the download URL
                     Task<Uri> t = ref.getDownloadUrl();
@@ -180,13 +179,15 @@ public class ReviewTrailFragment extends Fragment {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
-                        String downloadURL = downloadUri.toString();
-                        trail.getImages().add(downloadURL);
+                        if (downloadUri != null) {
+                            String downloadURL = downloadUri.toString();
+                            trail.getImages().add(downloadURL);
+                        }
                     }
                 }
             });
         }
-        // might need to review
+
         Tasks.whenAllComplete(uploadTasks).
 
                 addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
@@ -195,7 +196,7 @@ public class ReviewTrailFragment extends Fragment {
                         Tasks.whenAllComplete(downloadUriTask).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
                             @Override
                             public void onComplete(@NonNull Task<List<Task<?>>> task) {
-                                DB.insertTrail(trail);
+                                DB.updateTrail(trail);
                             }
                         });
                     }

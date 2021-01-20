@@ -79,9 +79,9 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             txtRatingCard.setRating(trail.getTrailRating());
             //txtReviewsCard.setText(trail.getReviews() + " Reviews");
             String imageUrl = null;
-            if (trail.getImages() != null) {
+            if (!trail.getImages().isEmpty()) {
                 imageUrl = trail.getImages().get(0);
-            } else if (trail.getImagesCoords() != null) {
+            } else if (!trail.getImagesCoords().isEmpty()) {
                 imageUrl = trail.getImagesCoords().get(0).first;
             }
 

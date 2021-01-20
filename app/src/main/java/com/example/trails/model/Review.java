@@ -2,7 +2,9 @@ package com.example.trails.model;
 
 import com.google.firebase.firestore.Exclude;
 
-public class Review {
+import java.io.Serializable;
+
+public class Review implements Serializable {
 
     private String id;
     private String trailId;

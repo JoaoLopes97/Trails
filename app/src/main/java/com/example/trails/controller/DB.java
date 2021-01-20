@@ -47,6 +47,10 @@ public class DB {
                 });
     }
 
+    public static void updateTrail(Trail trail) {
+        DocumentReference df = db.collection("trails").document(trail.getId());
+        df.set(trail);
+    }
 
     public static void loadWithGlide(Context context, String imageUrl, ImageView imageView) {
 
@@ -55,14 +59,14 @@ public class DB {
                 .into(imageView);
     }
 
-    public static void insertUser(final FirebaseUser currentUser, String name, String email, Date dateOfBirth, Address address, String photo){
+    public static void insertUser(final FirebaseUser currentUser, String name, String email, Date dateOfBirth, Address address, String photo) {
         DocumentReference df = db.collection("users").document(currentUser.getUid());
-        User newUser = new User(name, email, dateOfBirth, address , currentUser.getUid(), photo);
+        User newUser = new User(name, email, dateOfBirth, address, currentUser.getUid(), photo);
         df.set(newUser);
     }
 
-    public static void getCurrentUserDB(String userId){
-        DocumentReference df = db.getInstance().collection("users").document(userId);
+    public static void getCurrentUserDB(String userId) {
+        DocumentReference df = db.collection("users").document(userId);
 
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -73,8 +77,8 @@ public class DB {
         });
     }
 
-    public static void updateUser(User user){
-        DocumentReference df = db.getInstance().collection("users").document(user.getIdUser());
+    public static void updateUser(User user) {
+        DocumentReference df = db.collection("users").document(user.getIdUser());
         df.set(user);
     }
 }
