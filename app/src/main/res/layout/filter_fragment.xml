@@ -27,68 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="Tipo de Terreno"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
-
-                <CheckBox
-                    android:id="@+id/filter_terrain_easy"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/radio_flat_selector"
-                    android:button="@android:color/transparent"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="3dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="3dp"
-                    android:text="Baixo"
-                    android:textColor="@color/radio_flat_text_selector" />
-
-                <CheckBox
-                    android:id="@+id/filter_terrain_medium"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/radio_flat_selector"
-                    android:button="@android:color/transparent"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="3dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="3dp"
-                    android:text="Medio"
-                    android:textColor="@color/radio_flat_text_selector" />
-
-                <CheckBox
-                    android:id="@+id/filter_terrain_hard"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/radio_flat_selector"
-                    android:button="@android:color/transparent"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="3dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="3dp"
-                    android:text="Alto"
-                    android:textColor="@color/radio_flat_text_selector" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:text="Dificuldade"
                 android:textSize="20dp"
                 android:textStyle="bold" />

@@ -30,9 +30,6 @@ public class FilterFragment extends Fragment {
 
     private Button btnShow;
     private Button btnReset;
-    private CheckBox checkBoxTerrainEasy;
-    private CheckBox checkBoxTerrainMedium;
-    private CheckBox checkBoxTerrainHard;
     private CheckBox checkBoxEasy;
     private CheckBox checkBoxMedium;
     private CheckBox checkBoxHard;
@@ -46,22 +43,12 @@ public class FilterFragment extends Fragment {
 
         btnShow = root.findViewById(R.id.filter_show);
         btnReset = root.findViewById(R.id.filter_reset);
-        checkBoxTerrainEasy = root.findViewById(R.id.filter_terrain_easy);
-        checkBoxTerrainMedium = root.findViewById(R.id.filter_terrain_medium);
-        checkBoxTerrainHard = root.findViewById(R.id.filter_terrain_hard);
         checkBoxEasy = root.findViewById(R.id.filter_dificulty_easy);
         checkBoxMedium = root.findViewById(R.id.filter_dificulty_medium);
         checkBoxHard = root.findViewById(R.id.filter_dificulty_hard);
         ratingBar = root.findViewById(R.id.filter_trail_rating);
 
         fireStore = FirebaseFirestore.getInstance();
-
-        //Task<QuerySnapshot> trailMaiorDocumentSnap = fireStore.collection("trails").orderBy("characteristics.distance", Query.Direction.DESCENDING).limit(1).get();
-        //Trail trailMaiorDistancia = trailMaiorDocumentSnap.getResult().getDocuments().get(0).toObject(Trail.class);
-
-        //Task<QuerySnapshot> trailMenorDocumentSnap = fireStore.collection("trails").orderBy("characteristics.distance", Query.Direction.ASCENDING).limit(1).get();
-        //Trail trailMenorDistancia = trailMenorDocumentSnap.getResult().getDocuments().get(0).toObject(Trail.class);
-
 
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,9 +61,6 @@ public class FilterFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                boolean terrainEasy = checkBoxTerrainEasy.isChecked();
-                boolean terrainMedium = checkBoxTerrainMedium.isChecked();
-                boolean terrainHard = checkBoxTerrainHard.isChecked();
 
                 boolean easy = checkBoxEasy.isChecked();
                 boolean medium = checkBoxMedium.isChecked();
@@ -84,7 +68,7 @@ public class FilterFragment extends Fragment {
 
                 float rating = ratingBar.getRating();
 
-                ExploreFragment.filterData(terrainEasy, terrainMedium, terrainHard, easy, medium, hard, rating);
+                ExploreFragment.filterData(easy, medium, hard, rating);
             }
         });
         return root;

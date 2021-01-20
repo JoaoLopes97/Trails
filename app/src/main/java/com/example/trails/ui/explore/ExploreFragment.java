@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -30,10 +31,10 @@ import static com.example.trails.controller.DB.db;
 public class ExploreFragment extends Fragment {
 
     private static FilterFragment filterFragment;
-    private static Fragment thisFragment;
     private FloatingActionButton viewMode;
+    private FloatingActionButton filterBtn;
     private static ListFragment listFragment;
-    private MapFragment mapFragment;
+    private static MapFragment mapFragment;
     private static View filterLayout;
     public static HashMap<String, Coordinates> trails = new HashMap<>();
 
@@ -42,16 +43,19 @@ public class ExploreFragment extends Fragment {
 
     private static FragmentActivity activity;
 
+    private FloatingActionButton btnSearch;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.explore_fragment, container, false);
 
-        thisFragment = this;
 
         filterFragment = new FilterFragment();
 
         listFragment = new ListFragment();
+
+        mapFragment = new MapFragment();
 
         activity = (FragmentActivity)root.getContext();
 
@@ -65,7 +69,7 @@ public class ExploreFragment extends Fragment {
             }
         });
 
-        final FloatingActionButton filterBtn = root.findViewById(R.id.filter);
+        filterBtn = root.findViewById(R.id.filter);
 
         filterLayout = root.findViewById(R.id.filter_frag);
 
@@ -84,7 +88,6 @@ public class ExploreFragment extends Fragment {
             }
         });
 
-
         return root;
     }
 
@@ -99,7 +102,6 @@ public class ExploreFragment extends Fragment {
             viewMode.setImageResource(R.drawable.ic_baseline_list_24);
             viewMode_Map = true;
 
-            mapFragment = new MapFragment();
             setFragment(R.id.explore_frag, mapFragment, getActivity());
         }
     }
@@ -111,33 +113,31 @@ public class ExploreFragment extends Fragment {
         transaction.commit();
     }
 
-    public static void filterData(boolean terrainEasy, boolean terrainMedium, boolean terrainHard, boolean easy, boolean medium, boolean hard, float rating) {
+    public static void filterData(boolean easy, boolean medium, boolean hard, float rating) {
         hideFilter();
         filterLayout.setClickable(false);
         showingFilter = false;
-
-
 
         Query query = db.collection("trails");
 
 //        query = query.whereGreaterThanOrEqualTo("characteristics.distance", distanceLow);
 //        query = query.whereLessThanOrEqualTo("characteristics.distance", distanceHigh);
 
-        List<String> terrenoFields = new ArrayList<String>();
-
-        if (terrainEasy) {
-            terrenoFields.add("Baixo");
-        }
-        if (terrainMedium) {
-            terrenoFields.add("Medio");
-        }
-        if (terrainHard) {
-            terrenoFields.add("Alto");
-        }
-
-        if (terrainEasy || terrainMedium || terrainHard) {
-            query = query.whereIn("characteristics.terrainType", terrenoFields);
-        }
+//        List<String> terrenoFields = new ArrayList<String>();
+//
+//        if (terrainEasy) {
+//            terrenoFields.add("Baixo");
+//        }
+//        if (terrainMedium) {
+//            terrenoFields.add("Medio");
+//        }
+//        if (terrainHard) {
+//            terrenoFields.add("Alto");
+//        }
+//
+//        if (terrainEasy || terrainMedium || terrainHard) {
+//            query = query.whereIn("characteristics.terrainType", terrenoFields);
+//        }
 
         List<String> fields = new ArrayList<String>();
 
@@ -159,9 +159,9 @@ public class ExploreFragment extends Fragment {
             query = query.whereGreaterThanOrEqualTo("trailRating", rating);
         }
 
-        FirestoreRecyclerOptions<Trail> options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
-
         listFragment.setQuery(query);
+
+        mapFragment.setQuery(query);
 
 
         return;
