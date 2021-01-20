@@ -29,7 +29,7 @@ public class ListFragment extends Fragment {
         View root = inflater.inflate(R.layout.list_fragment, container, false);
 
 
-        Query query = db.collection("trails").whereEqualTo("description", "test"); //we can order by
+        Query query = db.collection("trails").whereGreaterThan("characteristics.distance", 0.5); //we can order by
         FirestoreRecyclerOptions<Trail> options = new FirestoreRecyclerOptions.Builder<Trail>().setQuery(query, Trail.class).build();
 
         mRecyclerView = root.findViewById(R.id.my_recycler_view);

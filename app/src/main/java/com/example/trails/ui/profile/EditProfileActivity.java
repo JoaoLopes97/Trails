@@ -72,15 +72,12 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputLayout editProfileNameContainer;
     private TextInputLayout editProfileBirthdayContainer;
     private TextInputEditText editProfileBirthdayText;
-    private TextInputLayout editProfileEmailContainer;
     private TextInputLayout editProfileCityContainer;
     private TextInputLayout editProfileOldPasswordContainer;
     private TextInputLayout editProfileNewPasswordContainer;
     private TextInputLayout editProfileNewPasswordConfContainer;
 
     private Button buttonEditUser;
-
-
 
     private DatePickerDialog.OnDateSetListener dataPickerListener;
 
@@ -123,7 +120,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
         userPhoto = findViewById(R.id.userPhoto);
         editProfileNameContainer = findViewById(R.id.editProfileNome);
-        editProfileEmailContainer = findViewById(R.id.editProfileEmail);
         editProfileBirthdayContainer = findViewById(R.id.editProfileBirthday);
         editProfileBirthdayText = findViewById(R.id.editProfileBirthdayText);
         editProfileCityContainer = findViewById(R.id.editProfileCity);
@@ -192,25 +188,21 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        editProfileEmailContainer.getEditText().addTextChangedListener(new TextWatcher() {
+        editProfileCityContainer.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!isValidEmail(editProfileEmailContainer.getEditText().getText().toString())) {
-                    editProfileEmailContainer.setError("O email inserido não é válido.");
-                    return;
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+
             }
         });
-
-
 
         editProfileBirthdayText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -287,7 +279,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
 
                 editProfileNameContainer.getEditText().setText(userObject.getName());
-                editProfileEmailContainer.getEditText().setText(userObject.getEmail());
 
                 try {
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -327,8 +318,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 String userName = editProfileNameContainer.getEditText().getText().toString();
 
-                String email = editProfileEmailContainer.getEditText().getText().toString();
-
                 String dateBirthString = editProfileBirthdayContainer.getEditText().getText().toString();
                 Date dateBirth = null;
                 try {
@@ -337,7 +326,17 @@ public class EditProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                Address address = convertCityToAddress(editProfileCityContainer.getEditText().getText().toString());
+                Geocoder geocoder = new Geocoder(getApplicationContext());
+                Address address;
+                try {
+                    List<android.location.Address> addresses = geocoder.getFromLocationName(editProfileCityContainer.getEditText().getText().toString(), 1);
+                    android.location.Address addressTemp = addresses.get(0);
+                    address = new Address(addressTemp.getLocality(), addressTemp.getLatitude(), addressTemp.getLongitude());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    address = null;
+                }
+
 
                 String oldPassword = editProfileOldPasswordContainer.getEditText().getText().toString();
                 final String newPassword = editProfileNewPasswordContainer.getEditText().getText().toString();
@@ -350,16 +349,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                FirebaseAuth.getInstance().signOut();
-                                                LoginManager.getInstance().logOut();
-
-                                                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        });
+                                        user.updatePassword(newPassword);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -385,11 +375,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
 
                 if(pickedImgUri != null && photoIsChanged){
-                    updateUserInfo(pickedImgUri, user, userName, email, dateBirth, address);
+                    updateUserInfo(pickedImgUri, user, userName, user.getEmail(), dateBirth, address);
                 } else if (pickedImgUri != null && !photoIsChanged) {
-                    DB.insertUser(user, userName, email, dateBirth, address, pickedImgUri.toString());
+                    DB.insertUser(user, userName, user.getEmail(), dateBirth, address, pickedImgUri.toString());
                 } else{
-                    DB.insertUser(user, userName, email, dateBirth, address, null);
+                    DB.insertUser(user, userName, user.getEmail(), dateBirth, address, null);
                 }
 
                 backMainActivityProfile();
@@ -410,11 +400,6 @@ public class EditProfileActivity extends AppCompatActivity {
         finish();
     }
 
-
-    static boolean isValidEmail(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-        return email.matches(regex);
-    }
 
     private Address convertCityToAddress(String userCity){
         Geocoder geocoder = new Geocoder(getApplicationContext());

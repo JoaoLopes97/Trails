@@ -60,6 +60,7 @@ public class FilterFragment extends Fragment {
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
             }
         });
         return root;
