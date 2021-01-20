@@ -308,9 +308,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 editProfileEmailContainer.getEditText().setText(userObject.getEmail());
 
                 try {
-                    /*DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    String strDate = dateFormat.format(userObject.getDateOfBirth());
-                    editProfileBirthdayContainer.getEditText().setText(strDate);*/
                     updateLabelBirthday(userObject.getDateOfBirth());
 
                 } catch (Exception e) {
