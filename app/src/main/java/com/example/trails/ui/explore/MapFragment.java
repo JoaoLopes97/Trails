@@ -34,13 +34,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.ContentValues.TAG;
@@ -51,7 +54,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private static final int Request_User_Location_Code = 99;
     private FusedLocationProviderClient fusedLocationProviderClient;
-
     private LocationRequest locationRequest;
     private LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -71,7 +73,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.map_fragment, container, false);
-        retrieveTrails();
+
+        retrieveTrails(null);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (checkUserLocationPermission()) {
@@ -113,12 +116,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Coordinates coordinates = trail.getValue();
 
             setLocation(coordinates.getLatitude(), coordinates.getLongitude(), trailId);
-
         }
     }
 
-    public void retrieveTrails() {
-        db.collection("trails")
+    public void retrieveTrails(Query queryTmp) {
+        Query query;
+        if (queryTmp != null) {
+            query = queryTmp;
+        } else {
+            query = db.collection("trails");
+        }
+        query
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -131,6 +139,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                return;
             }
         });
     }
@@ -173,4 +186,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
+
+    public void setQuery(Query query) {
+        map.clear();
+        ExploreFragment.trails.clear();
+        retrieveTrails(query);
+    }
 }
+
