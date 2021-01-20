@@ -1,6 +1,8 @@
 package com.example.trails.model;
 
-public class Characteristics {
+import java.io.Serializable;
+
+public class Characteristics implements Serializable {
 
     private String name;
     private String description;

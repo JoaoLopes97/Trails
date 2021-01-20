@@ -103,22 +103,22 @@ public class Trail implements Serializable {
         this.listReviews = listReviews;
     }
 
-    public void addComment(Review comment) {
-        if (comment != null) {
-            listReviews.add(comment);
-            //updateRating();
+    public void addReview(Review review) {
+        if (review != null) {
+            listReviews.add(review);
+            updateRating();
         }
     }
 
-  /*  public void updateRating() {
-        int numComments = 0;
+    public void updateRating() {
+        int numReviews = 0;
         float rating = 0;
-        for (Comment c : listComments) {
-            numComments++;
+        for (Review c : listReviews) {
+            numReviews++;
             rating += c.getRating();
         }
-        trailRating = rating / numComments;
-    }*/
+        trailRating = rating / numReviews;
+    }
 
 }
 

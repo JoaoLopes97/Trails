@@ -1,5 +1,6 @@
 package com.example.trails.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Objects;
  * implementation of equals(), returning true if equals() is true on each of the contained
  * objects.
  */
-public class Pair<F, S> {
+public class Pair<F, S> implements Serializable {
     public F first;
     public S second;
 

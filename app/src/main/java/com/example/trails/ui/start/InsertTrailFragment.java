@@ -7,25 +7,21 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.trails.R;
 import com.example.trails.controller.DB;
@@ -40,11 +36,8 @@ import com.example.trails.ui.details.DetailsTrailFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -52,6 +45,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
@@ -121,8 +115,8 @@ public class InsertTrailFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RadioButton type = getView().findViewById(trailType.getCheckedRadioButtonId());
-                RadioButton difficulty = getView().findViewById(trailDifficulty.getCheckedRadioButtonId());
+                RadioButton type = requireView().findViewById(trailType.getCheckedRadioButtonId());
+                RadioButton difficulty = requireView().findViewById(trailDifficulty.getCheckedRadioButtonId());
 
                 Characteristics ch = trail.getCharacteristics();
                 ch.setName(trailName.getText().toString());
@@ -133,10 +127,9 @@ public class InsertTrailFragment extends Fragment {
                 saveTrail();
 
                 DetailsTrailFragment dt = new DetailsTrailFragment(trail);
-                setFragment(R.id.start_fragment, dt,getActivity());
+                setFragment(R.id.start_fragment, dt, requireActivity());
             }
         });
-
 
         return view;
     }
@@ -145,7 +138,7 @@ public class InsertTrailFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             ClipData clipData = data.getClipData();
             Uri imageUri;
             if (clipData != null) {
@@ -153,7 +146,7 @@ public class InsertTrailFragment extends Fragment {
                     imageUri = clipData.getItemAt(i).getUri();
                     imageUris.add(new Pair<Uri, LatLng>(imageUri, null));
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                         createNewImageView(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -163,7 +156,7 @@ public class InsertTrailFragment extends Fragment {
                 imageUri = data.getData();
                 imageUris.add(new Pair<Uri, LatLng>(imageUri, null));
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                     createNewImageView(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -179,7 +172,7 @@ public class InsertTrailFragment extends Fragment {
         // Set an image for ImageView
         iv.setImageBitmap(bitmap);
         // Create layout parameters for ImageView
-        final float scale = getContext().getResources().getDisplayMetrics().density;
+        final float scale = requireContext().getResources().getDisplayMetrics().density;
         LayoutParams lp = new LayoutParams((int) (100 * scale + 0.5f), (int) (120 * scale + 0.5f));
 
         iv.setLayoutParams(lp);
@@ -200,7 +193,7 @@ public class InsertTrailFragment extends Fragment {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw Objects.requireNonNull(task.getException());
                     }
                     // Continue with the task to get the download URL
                     Task<Uri> t = ref.getDownloadUrl();
@@ -212,12 +205,14 @@ public class InsertTrailFragment extends Fragment {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
-                        String downloadURL = downloadUri.toString();
-                        if (image.second == null) {
-                            trail.getImages().add(downloadURL);
-                        } else {
-                            trail.getImagesCoords().add(new Pair<>(downloadURL, new Coordinates(image.second.latitude, image.second.longitude)));
+                        if (downloadUri != null) {
+                            String downloadURL = downloadUri.toString();
+                            if (image.second == null) {
+                                trail.getImages().add(downloadURL);
+                            } else {
+                                trail.getImagesCoords().add(new Pair<>(downloadURL, new Coordinates(image.second.latitude, image.second.longitude)));
 
+                            }
                         }
                     }
                 }
