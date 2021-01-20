@@ -96,6 +96,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private static int PReqCode = 1;
     private static int REQUESCODE = 1;
 
+    private boolean photoIsChanged = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -311,6 +313,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == REQUESCODE && data != null) {
             pickedImgUri = data.getData();
             userPhoto.setImageURI(pickedImgUri);
+            photoIsChanged = true;
         }
     }
 
@@ -377,13 +380,15 @@ public class EditProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (userObject.getPhoto() != null) {
+                if (userObject.getPhoto() != null && !photoIsChanged) {
                     pickedImgUri = Uri.parse(userObject.getPhoto());
                 }
 
-                if(pickedImgUri != null){
+                if(pickedImgUri != null && photoIsChanged){
                     updateUserInfo(pickedImgUri, user, userName, email, dateBirth, address);
-                }else{
+                } else if (pickedImgUri != null && !photoIsChanged) {
+                    DB.insertUser(user, userName, email, dateBirth, address, pickedImgUri.toString());
+                } else{
                     DB.insertUser(user, userName, email, dateBirth, address, null);
                 }
 
