@@ -2,6 +2,7 @@ package com.example.trails.ui.start;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,11 +37,16 @@ import com.example.trails.model.ImageData;
 import com.example.trails.model.Pair;
 import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -51,6 +57,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -68,6 +76,7 @@ import static com.example.trails.MainActivity.setFragment;
 
 public class StartFragment extends Fragment implements OnMapReadyCallback {
 
+    private static final int LOCATION_SETTINGS_REQUEST = 1;
     //Chronometer
     private Chronometer chronometer;
     private long pauseOffset;
@@ -164,11 +173,14 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         checkUserLocationPermission();
         checkCameraPermission();
 
-        // Controla o intervalo de tempo entre cada pedido e a ACCURACY
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        enableLocation();
+
+        /*// Controla o intervalo de tempo entre cada pedido e a ACCURACY
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(4000);
         locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
 
         chronometer = root.findViewById(R.id.clock);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -274,7 +286,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         latLngs = new ArrayList<>();
 
         return root;
@@ -333,12 +344,11 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
 
         if (loadedTrail != null) {
             drawTrail(loadedTrail);
-        } else {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
     }
 
@@ -372,13 +382,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private Bitmap resizeMapIcons(Bitmap bitmap) {
+        return Bitmap.createScaledBitmap(bitmap, 150, 200, false);
+    }
+
     private class RetrieveImagesTask extends AsyncTask<Pair<String, Coordinates>, Void, Bitmap> {
 
         private Coordinates coordinates;
 
         @SafeVarargs
         @Override
-        protected final Bitmap doInBackground(Pair<String, Coordinates>... pairs ) {
+        protected final Bitmap doInBackground(Pair<String, Coordinates>... pairs) {
             try {
                 coordinates = pairs[0].second;
                 URL url = new URL(pairs[0].first);
@@ -399,7 +413,56 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private Bitmap resizeMapIcons(Bitmap bitmap) {
-        return Bitmap.createScaledBitmap(bitmap, 150, 200, false);
+    private void enableLocation() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(500);
+        locationRequest.setFastestInterval(500);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        builder.setAlwaysShow(true);
+
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(requireActivity()).checkLocationSettings(builder.build());
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+
+                } catch (ApiException exception) {
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the
+                            // user a dialog.
+                            try {
+                                // Cast to a resolvable exception.
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                resolvable.startResolutionForResult(
+                                        requireActivity(),
+                                        LOCATION_SETTINGS_REQUEST);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            }
+        });
     }
+
 }
