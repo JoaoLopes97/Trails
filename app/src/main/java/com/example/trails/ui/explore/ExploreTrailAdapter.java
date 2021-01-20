@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.trails.MainActivity;
 import com.example.trails.R;
 import com.example.trails.controller.DB;
-import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.Trail;
@@ -44,9 +42,9 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             @Override
             public void onClick(View v) {
                 User user = SingletonCurrentUser.getCurrentUserInstance();
-                if(holder.favoriteCheckBox.isChecked()){
+                if (holder.favoriteCheckBox.isChecked()) {
                     user.getFavoriteTrails().add(holder.trail.getId());
-                }else{
+                } else {
                     user.removeFavoriteTrail(holder.trail.getId());
                 }
                 DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
@@ -94,7 +92,7 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             favoriteCheckBox.setVisibility(View.VISIBLE);
         }
 
-        boolean isFavoriteForUser(){
+        boolean isFavoriteForUser() {
             String trailId = trail.getId();
             return SingletonCurrentUser.getCurrentUserInstance().getFavoriteTrails().contains(trailId);
         }
@@ -104,7 +102,8 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             txtTrailNameCard.setText(ch.getName());
             txtLocationCard.setText(ch.getLocation().getAddress());
             txtRatingCard.setRating(trail.getTrailRating());
-            //txtReviewsCard.setText(trail.getReviews() + " Reviews");
+            if (trail.getListReviews() != null)
+                txtReviewsCard.setText(trail.getListReviews().size() + " reviews");
             String imageUrl = null;
             if (!trail.getImages().isEmpty()) {
                 imageUrl = trail.getImages().get(0);
@@ -112,7 +111,7 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
                 imageUrl = trail.getImagesCoords().get(0).first;
             }
 
-            if(isFavoriteForUser()){
+            if (isFavoriteForUser()) {
                 favoriteCheckBox.setChecked(true);
             }
 

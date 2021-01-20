@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = getIntent();
             int answer = intent.getIntExtra("profile", 0);
             navController.navigate(answer);
-        } catch (Exception e){};
+        } catch (Exception ignored){};
 
     }
 

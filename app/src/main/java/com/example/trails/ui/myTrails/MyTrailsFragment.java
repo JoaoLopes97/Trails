@@ -11,18 +11,26 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.trails.R;
 import com.google.android.material.tabs.TabLayout;
 
-public class MyTrailsFragment extends Fragment {
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
+public class MyTrailsFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.my_trails_fragment, container, false);
-        tabLayout = root.findViewById(R.id.tabLayout);
+        TabLayout tabLayout = root.findViewById(R.id.tabLayout);
 
-        viewPager = root.findViewById(R.id.viewPager);
-        viewPager.setAdapter(new PagerAdapter(getChildFragmentManager(), this.getContext()));
+        ViewPager viewPager = root.findViewById(R.id.viewPager);
+        List<Fragment> fragments = new ArrayList<>();
+
+        fragments.add(new FragmentTabMyTrails(0));
+        fragments.add(new FragmentTabDownloaded());
+        fragments.add(new FragmentTabMyTrails(2));
+        fragments.add(new FragmentTabMyTrails(3));
+        viewPager.setAdapter(new PagerAdapter(getChildFragmentManager(), this.getContext(),fragments));
         tabLayout.setupWithViewPager(viewPager);
+
 
         return root;
     }

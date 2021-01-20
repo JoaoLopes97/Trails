@@ -6,19 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.myTrails.MyTrailsFragment">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
+    <FrameLayout
+        android:id="@+id/details_frag"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:tabGravity="fill"
-        app:tabMode="scrollable">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/MyCustomTabLayout"/>
+            android:layout_height="match_parent"
+            app:tabGravity="fill"
+            app:tabMode="scrollable">
 
-    </androidx.viewpager.widget.ViewPager>
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                style="@style/MyCustomTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.viewpager.widget.ViewPager>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

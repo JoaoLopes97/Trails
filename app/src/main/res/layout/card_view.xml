@@ -32,7 +32,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="Title"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -41,7 +40,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="Location"
                 android:textSize="15dp" />
 
             <LinearLayout
@@ -65,8 +63,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="X reviews"
-                    android:textSize="12dp"></TextView>
+                    android:text="0 reviews"
+                    android:textSize="12dp"/>
 
             </LinearLayout>
 
@@ -82,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="59dp"
                 android:visibility="invisible"
-                app:srcCompat="@mipmap/ic_trash_round"></ImageButton>
+                app:srcCompat="@mipmap/ic_trash_round"/>
 
             <CheckBox
                 android:id="@+id/favoriteCheckBoxCardView"
