@@ -23,26 +23,24 @@
                 android:textSize="20dp"
                 android:textStyle="bold" />
 
-            <RadioGroup
-                android:id="@+id/filter_trail_type"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_margin="10dp"
+                android:text="Tipo de Terreno"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
-                <RadioButton
-                    android:id="@+id/filter_trail_type0"
-                    android:layout_width="140dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+
+                <CheckBox
+                    android:id="@+id/filter_terrain_easy"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_margin="10dp"
                     android:background="@drawable/radio_flat_selector"
                     android:button="@android:color/transparent"
                     android:checked="true"
@@ -51,44 +49,41 @@
                     android:paddingTop="3dp"
                     android:paddingRight="16dp"
                     android:paddingBottom="3dp"
-                    android:text="Marcado"
+                    android:text="Baixo"
                     android:textColor="@color/radio_flat_text_selector" />
 
-                <RadioButton
-                    android:id="@+id/filter_trail_type1"
-                    android:layout_width="140dp"
+                <CheckBox
+                    android:id="@+id/filter_terrain_medium"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_margin="10dp"
                     android:background="@drawable/radio_flat_selector"
                     android:button="@android:color/transparent"
+                    android:checked="true"
                     android:gravity="center"
                     android:paddingLeft="16dp"
                     android:paddingTop="3dp"
                     android:paddingRight="16dp"
                     android:paddingBottom="3dp"
-                    android:text="Sem Marcação"
+                    android:text="Medio"
                     android:textColor="@color/radio_flat_text_selector" />
 
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Distancia"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/filter_trail_distance_slider"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="1"
-                android:valueFrom="0"
-                android:valueTo="150"
-                app:thumbColor="@color/colorMenuSelected"
-                app:tickColor="@color/colorMenuSelected"
-                app:trackColor="@color/colorMenuSelected" />
+                <CheckBox
+                    android:id="@+id/filter_terrain_hard"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/radio_flat_selector"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="3dp"
+                    android:text="Alto"
+                    android:textColor="@color/radio_flat_text_selector" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
