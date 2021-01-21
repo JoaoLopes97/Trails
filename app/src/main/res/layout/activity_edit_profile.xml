@@ -77,7 +77,6 @@
                 style="@style/EditProfileEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nome"
                 app:layout_constraintTop_toBottomOf="@+id/userPhoto">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -92,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="Email"
+                android:enabled="false"
                 app:layout_constraintTop_toBottomOf="@+id/editProfileNome">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -107,7 +106,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="Data de nascimento"
                 app:errorEnabled="true"
                 app:layout_constraintTop_toBottomOf="@+id/editProfileEmail"
                 app:placeholderText="dd/mm/aaaa"
@@ -126,7 +124,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                android:hint="Cidade"
                 app:layout_constraintTop_toBottomOf="@+id/editProfileBirthday">
 
                 <com.google.android.material.textfield.TextInputEditText
