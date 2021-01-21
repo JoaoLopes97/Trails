@@ -38,7 +38,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -61,9 +60,11 @@ public class InsertTrailFragment extends Fragment {
     private EditText trailName, trailDescription;
     private RadioGroup trailType, trailDifficulty;
     private List<Pair<Uri, LatLng>> imageUris;
+    private List<Pair<ImageData, LatLng>> imagesWithCoords;
 
-    public InsertTrailFragment(Trail trail) {
+    public InsertTrailFragment(Trail trail, List<Pair<ImageData, LatLng>> imagesWithCoords) {
         this.trail = trail;
+        this.imagesWithCoords = imagesWithCoords;
     }
 
     @Override
@@ -96,7 +97,7 @@ public class InsertTrailFragment extends Fragment {
             e.printStackTrace();
         }
 
-        for (Pair<ImageData, LatLng> img : trail.getImagesWithCoords()) {
+        for (Pair<ImageData, LatLng> img : imagesWithCoords) {
             createNewImageView(img.first.getBitmap());
             imageUris.add(new Pair<>(img.first.getUri(), img.second));
         }

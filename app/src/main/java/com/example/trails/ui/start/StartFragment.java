@@ -227,7 +227,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                 } else {
                     Bundle bundle = new Bundle();
                     if (loadedTrail != null) {
-                        loadedTrail.setImagesWithCoords(imagesWithCoords);
 
                         bundle.putSerializable("trail", loadedTrail);
                         bundle.putInt("type", 1);
@@ -245,7 +244,6 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                             cd.add(new Coordinates(lg.latitude, lg.longitude));
                         }
                         Trail trail = new Trail(c, cd, SingletonCurrentUser.getCurrentUserInstance().getIdUser());
-                        trail.setImagesWithCoords(imagesWithCoords);
 
                         bundle.putSerializable("trail", trail);
                         bundle.putInt("type", 0);
@@ -258,7 +256,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                     SingletonCurrentUser.getCurrentUserInstance().setFinishedTrails();
                     DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
 
-                    SaveTrailFragment itt = new SaveTrailFragment();
+                    SaveTrailFragment itt = new SaveTrailFragment(imagesWithCoords);
                     itt.setArguments(bundle);
 
                     coordinatorLayout.removeAllViewsInLayout();
@@ -362,7 +360,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+            if (loadedTrail == null)
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
 
         if (loadedTrail != null) {
@@ -392,7 +391,7 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
             polylineOptions = new PolylineOptions().addAll(latLngs).width(width).color(getResources().getColor(R.color.Green));
             polyline = map.addPolyline(polylineOptions);
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 17));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngs.get(0), 15));
         map.addMarker(new MarkerOptions()
                 .position(latLngs.get(0)));
         for (Pair<String, Coordinates> imageWithCoords : trail.getImagesCoords()) {

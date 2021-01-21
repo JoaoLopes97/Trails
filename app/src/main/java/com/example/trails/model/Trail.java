@@ -13,7 +13,6 @@ public class Trail implements Serializable {
     private Characteristics characteristics;
     private ArrayList<Coordinates> coordinates;
     private String userId;
-    private List<Pair<ImageData, LatLng>> imagesWithCoords;
     private List<Pair<String, Coordinates>> imagesCoords;
     private List<String> images;
     private float trailRating;
@@ -62,16 +61,6 @@ public class Trail implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    @Exclude
-    public List<Pair<ImageData, LatLng>> getImagesWithCoords() {
-        return imagesWithCoords;
-    }
-
-    @Exclude
-    public void setImagesWithCoords(List<Pair<ImageData, LatLng>> imagesWithCoords) {
-        this.imagesWithCoords = imagesWithCoords;
     }
 
     public List<Pair<String, Coordinates>> getImagesCoords() {

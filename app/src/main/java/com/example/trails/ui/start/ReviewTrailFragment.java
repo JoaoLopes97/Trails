@@ -58,9 +58,11 @@ public class ReviewTrailFragment extends Fragment {
     private List<Uri> imageUris;
 
     private TextView msgError;
+    private List<Pair<ImageData, LatLng>> imagesWithCoords;
 
-    public ReviewTrailFragment(Trail trail) {
+    public ReviewTrailFragment(Trail trail,List<Pair<ImageData, LatLng>> imagesWithCoords) {
         this.trail = trail;
+        this.imagesWithCoords = imagesWithCoords;
         if (trail.getListReviews() == null) trail.setListReviews(new ArrayList<Review>());
     }
 
@@ -81,7 +83,7 @@ public class ReviewTrailFragment extends Fragment {
         msgError = view.findViewById(R.id.msgError);
         imageUris = new ArrayList<>();
 
-        for (Pair<ImageData, LatLng> img : trail.getImagesWithCoords()) {
+        for (Pair<ImageData, LatLng> img : imagesWithCoords) {
             createNewImageView(img.first.getBitmap());
             imageUris.add(img.first.getUri());
         }
