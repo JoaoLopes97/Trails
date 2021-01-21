@@ -362,7 +362,7 @@ public class RegistrationActivity extends AppCompatActivity {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
             if (addresses != null || !addresses.isEmpty()) {
                 android.location.Address address = addresses.get(0);
-                Address userAddress = new Address(address.getLocality(), address.getLatitude(), address.getLongitude());
+                Address userAddress = new Address(address.getAdminArea(), address.getLatitude(), address.getLongitude());
                 return userAddress;
             }
             return null;

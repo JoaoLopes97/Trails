@@ -333,11 +333,12 @@ public class EditProfileActivity extends AppCompatActivity {
         String newPasswordConf = editProfileNewPasswordConfContainer.getEditText().getText().toString().trim();
         String name = editProfileNameContainer.getEditText().getText().toString();
         Date birthday = convertStrToDate(editProfileBirthdayContainer.getEditText().getText().toString().trim());
-        Address address = convertCityToAddress(editProfileCityContainer.getEditText().getText().toString());
+        String city = editProfileCityContainer.getEditText().getText().toString();
 
-        if (!verificationOfInputs(name, email, oldPassword, birthday, address.getAddress(), newPassword, newPasswordConf)) {
+        if (!verificationOfInputs(name, email, oldPassword, birthday, city, newPassword, newPasswordConf)) {
             Toast.makeText(getApplicationContext(), R.string.msgError_fields, Toast.LENGTH_LONG).show();
         } else {
+            Address address = convertCityToAddress(city);
             if (pickedImgUri != null) {
                 if (photoIsChanged) {
                     updateUserInfo(pickedImgUri, user, name, email, birthday, address);
@@ -381,7 +382,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
             }
 
-            if (newPassword != null) {
+            if (!newPassword.isEmpty()) {
                 user.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -426,9 +427,12 @@ public class EditProfileActivity extends AppCompatActivity {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         try {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
-            android.location.Address address = addresses.get(0);
-            Address userAddress = new Address(address.getLocality(), address.getLatitude(), address.getLongitude());
-            return userAddress;
+            if (addresses != null && !addresses.isEmpty()) {
+                android.location.Address address = addresses.get(0);
+                Address userAddress = new Address(address.getAdminArea(), address.getLatitude(), address.getLongitude());
+                return userAddress;
+            }
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -597,7 +601,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         try {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
-            if (addresses.isEmpty()) {
+            if (addresses == null || addresses.isEmpty()) {
                 return false;
             } else {
                 return true;
