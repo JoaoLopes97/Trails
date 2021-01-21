@@ -231,6 +231,9 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
                         bundle.putSerializable("trail", loadedTrail);
                         bundle.putInt("type", 1);
+
+                        if (loadedTrail.getCharacteristics() != null)
+                            SingletonCurrentUser.getCurrentUserInstance().setKmTotal(loadedTrail.getCharacteristics().getDistance());
                     } else {
 
                         BigDecimal bd = BigDecimal.valueOf(distance / 1000).setScale(2, RoundingMode.HALF_UP);
@@ -246,15 +249,17 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
                         bundle.putSerializable("trail", trail);
                         bundle.putInt("type", 0);
+
+                        if (c != null)
+                            SingletonCurrentUser.getCurrentUserInstance().setKmTotal(c.getDistance());
                     }
 
-                SingletonCurrentUser.getCurrentUserInstance().setTimeInTrails(SystemClock.elapsedRealtime() - chronometer.getBase());
-                SingletonCurrentUser.getCurrentUserInstance().setKmTotal(loadedTrail.getCharacteristics().getDistance());
-                SingletonCurrentUser.getCurrentUserInstance().setFinishedTrails();
-                DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
+                    SingletonCurrentUser.getCurrentUserInstance().setTimeInTrails(SystemClock.elapsedRealtime() - chronometer.getBase());
+                    SingletonCurrentUser.getCurrentUserInstance().setFinishedTrails();
+                    DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
 
-                SaveTrailFragment itt = new SaveTrailFragment();
-                itt.setArguments(bundle);
+                    SaveTrailFragment itt = new SaveTrailFragment();
+                    itt.setArguments(bundle);
 
                     coordinatorLayout.removeAllViewsInLayout();
                     setFragment(R.id.start_fragment, itt, requireActivity());

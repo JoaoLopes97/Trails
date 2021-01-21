@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         mCallbackManager = CallbackManager.Factory.create();
+        /*
         loginBtnFacebook.setPermissions("email", "public_profile");
         loginBtnFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -88,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 //Log.d(TAG, "facebook:onError", error);
                 // ...
             }
-        });
+        });*/
 
 
     }
@@ -132,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.passwordLoginActivity);
         loginBtn = findViewById(R.id.loginLoginActivity);
         loginRes = findViewById(R.id.loginRegisterBtn);
-        loginBtnFacebook = findViewById(R.id.login_button_facebook);
+        //loginBtnFacebook = findViewById(R.id.login_button_facebook);
     }
 
 
