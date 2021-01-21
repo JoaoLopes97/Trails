@@ -102,6 +102,7 @@ public class ExploreFragment extends Fragment {
                     InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     filterDataSearch(editTextSearch.getText().toString());
+                    editTextSearch.clearFocus();
                     return true;
                 }
                 return false;
