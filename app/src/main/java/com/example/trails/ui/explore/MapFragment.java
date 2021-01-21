@@ -1,6 +1,7 @@
 package com.example.trails.ui.explore;
 
 import android.Manifest;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -21,11 +22,16 @@ import com.example.trails.R;
 import com.example.trails.model.Coordinates;
 import com.example.trails.model.Trail;
 import com.example.trails.ui.details.DetailsTrailFragment;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,7 +49,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.ContentValues.TAG;
@@ -51,9 +56,11 @@ import static com.example.trails.controller.DB.db;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
+    private static final int LOCATION_SETTINGS_REQUEST = 1;
     private GoogleMap map;
     private static final int Request_User_Location_Code = 99;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private Query query;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -65,7 +72,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                if (map != null)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             }
         }
     };
@@ -74,14 +82,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.map_fragment, container, false);
 
-        retrieveTrails(null);
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (checkUserLocationPermission()) {
-
-            locationRequest = LocationRequest.create();
-            locationRequest.setNumUpdates(1);
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            enableLocation();
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
@@ -95,7 +98,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
 
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
+        if (checkUserLocationPermission()) {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        }
+        retrieveTrails(query);
         /*
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -188,9 +194,63 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void setQuery(Query query) {
+        this.query = query;
         map.clear();
         ExploreFragment.trails.clear();
         retrieveTrails(query);
+    }
+
+
+    private void enableLocation() {
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setNumUpdates(1);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        builder.setAlwaysShow(true);
+
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(requireActivity()).checkLocationSettings(builder.build());
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+
+                } catch (ApiException exception) {
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the
+                            // user a dialog.
+                            try {
+                                // Cast to a resolvable exception.
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                resolvable.startResolutionForResult(
+                                        requireActivity(),
+                                        LOCATION_SETTINGS_REQUEST);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            }
+        });
     }
 }
 
