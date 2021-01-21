@@ -353,6 +353,7 @@ public class EditProfileActivity extends AppCompatActivity {
             currentUser.setDateOfBirth(birthday);
             currentUser.setAddress(address);
             DB.updateUser(currentUser);
+            currentUser.setPhoto(null);
 
             AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
             if (user.getEmail() != email) {
@@ -409,6 +410,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void backMainActivityProfile() {
         Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+
         intent.putExtra("profile", R.id.nav_profile);
         startActivityForResult(intent, 1);
         finish();

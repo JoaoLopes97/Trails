@@ -15,8 +15,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.trails.R;
 import com.example.trails.controller.DB;
-import com.example.trails.ui.login.LoginActivity;
+import com.example.trails.model.SingletonCurrentUser;
 import com.example.trails.model.User;
+import com.example.trails.ui.login.LoginActivity;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,7 +49,11 @@ public class ProfileFragment extends Fragment {
         verPerfil = root.findViewById(R.id.viewProfileText);
         userPhoto = root.findViewById(R.id.imageViewUserPhoto);
 
-        loadData(root);
+        User currentUser = SingletonCurrentUser.getCurrentUserInstance();
+        username.setText(currentUser.getName());
+        userPhoto.setImageResource(R.drawable.ic_baseline_account_circle_24);
+
+        DB.loadWithGlide(root.getContext(), currentUser.getPhoto(), userPhoto);
 
         barraEditPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +90,7 @@ public class ProfileFragment extends Fragment {
     public void loadData(final View root) {
         fireStore = FirebaseFirestore.getInstance();
 
-        userId  = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DocumentReference df = fireStore.collection("users").document(userId);
 
@@ -95,7 +100,7 @@ public class ProfileFragment extends Fragment {
                 User userObject = documentSnapshot.toObject(User.class);
                 username.setText(userObject.getName());
 
-                if(userObject.getPhoto() == null) {
+                if (userObject.getPhoto() == null) {
                     userPhoto.setImageResource(R.drawable.ic_baseline_account_circle_24);
                 } else {
                     DB.loadWithGlide(root.getContext(), userObject.getPhoto(), userPhoto);
@@ -103,10 +108,10 @@ public class ProfileFragment extends Fragment {
 
             }
         }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        username.setText("Username");
-                    }
-                });
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                username.setText("Username");
+            }
+        });
     }
 }
