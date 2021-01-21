@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
+import com.example.trails.controller.DB;
 import com.example.trails.controller.LocalDB;
 import com.example.trails.model.Characteristics;
 import com.example.trails.model.Coordinates;
@@ -247,8 +248,13 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
                         bundle.putInt("type", 0);
                     }
 
-                    SaveTrailFragment itt = new SaveTrailFragment();
-                    itt.setArguments(bundle);
+                SingletonCurrentUser.getCurrentUserInstance().setTimeInTrails(SystemClock.elapsedRealtime() - chronometer.getBase());
+                SingletonCurrentUser.getCurrentUserInstance().setKmTotal(loadedTrail.getCharacteristics().getDistance());
+                SingletonCurrentUser.getCurrentUserInstance().setFinishedTrails();
+                DB.updateUser(SingletonCurrentUser.getCurrentUserInstance());
+
+                SaveTrailFragment itt = new SaveTrailFragment();
+                itt.setArguments(bundle);
 
                     coordinatorLayout.removeAllViewsInLayout();
                     setFragment(R.id.start_fragment, itt, requireActivity());

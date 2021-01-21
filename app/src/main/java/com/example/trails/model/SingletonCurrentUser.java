@@ -14,7 +14,7 @@ public class SingletonCurrentUser {
     }
 
     public static User getCurrentUserInstance(){
-        if (currentUserInstance == null)
+        if (currentUserInstance.getIdUser() == null)
             globalUser();
         if(currentUserInstance.getFavoriteTrails() == null){
             currentUserInstance.setFavoriteTrails(new ArrayList<String>());

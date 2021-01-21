@@ -18,6 +18,10 @@ public class User {
     private List<String> favoriteTrails = new ArrayList<>();
     private List<String> madeTrails = new ArrayList<>();
 
+    private double kmTotal;
+    private long timeInTrails;
+    private int finishedTrails;
+
     public User(String name, String email, Date dateOfBirth, Address address, String idUser, String photo) {
         this.name = name;
         this.email = email;
@@ -25,6 +29,9 @@ public class User {
         this.idUser = idUser;
         this.photo = photo;
         this.address = address;
+        this.kmTotal = 0;
+        this.finishedTrails = 0;
+        this.timeInTrails = 0;
     }
 
     public User() {
@@ -94,14 +101,6 @@ public class User {
         this.favoriteTrails.remove(trailId);
     }
 
-    public List<String> getMadeTrails() {
-        return madeTrails;
-    }
-
-    public void setMadeTrails(List<String> madeTrails) {
-        this.madeTrails = madeTrails;
-    }
-
     public void addMadeTrail(String trailId){
         this.madeTrails.add(trailId);
     }
@@ -111,4 +110,43 @@ public class User {
         return address.getAddress();
     }
 
+    public List<String> getMadeTrails() {
+        return madeTrails;
+    }
+
+    public void setMadeTrails(List<String> madeTrails) {
+        this.madeTrails = madeTrails;
+    }
+
+    public void addMadeTrails(String trailId) {
+        this.madeTrails.add(trailId);
+    }
+
+    public void removeMadeTrails(String trailId) {
+        this.madeTrails.remove(trailId);
+    }
+
+    public double getKmTotal() {
+        return kmTotal;
+    }
+
+    public void setKmTotal(double kmTotal) {
+        this.kmTotal += kmTotal;
+    }
+
+    public long getTimeInTrails() {
+        return timeInTrails;
+    }
+
+    public void setTimeInTrails(long time) {
+        this.timeInTrails += time;
+    }
+
+    public int getFinishedTrails() {
+        return finishedTrails;
+    }
+
+    public void setFinishedTrails() {
+        this.finishedTrails = finishedTrails + 1;
+    }
 }

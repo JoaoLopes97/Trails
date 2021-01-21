@@ -70,6 +70,7 @@
         android:background="?android:attr/listDivider" />
 
     <LinearLayout
+        android:id="@+id/stats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -79,17 +80,105 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <TextView
-            android:id="@+id/settings"
+            android:id="@+id/statsTittle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:paddingLeft="30dp"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:text="Settings"
+            android:text="Estatísticas"
             android:textColor="@color/colorMenuSelected"
             tools:layout_editor_absoluteX="47dp"
             tools:layout_editor_absoluteY="216dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="174dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingVertical="10dp"
+                android:text="@string/KMTotal"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/kmTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:textStyle="bold"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:textStyle="bold"
+                android:text="@string/TotalTrailsDone"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/totalTrails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:textStyle="bold"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="174dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingVertical="10dp"
+                android:text="@string/TotalTimeTrails"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/timeTrailsTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:textStyle="bold"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/statsView"
+        app:layout_constraintTop_toBottomOf="@id/stats"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <View
             android:layout_width="match_parent"
@@ -99,37 +188,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/Sign_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:paddingVertical="10dp"
-                android:textStyle="bold"
-                android:text="@string/txtSignOut"
-                android:layout_weight="1"/>
+                android:text="Sign out"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/sign_out_menu"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_login_24"
+                android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:title="@string/sign_out"
-                android:layout_weight="1"/>
+                android:src="@drawable/ic_baseline_login_24"
+                android:title="@string/sign_out" />
         </LinearLayout>
 
 
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
     </LinearLayout>
-
 
 
 

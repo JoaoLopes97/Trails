@@ -38,6 +38,7 @@ public class DB {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
                         trail.setId(documentReference.getId());
+                        updateTrail(trail);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
