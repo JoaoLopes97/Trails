@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,6 +57,8 @@ public class ReviewTrailFragment extends Fragment {
     private Trail trail;
     private List<Uri> imageUris;
 
+    private TextView msgError;
+
     public ReviewTrailFragment(Trail trail) {
         this.trail = trail;
         if (trail.getListReviews() == null) trail.setListReviews(new ArrayList<Review>());
@@ -75,7 +78,7 @@ public class ReviewTrailFragment extends Fragment {
         Button imageBtn = view.findViewById(R.id.images_btn);
         ratingBar = view.findViewById(R.id.rating_bar);
         comment = view.findViewById(R.id.comment);
-
+        msgError = view.findViewById(R.id.msgError);
         imageUris = new ArrayList<>();
 
         for (Pair<ImageData, LatLng> img : trail.getImagesWithCoords()) {
@@ -99,6 +102,12 @@ public class ReviewTrailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 User user = SingletonCurrentUser.getCurrentUserInstance();
+                if(ratingBar.getRating() <= 0){
+                    Toast.makeText(requireContext(), R.string.msgReviewRating, Toast.LENGTH_LONG).show();
+                    //msgError.setText(R.string.msgError);
+                    return;
+                }
+
                 Review review = new Review(trail.getId(), user.getIdUser(), comment.getText().toString(), ratingBar.getRating());
                 trail.addReview(review);
                 user.addMadeTrail(trail.getId());

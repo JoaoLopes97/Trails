@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.trails.MainActivity;
 import com.example.trails.R;
+import com.example.trails.model.SingletonCurrentUser;
+import com.example.trails.model.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -40,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-
     private CallbackManager mCallbackManager;
 
 
@@ -49,9 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         mAuth = FirebaseAuth.getInstance();
-
         initializeUI();
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
                 loginUserAccount();
             }
         });
-
         loginRes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             globalUser();
+            User user = SingletonCurrentUser.getCurrentUserInstance();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         }

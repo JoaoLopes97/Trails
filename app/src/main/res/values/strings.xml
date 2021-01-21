@@ -51,6 +51,7 @@
     <string name="msgError_fields">Verifique os campos!</string>
     <string name="seccessRegister">Utilizador criado com sucesso!</string>
     <string name="msgError">Erro ao registar utilizador, por favor tente novamente!</string>
+    <string name="msgReviewRating">Tem que colocar um rating!</string>
     <string name="txtUsername">Nome de Utilizador</string>
     <string name="txtEmail">Email</string>
     <string name="txtPassword">Password</string>
@@ -73,5 +74,9 @@
     <string name="txtSignOut">Terminar Sessão</string>
     <string name="txtErorPassConf">A password de confirmação não coincide com a nova</string>
     <string name="txtErorPass">A nova password é igual à sua password antiga</string>
+
+    <string name="KMTotal">Total de KM Percorridos:</string>
+    <string name="TotalTrailsDone">Total de Trilhos Realizados:</string>
+    <string name="TotalTimeTrails">Tempo Total a Realizar Trilhos:</string>
 
 </resources>

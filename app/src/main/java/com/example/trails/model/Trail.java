@@ -32,7 +32,6 @@ public class Trail implements Serializable {
 
     }
 
-    @Exclude
     public String getId() {
         return Id;
     }
