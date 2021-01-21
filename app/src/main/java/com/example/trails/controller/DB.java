@@ -3,6 +3,7 @@ package com.example.trails.controller;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -80,5 +81,18 @@ public class DB {
     public static void updateUser(User user) {
         DocumentReference df = db.collection("users").document(user.getIdUser());
         df.set(user);
+    }
+
+    public static void getUserDB(String userId, final TextView userNameCard, final ImageView reviewPhotoCard, final Context context) {
+        DocumentReference df = db.collection("users").document(userId);
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User userObject = documentSnapshot.toObject(User.class);
+                userNameCard.setText(userObject.getName());
+                loadWithGlide(context, userObject.getPhoto(), reviewPhotoCard);
+            }
+        });
     }
 }

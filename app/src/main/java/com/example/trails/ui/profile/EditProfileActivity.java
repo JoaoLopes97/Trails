@@ -353,6 +353,7 @@ public class EditProfileActivity extends AppCompatActivity {
             currentUser.setDateOfBirth(birthday);
             currentUser.setAddress(address);
             DB.updateUser(currentUser);
+            currentUser.setPhoto(null);
 
             AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
             if (user.getEmail() != email) {
@@ -366,7 +367,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(getApplicationContext(), "User email updated.", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), "Email do utilizador atualizado.", Toast.LENGTH_LONG).show();
                                                 }
                                             }
                                         });
@@ -374,13 +375,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "User email failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Não foi possível atualizar o Email.", Toast.LENGTH_LONG).show();
                         return;
                     }
                 });
             }
 
-            if (!newPassword.isEmpty()) {
+            if (newPassword != null) {
                 user.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -389,14 +390,14 @@ public class EditProfileActivity extends AppCompatActivity {
                                 user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getApplicationContext(), "Password updated.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Password atualizada.", Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Password failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Password atualizada.", Toast.LENGTH_LONG).show();
                         return;
                     }
                 });
@@ -409,6 +410,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void backMainActivityProfile() {
         Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+
         intent.putExtra("profile", R.id.nav_profile);
         startActivityForResult(intent, 1);
         finish();
