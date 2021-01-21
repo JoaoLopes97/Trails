@@ -116,7 +116,7 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
             }
 
             if (imageUrl != null)
-                DB.loadWithGlide(context, trail.getImages().get(0), trailPhotoCard);
+                DB.loadWithGlide(context, imageUrl, trailPhotoCard);
         }
     }
 }

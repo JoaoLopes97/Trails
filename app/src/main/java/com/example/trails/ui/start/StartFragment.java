@@ -415,8 +415,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
     private void enableLocation() {
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(500);
-        locationRequest.setFastestInterval(500);
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
