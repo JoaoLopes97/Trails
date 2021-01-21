@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -220,32 +221,38 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                if (loadedTrail != null) {
-                    loadedTrail.setImagesWithCoords(imagesWithCoords);
-
-                    bundle.putSerializable("trail", loadedTrail);
-                    bundle.putInt("type", 1);
+                if (latLngs.isEmpty()) {
+                    Toast.makeText(getActivity(), "Não pode guardar o trilho sem coordenadas.", Toast.LENGTH_SHORT).show();
                 } else {
-                    BigDecimal bd = BigDecimal.valueOf(distance / 1000).setScale(2, RoundingMode.HALF_UP);
-                    Characteristics c = new Characteristics(null, null, null, null, bd.floatValue(), Math.round(pauseOffset / 1000));
-                    ArrayList<Coordinates> cd = new ArrayList<>();
+                    Bundle bundle = new Bundle();
+                    if (loadedTrail != null) {
+                        loadedTrail.setImagesWithCoords(imagesWithCoords);
 
-                    for (LatLng lg : latLngs) {
-                        cd.add(new Coordinates(lg.latitude, lg.longitude));
+                        bundle.putSerializable("trail", loadedTrail);
+                        bundle.putInt("type", 1);
+                    } else {
+
+                        BigDecimal bd = BigDecimal.valueOf(distance / 1000).setScale(2, RoundingMode.HALF_UP);
+                        float time_spent = (pauseOffset / 1000) / 60;
+                        Characteristics c = new Characteristics(null, null, null, null, bd.floatValue(), Math.round(time_spent));
+                        ArrayList<Coordinates> cd = new ArrayList<>();
+
+                        for (LatLng lg : latLngs) {
+                            cd.add(new Coordinates(lg.latitude, lg.longitude));
+                        }
+                        Trail trail = new Trail(c, cd, SingletonCurrentUser.getCurrentUserInstance().getIdUser());
+                        trail.setImagesWithCoords(imagesWithCoords);
+
+                        bundle.putSerializable("trail", trail);
+                        bundle.putInt("type", 0);
                     }
-                    Trail trail = new Trail(c, cd, SingletonCurrentUser.getCurrentUserInstance().getIdUser());
-                    trail.setImagesWithCoords(imagesWithCoords);
 
-                    bundle.putSerializable("trail", trail);
-                    bundle.putInt("type", 0);
+                    SaveTrailFragment itt = new SaveTrailFragment();
+                    itt.setArguments(bundle);
+
+                    coordinatorLayout.removeAllViewsInLayout();
+                    setFragment(R.id.start_fragment, itt, requireActivity());
                 }
-
-                SaveTrailFragment itt = new SaveTrailFragment();
-                itt.setArguments(bundle);
-
-                coordinatorLayout.removeAllViewsInLayout();
-                setFragment(R.id.start_fragment, itt, requireActivity());
             }
         });
 
@@ -415,8 +422,8 @@ public class StartFragment extends Fragment implements OnMapReadyCallback {
 
     private void enableLocation() {
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(500);
-        locationRequest.setFastestInterval(500);
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 

@@ -2,7 +2,6 @@ package com.example.trails.ui.details;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trails.R;
 import com.example.trails.controller.DB;
-import com.example.trails.controller.LocalDB;
-import com.example.trails.model.Characteristics;
 import com.example.trails.model.Review;
 import com.example.trails.model.SingletonCurrentUser;
-import com.example.trails.model.Trail;
 import com.example.trails.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewTrailAdapter extends RecyclerView.Adapter<com.example.trails.ui.details.ReviewTrailAdapter.ViewHolder> {
@@ -72,13 +67,10 @@ public class ReviewTrailAdapter extends RecyclerView.Adapter<com.example.trails.
         }
 
         void setDetails(Review review) {
-
+            DB.getUserDB(review.getUserId(),userNameCard,reviewPhotoCard,context);
             User user = SingletonCurrentUser.getCurrentUserInstance();
-            userNameCard.setText(user.getName());
             reviewCommentCard.setText(review.getComment());
             ratingBarCard.setRating(review.getRating());
-
-            DB.loadWithGlide(context, user.getPhoto(), reviewPhotoCard);
         }
     }
 }

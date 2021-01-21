@@ -163,7 +163,7 @@ public class DetailsTrailFragment extends Fragment {
         terrain.setText(trailCh.getTerrainType().name());
         difficulty.setText(trailCh.getDifficulty().name());
         distance.setText(trailCh.getDistance() + " km");
-        time_spent.setText(trailCh.getTimeSpent() + " seconds");
+        time_spent.setText(trailCh.getTimeSpent() + " minutos");
 
         if (isFavoriteForUser()) {
             favoriteCheckBox.setChecked(true);

@@ -115,8 +115,8 @@ public class ExploreTrailAdapter extends FirestoreRecyclerAdapter<Trail, Explore
                 favoriteCheckBox.setChecked(true);
             }
 
-            if (trail.getImages().size() > 0)
-                DB.loadWithGlide(context, trail.getImages().get(0), trailPhotoCard);
+            if (imageUrl != null)
+                DB.loadWithGlide(context, imageUrl, trailPhotoCard);
         }
     }
 }
