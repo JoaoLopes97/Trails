@@ -14,16 +14,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp">
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/trail_photo"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"/>-->
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/trail_photo"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="195dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -34,6 +44,7 @@
                 android:layout_margin="10dp"
                 android:textSize="18dp"
                 android:textStyle="bold" />
+
 
             <TextView
                 android:id="@+id/trail_location"
@@ -78,19 +89,20 @@
             <ImageButton
                 android:id="@+id/trash"
                 android:layout_width="wrap_content"
-                android:layout_height="59dp"
-                android:visibility="invisible"
-                app:srcCompat="@mipmap/ic_trash_round"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_delete_24" />
+
 
             <CheckBox
                 android:id="@+id/favoriteCheckBoxCardView"
-                style="?android:attr/starStyle"
-                android:layout_width="244dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:visibility="invisible" />
+                android:button="@drawable/btn_star_selector"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
     </LinearLayout>

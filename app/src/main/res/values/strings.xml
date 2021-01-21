@@ -26,6 +26,7 @@
     <string name="title_history">Histórico</string>
     <string name="title_favorites">Favoritos</string>
 
+    <string name="btn_back">Voltar</string>
     <string name="btn_login">Login</string>
     <string name="btn_register">Registar</string>
 
