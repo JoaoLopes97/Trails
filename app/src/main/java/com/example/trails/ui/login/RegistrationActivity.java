@@ -58,7 +58,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private Matcher matcher;
     private ImageView ImgUserPhoto;
     private Uri pickedImgUri;
-    private TextInputLayout userEmail, userPassword, userName,userBirthdayContainer, userCity;
+    private TextInputLayout userEmail, userPassword, userName, userBirthdayContainer, userCity;
     private TextInputEditText userBirthdayText;
     private DatePickerDialog.OnDateSetListener dataPickerListener;
     private Button regBtn;
@@ -115,33 +115,32 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             String email = userEmail.getEditText().getText().toString().trim();
             String password = userPassword.getEditText().getText().toString().trim();
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String name = userName.getEditText().getText().toString();
+                                String email = userEmail.getEditText().getText().toString().trim();
+                                Date birthday = convertStrToDate(userBirthdayText.getText().toString().trim());
+                                Address address = convertCityToAddress(userCity.getEditText().getText().toString());
 
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            String name = userName.getEditText().getText().toString();
-                            String email = userEmail.getEditText().getText().toString().trim();
-                            Date birthday = convertStrToDate(userBirthdayText.getText().toString().trim());
-                            Address address = convertCityToAddress(userCity.getEditText().getText().toString());
-
-                            if(pickedImgUri != null){
-                                updateUserInfo(pickedImgUri, user, name, email, birthday, address);
-                            }else{
-                                DB.insertUser(user, name, email, birthday, address, null);
-                                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
+                                if (pickedImgUri != null) {
+                                    updateUserInfo(pickedImgUri, user, name, email, birthday, address);
+                                } else {
+                                    DB.insertUser(user, name, email, birthday, address, null);
+                                    Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                Toast.makeText(getApplicationContext(), R.string.seccessRegister, Toast.LENGTH_LONG).show();
                             }
-                            Toast.makeText(getApplicationContext(), R.string.seccessRegister, Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    msgError.setText(R.string.msgError);
-                }
-            });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        msgError.setText(R.string.msgError);
+                    }
+                });
         }
     }
 
@@ -240,7 +239,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    private boolean verificationOfInputs(String name, String email, String password, String birthday, String city){
+    private boolean verificationOfInputs(String name, String email, String password, String birthday, String city) {
         boolean verifyName = validateUserName(name);
         boolean verifyEmail = validateEmail(email);
         boolean verifyPassword = validatePassword(password);
@@ -267,11 +266,11 @@ public class RegistrationActivity extends AppCompatActivity {
             userEmail.setError(getString(R.string.errorUserEmail));
             userEmail.setErrorEnabled(true);
             return false;
-        }else if(!matcher.matches()) {
+        } else if (!matcher.matches()) {
             userEmail.setError(getString(R.string.errorUserEmail1));
             userEmail.setErrorEnabled(true);
             return false;
-        }else{
+        } else {
             userEmail.setErrorEnabled(false);
             return true;
         }
@@ -282,11 +281,11 @@ public class RegistrationActivity extends AppCompatActivity {
             userPassword.setError(getString(R.string.errorUserPassword));
             userPassword.setErrorEnabled(true);
             return false;
-        }else if(!(password.length() > 5)) {
+        } else if (!(password.length() > 5)) {
             userPassword.setError(getString(R.string.errorUserPassword1));
             userPassword.setErrorEnabled(true);
             return false;
-        }else{
+        } else {
             userPassword.setErrorEnabled(false);
             return true;
         }
@@ -299,17 +298,17 @@ public class RegistrationActivity extends AppCompatActivity {
             userBirthdayContainer.setError(getString(R.string.errorBirthday));
             userBirthdayContainer.setErrorEnabled(true);
             return false;
-        } else if(dtBirthday.getTime() >= currentTime.getTime()){
+        } else if (dtBirthday.getTime() >= currentTime.getTime()) {
             userBirthdayContainer.setError(getString(R.string.errorBirthday1));
             userBirthdayContainer.setErrorEnabled(true);
             return false;
-        }else{
+        } else {
             userBirthdayContainer.setErrorEnabled(false);
             return true;
         }
     }
 
-    private Date convertStrToDate(String userBirthday){
+    private Date convertStrToDate(String userBirthday) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         try {
             Date date = format.parse(userBirthday);
@@ -326,10 +325,10 @@ public class RegistrationActivity extends AppCompatActivity {
             userCity.setErrorEnabled(true);
             return false;
         } else {
-            if(checkCity(uCity)){
+            if (checkCity(uCity)) {
                 userCity.setErrorEnabled(false);
                 return true;
-            }else{
+            } else {
                 userCity.setError(getString(R.string.errorCity1));
                 userCity.setErrorEnabled(true);
                 return false;
@@ -338,13 +337,13 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkCity(String userCity){
+    private boolean checkCity(String userCity) {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         try {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
-            if(addresses.isEmpty()){
+            if (addresses.isEmpty() || addresses == null) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         } catch (IOException e) {
@@ -353,13 +352,16 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    private Address convertCityToAddress(String userCity){
+    private Address convertCityToAddress(String userCity) {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         try {
             List<android.location.Address> addresses = geocoder.getFromLocationName(userCity, 1);
-            android.location.Address address = addresses.get(0);
-            Address userAddress = new Address(address.getLocality(), address.getLatitude(), address.getLongitude());
-            return userAddress;
+            if (addresses != null || !addresses.isEmpty()) {
+                android.location.Address address = addresses.get(0);
+                Address userAddress = new Address(address.getLocality(), address.getLatitude(), address.getLongitude());
+                return userAddress;
+            }
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
