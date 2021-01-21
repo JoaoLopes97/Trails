@@ -53,6 +53,7 @@
                     android:backgroundTint="@android:color/darker_gray"
                     android:drawableLeft="@drawable/ic_baseline_search_24"
                     android:inputType="text"
+                    android:imeOptions="actionSearch"
                     app:layout_constraintEnd_toStartOf="@+id/filter"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
