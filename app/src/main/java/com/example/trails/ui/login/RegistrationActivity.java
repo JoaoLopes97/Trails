@@ -33,6 +33,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -139,7 +140,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    msgError.setText(R.string.msgError);
+                    if (e instanceof FirebaseAuthUserCollisionException) {
+                        msgError.setText(R.string.msgError);
+                        userEmail.setError("Já existe um utilizador com este email.");
+                    }
                 }
             });
         }
