@@ -33,6 +33,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -125,22 +126,25 @@ public class RegistrationActivity extends AppCompatActivity {
                                 Date birthday = convertStrToDate(userBirthdayText.getText().toString().trim());
                                 Address address = convertCityToAddress(userCity.getEditText().getText().toString());
 
-                                if (pickedImgUri != null) {
-                                    updateUserInfo(pickedImgUri, user, name, email, birthday, address);
-                                } else {
-                                    DB.insertUser(user, name, email, birthday, address, null);
-                                    Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                Toast.makeText(getApplicationContext(), R.string.seccessRegister, Toast.LENGTH_LONG).show();
+                            if(pickedImgUri != null){
+                                updateUserInfo(pickedImgUri, user, name, email, birthday, address);
+                            }else{
+                                DB.insertUser(user, name, email, birthday, address, null);
+                                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), R.string.seccessRegister, Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (e instanceof FirebaseAuthUserCollisionException) {
                         msgError.setText(R.string.msgError);
+                        userEmail.setError("Já existe um utilizador com este email.");
                     }
-                });
+                }
+            });
         }
     }
 

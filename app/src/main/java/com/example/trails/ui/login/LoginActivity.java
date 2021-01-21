@@ -99,12 +99,16 @@ public class LoginActivity extends AppCompatActivity {
         String email, password;
         email = this.email.getEditText().getText().toString().trim();
         password = this.password.getEditText().getText().toString().trim();
+        this.email.setError("");
+        this.password.setError("");
 
         if (TextUtils.isEmpty(email)) {
+            this.email.setError("Insira o email...");
             Toast.makeText(getApplicationContext(), "Insira o email...", Toast.LENGTH_LONG).show();
             return;
         }
         if (TextUtils.isEmpty(password)) {
+            this.password.setError("Insira a palavra-passe!");
             Toast.makeText(getApplicationContext(), "Insira a palavra-passe!", Toast.LENGTH_LONG).show();
             return;
         }
