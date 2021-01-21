@@ -95,14 +95,14 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_baseline_delete_24" />
 
-
             <CheckBox
                 android:id="@+id/favoriteCheckBoxCardView"
                 android:button="@drawable/btn_star_selector"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:theme="@style/RatingBar"/>
         </LinearLayout>
 
     </LinearLayout>
